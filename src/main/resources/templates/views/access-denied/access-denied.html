@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head>
+		<meta charset="ISO-8859-1"/>
+		<title th:text="${pageTitle}">Access Denied</title>
+		<span th:substituteby="commons :: common-css"></span>
+	</head>
+	<body style="text-align: center;">
+		<div class="jumbotron">
+		 	<h1 th:text="${accessMessage}">Access Denied</h1>
+		 	<a th:href="@{/}" href="#" class="btn btn-warning"><i class="fa fa-backward"></i> Back to Home page</a>
+	 	</div>
+	 	
+	 	<span th:substituteby="commons :: common-js"></span>
+	</body>
+</html>

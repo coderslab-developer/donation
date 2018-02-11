@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1" />
+		<title th:text="${pageTitle}">DashBoard</title>
+		<span th:substituteby="commons :: common-css"></span>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+
+				<!-- header section -->
+				<div class="header col-md-12">
+					<div class="row">
+
+						<!-- header top-->
+						<span th:substituteby="commons :: common-top-menu"></span>
+
+						<!-- header main -->
+						<div class="col-md-12 header-main">
+							<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
+						</div>
+
+					</div>
+				</div>
+
+				<!-- menu main section-->
+				<span th:substituteby="commons :: common-menu"></span>
+
+				<!-- content section -->
+				<div class="col-md-12 content-area">
+					<div class="row">
+
+						<!-- Success / Error Messages -->
+						<div class="col-md-12">
+							<div th:if="${sm}" id="success-alert" class="alert alert-success alert-dismissable">
+							  	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							  	<strong>Success!</strong> <span th:text="${sm}">Message</span> 
+							</div>
+							<div th:if="${em}" id="error-alert" class="alert alert-success alert-dismissable">
+							  	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							  	<strong>Success!</strong> <span th:text="${em}">Message</span> 
+							</div>
+						</div>
+
+						<!-- dealer create form  -->
+						<div class="col-md-12 add-deller-page">
+							<div class="panel panel-primary">
+								<div class="panel-heading sadph">
+									<h4 style="margin: 0;">Add Donar</h4>
+								</div>
+								<div class="panel-body">
+									<form method="POST" th:action="@{/donar}" th:object="${donar}">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label>Donar Name</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('donarName')}" th:errors="*{donarName}">Please enter donar name</span>
+												<input type="text" th:field="*{donarName}" class="form-control"/>
+											</div>
+											<div class="form-group">
+												<label>Category</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}">Please select one category</span>
+												<select th:field="*{categoryId}" class="form-control">
+													<option th:each="item : ${donar.categories}" th:value="${item.categoryId}" th:text="${item.name}"></option>
+												</select>
+											</div>
+											<div class="form-group">
+												<label>Email</label>
+												<input type="email" th:field="*{email}" class="form-control"/>
+											</div>
+											<div class="form-group">
+												<label>Address</label>
+												<textarea th:field="*{address}" class="form-control"></textarea>
+											</div>
+											<div class="form-group">
+												<label>Mobile</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}">Please enter mobile number</span>
+												<input type="text" th:field="*{mobile}" class="form-control"/>
+											</div>
+											<div class="form-group">
+												<label>Payable Amount</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('payableAmount')}" th:errors="*{payableAmount}">Please enter amount</span>
+												<input type="number" th:field="*{payableAmount}" class="form-control" min="1"/>
+											</div>
+											<div class="form-group">
+												<label>Institute Name</label>
+												<input type="text" th:field="*{instituteName}" class="form-control"/>
+											</div>
+											<div class="form-group">
+												<label>Status</label>
+												<label class="checkbox-inline"><input type="checkbox" th:field="*{status}"/> Active</label>
+											</div>
+											<div class="form-group">
+												<label>SMS Service</label>
+												<label class="checkbox-inline"><input type="checkbox" th:field="*{smsService}"/> Active</label>
+											</div>
+										</div>
+										<div class="col-md-12" style="text-align: center;">
+											<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save Donar</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div><!-- / end dealer create form  -->
+
+					</div>
+				</div><!-- / end content section -->
+
+			</div><!-- / end row -->
+		</div><!-- / end conatiner -->
+
+		<span th:substituteby="commons :: common-js"></span>
+	</body>
+</html>

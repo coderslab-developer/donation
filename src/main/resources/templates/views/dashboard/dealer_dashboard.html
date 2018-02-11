@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1" />
+		<title th:text="${pageTitle}">DashBoard</title>
+		<span th:substituteby="commons :: common-css"></span>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+
+				<!-- header section -->
+				<div class="header col-md-12">
+					<div class="row">
+
+						<!-- header top-->
+						<span th:substituteby="commons :: common-top-menu"></span>
+
+						<!-- header main -->
+						<div class="col-md-12 header-main">
+							<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
+						</div>
+
+					</div>
+				</div>
+
+				<!-- menu main section-->
+				<span th:substituteby="commons :: common-menu"></span>
+
+				<!-- content section -->
+				<div class="col-md-12 content-area">
+					<div class="row">
+
+						<!-- Success / Error Messages -->
+						<div class="col-md-12">
+							<div th:if="${success}" id="success-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${success}">Message</span> 
+							</div>
+							<div th:if="${error}" id="error-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${error}">Message</span> 
+							</div>
+						</div>
+
+						<!-- Client details -->
+						<div class="col-md-12 super-admin-dashboard">
+							<div class="panel panel-primary">
+								<div class="panel-heading sadph">
+									<h4 style="margin: 0; color: #fff;" th:text="#{dashboard.table.dealerDashboard}">Client Lists</h4>
+								</div>
+								<div class="panel-body">
+									<table class="sadt" style="margin-bottom: 50px;">
+										<tr>
+											<td style="width: 30%" th:text="#{dashboard.totalSellOfSoftware}">Total Sell of software</td>
+											<td style="width: 5%"> <span class="dashboardItmes"  th:text="${dealerDashboard.totalSellOfSoftware}"></span></td>
+											<td style="width: 30%; text-align: center;"></td>
+											<td style="width: 30%"></td>
+											<td style="width: 5%"></td>
+										</tr>
+										<tr>
+											<td style="width: 30%" th:text="#{dashboard.activeClient}">Active Client</td>
+											<td style="width: 5%"> <span class="dashboardItmes" th:text="${dealerDashboard.activeClient}"></span></td>
+											<td style="width: 30%; text-align: center;"></td>
+											<td style="width: 30%"></td>
+											<td style="width: 5%"></td>
+										</tr>
+										<tr>
+											<td style="width: 30%" th:text="#{dashboard.inactiveClient}">Deactive Client</td>
+											<td style="width: 5%"> <span class="dashboardItmes" th:text="${dealerDashboard.inactiveClient}"></span></td>
+											<td style="width: 30%; text-align: center;"></td>
+											<td style="width: 30%"></td>
+											<td style="width: 5%"></td>
+										</tr>
+										<tr>
+											<td style="width: 30%" th:text="#{dashboard.serviceRenewOnThisMonth}">Deactive Client</td>
+											<td style="width: 5%"> <span class="dashboardItmes" th:text="${dealerDashboard.serviceRenewOnThisMonth}"></span></td>
+											<td style="width: 30%; text-align: center;"></td>
+											<td style="width: 30%"></td>
+											<td style="width: 5%"></td>
+										</tr>
+									</table>
+
+									<table class="table table-bordered table-responsive table-hover" id="example" width="100%">
+										<thead>
+											<tr style="color: tomato;">
+												<th th:text="#{dashboard.table.no}">No.</th>
+												<th th:text="#{dashboard.table.clientName}">Client name</th>
+												<th th:text="#{dashboard.table.mobileNo}">Mobile Number</th>
+												<th th:text="#{dashboard.table.status}">Status</th>
+												<th th:text="#{dashboard.table.expireDate}">Expire Date</th>
+												<th th:text="#{dashboard.table.remainingDay}">Remaining Day</th>
+												<th data-nosort="Y" th:text="#{dashboard.table.action}">Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="row,num : ${clients}">
+												<td th:text="${num.count}">1</td>
+												<td th:text="${row.clientName}"></td>
+												<td th:text="${row.mobile}"></td>
+												<td th:text="${row.status == true?'Active':'Inactive'}"></td>
+												<td th:text="${row.expireDate}"></td>
+												<td th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="${days.convert(row.expireDate.getTime() - row.registerDate.getTime(), millis)}"></td>
+												<td style="text-align: center;">
+													<div class="btn-group">
+														<a th:href="@{/client/view/} + ${row.clientId}" data-toggle="tooltip" th:title="#{dashboard.table.viewProfile}" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>
+														<a th:href="@{/client/print/} + ${row.clientId}" data-toggle="tooltip" th:title="#{dashboard.table.printProfile}" class="btn btn-sm btn-success"><i class="fa fa-print"></i> </a>
+														<a th:href="@{/client/edit/} + ${row.clientId}" data-toggle="tooltip" th:title="#{dashboard.table.editProfile}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
+														<a th:href="@{/client/archive/} + ${row.clientId}" data-toggle="tooltip" th:title="#{dashboard.table.deleteProfile}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+														<a th:href="@{/client/changeStatus/} + ${row.clientId}" data-toggle="tooltip" th:title="#{dashboard.table.suspendProfile}" class="btn btn-sm btn-warning"><i class="fa fa-arrow-down"></i></a>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div><!-- / end content section -->
+
+			</div><!-- / end row -->
+		</div><!-- / end conatiner -->
+
+		<span th:substituteby="commons :: common-js"></span>
+	</body>
+</html>

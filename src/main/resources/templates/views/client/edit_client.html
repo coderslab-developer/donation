@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1" />
+		<title th:text="${pageTitle}">DashBoard</title>
+		<span th:substituteby="commons :: common-css"></span>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+
+				<!-- header section -->
+				<div class="header col-md-12">
+					<div class="row">
+					
+						<!-- header top-->
+						<span th:substituteby="commons :: common-top-menu"></span>
+
+						<!-- header main -->
+						<div class="col-md-12 header-main">
+							<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
+						</div>
+						
+					</div>
+				</div>
+
+				<!-- menu main section-->
+				<span th:substituteby="commons :: common-menu"></span>
+
+				<!-- content section -->
+				<div class="col-md-12 content-area">
+					<div class="row">
+
+						<!-- Success / Error Messages -->
+						<div class="col-md-12">
+							<div th:if="${sm}" id="success-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${sm}">Message</span> 
+							</div>
+							<div th:if="${em}" id="error-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${em}">Message</span> 
+							</div>
+						</div>
+
+						<!-- dealer create form  -->
+						<div class="col-md-12 add-deller-page">
+							<div class="panel panel-primary">
+								<div class="panel-heading sadph">
+									<h4 style="margin: 0;">Add Client</h4>
+								</div>
+								<div class="panel-body">
+									<form id="clientform" method="POST" th:action="@{/client/update}" th:object="${client}" autocomplete="off" enctype="multipart/form-data">
+										<div class="col-md-8">
+											<div class="form-group">
+												<label>Name of the Institute</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('clientName')}" th:errors="*{clientName}">Please enter client/institute name</span>
+												<div class="required-field-block">
+													<input type="text" th:field="*{clientName}" class="form-control" required="required"/>
+													<input type="hidden" th:field="*{clientId}" class="form-control"/>
+													<div class="required-icon">
+														<div class="text">*</div>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label>Username</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span>
+												<span id="usernameError" class="text-danger pull-right"></span>
+												<div class="required-field-block">
+													<input type="text" th:field="*{username}" class="form-control"  th:attr="action=@{/users/checkusername}" required="required"/>
+													<div class="required-icon">
+														<div class="text">*</div>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label>Email Address</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Please enter email address</span>
+												<span id="emailError" class="pull-right text-danger"></span>
+												<div class="required-field-block">
+													<input type="email" th:field="*{email}" class="form-control" th:attr="action=@{/users/checkemail}" required="required"/>
+													<div class="required-icon">
+														<div class="text">*</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-12" style="padding: 0;">
+												<div class="col-md-6" style="padding-left: 0;">
+													<div class="form-group">
+														<label>Password</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</span>
+														<div class="required-field-block">
+															<input type="password" th:field="*{password}" class="form-control"/>
+															<div class="required-icon">
+																<div class="text">*</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-6" style="padding-right: 0;">
+													<div class="form-group">
+														<label>Mobile Number</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}">Error</span>
+														<div class="required-field-block">
+															<input type="text" th:field="*{mobile}" class="form-control" required="required"/>
+															<div class="required-icon">
+																<div class="text">*</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label>Fax Number</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('fax')}" th:errors="*{fax}">Error</span>
+												<input type="text" th:field="*{fax}" class="form-control"/>
+											</div>
+											<div class="form-group">
+												<label>Address</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Please enter address</span>
+												<div class="required-field-block">
+													<textarea th:field="*{address}" class="form-control" required="required"></textarea>
+													<div class="required-icon">
+														<div class="text">*</div>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label>Website</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('website')}" th:errors="*{website}">Error</span>
+												<input type="text" th:field="*{website}" class="form-control"/>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group">
+												<label class="control-label">Upload Photo:</label>
+												<span class="pull-right text-success">Max Size: 5MB, (200 x 220)px</span>
+												<div class="input-group">
+													<label class="input-group-btn">
+														<span class="btn btn-primary">
+															Brows &hellip; <input accept=".jpg, .jpeg, .png" type="file" name="file" id="file" style="display: none;">
+														</span>
+													</label>
+													<input type="text" class="form-control" readonly="readonly" placeholder="Please select a jpg, png, jpeg image. Max(5MB)">
+												</div>
+											</div>
+											<div id="uploadPreview">
+												<img th:unless="${#strings.isEmpty(client.photo)}" th:src="@{/resources/upload/client/} + ${client.photo}"/>
+												<img th:if="${#strings.isEmpty(client.photo)}" th:src="@{/img/dummy_photo.png}"/>
+											</div>
+										</div>
+										<div class="col-md-12" style="text-align: center;">
+											<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save Client</button>
+											<button type="reset" class="btn btn-danger"><i class="fa fa-refresh"></i> Reset</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div><!-- / end dealer create form  -->
+
+					</div>
+				</div><!-- / end content section -->
+
+			</div><!-- / end row -->
+		</div><!-- / end conatiner -->
+
+		<span th:substituteby="commons :: common-js"></span>
+		<script type="text/javascript" th:src="@{/js/client/client.js}"></script> 
+	</body>
+</html>

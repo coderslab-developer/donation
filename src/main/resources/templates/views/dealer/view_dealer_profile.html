@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1" />
+		<title th:text="${pageTitle}">DashBoard</title>
+		<span th:substituteby="commons :: common-css"></span>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+
+				<!-- header section -->
+				<div class="header col-md-12">
+					<div class="row">
+
+						<!-- header top-->
+						<span th:substituteby="commons :: common-top-menu"></span>
+
+						<!-- header main -->
+						<div class="col-md-12 header-main">
+							<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
+						</div>
+
+					</div>
+				</div>
+
+				<!-- menu main section-->
+				<span th:substituteby="commons :: common-menu"></span>
+
+				<!-- content section -->
+				<div class="col-md-12 content-area">
+					<div class="row">
+
+						<!-- Success / Error Messages -->
+						<div class="col-md-12">
+							<div th:if="${success}" id="success-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${success}">Message</span> 
+							</div>
+							<div th:if="${error}" id="error-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${error}">Message</span> 
+							</div>
+						</div>
+
+						<!-- Client details -->
+						<div class="col-md-12 super-admin-dashboard">
+							<div class="panel panel-primary">
+								<div class="panel-heading sadph">
+									<h4 style="margin: 0; color: #fff;" th:text="#{dashboard.table.dealerInfo}">Dealer Info</h4>
+								</div>
+								<div class="panel-body">
+									<div class="profile-photo pull-right" th:unless="${#strings.isEmpty(dealer.photo)}">
+										<img th:src="@{/resources/upload/dealer/} + ${dealer.photo}"/>
+									</div>
+									<table class="sadt dealer-profile-table span" style="margin-bottom: 50px;">
+										<tr>
+											<td>Dealer Name</td>
+											<td>:</td>
+											<td><span th:text="${dealer.dealerName}"></span></td>
+										</tr>
+										<tr>
+											<td>Mobile Number</td>
+											<td>:</td>
+											<td><span th:text="${dealer.mobile}"></span></td>
+										</tr>
+										<tr>
+											<td>Email</td>
+											<td>:</td>
+											<td><span th:text="${dealer.email}"></span></td>
+										</tr>
+										<tr>
+											<td>Address</td>
+											<td>:</td>
+											<td><span th:text="${dealer.address}"></span></td>
+										</tr>
+										<tr>
+											<td>Status</td>
+											<td>:</td>
+											<td><span th:text="${dealer.status?'Active':'Inactive'}"></span></td>
+										</tr>
+										<tr>
+											<td>Register Date</td>
+											<td>:</td>
+											<td><span th:text="${dealer.registerDate}"></span></td>
+										</tr>
+										<tr>
+											<td th:text="#{dashboard.totalSellOfSoftware}">Total Sell of software</td>
+											<td>:</td>
+											<td><span th:text="${dealerDashboard.totalSellOfSoftware}"></span></td>
+										</tr>
+										<tr>
+											<td th:text="#{dashboard.activeClient}">Active Client</td>
+											<td>:</td>
+											<td> <span th:text="${dealerDashboard.activeClient}"></span></td>
+										</tr>
+										<tr>
+											<td th:text="#{dashboard.inactiveClient}">Deactive Client</td>
+											<td>:</td>
+											<td> <span th:text="${dealerDashboard.inactiveClient}"></span></td>
+										</tr>
+										<tr>
+											<td th:text="#{dashboard.serviceRenewOnThisMonth}">Deactive Client</td>
+											<td>:</td>
+											<td> <span th:text="${dealerDashboard.serviceRenewOnThisMonth}"></span></td>
+										</tr>
+									</table>
+									<h3 align="center">Clients List</h3>
+									<table class="table table-bordered table-responsive table-hover" id="example" width="100%">
+										<thead>
+											<tr style="color: tomato;">
+												<th th:text="#{dashboard.table.no}">No.</th>
+												<th th:text="#{dashboard.table.clientName}">Client name</th>
+												<th th:text="#{dashboard.table.mobileNo}">Mobile Number</th>
+												<th th:text="#{dashboard.table.status}">Status</th>
+												<th th:text="#{dashboard.table.expireDate}">Expire Date</th>
+												<th th:text="#{dashboard.table.remainingDay}">Remaining Day</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="row,num : ${dealer.clients}">
+												<td th:text="${num.count}">1</td>
+												<td th:text="${row.clientName}"></td>
+												<td th:text="${row.mobile}"></td>
+												<td th:text="${row.status == true?'Active':'Inactive'}"></td>
+												<td th:text="${row.expireDate}"></td>
+												<td th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="${days.convert(row.expireDate.getTime() - row.registerDate.getTime(), millis)}"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div><!-- / end content section -->
+
+			</div><!-- / end row -->
+		</div><!-- / end conatiner -->
+
+		<span th:substituteby="commons :: common-js"></span>
+	</body>
+</html>

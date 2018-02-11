@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1" />
+		<title th:text="${pageTitle}">DashBoard</title>
+		<span th:substituteby="commons :: common-css"></span>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+
+				<!-- header section -->
+				<div class="header col-md-12">
+					<div class="row">
+
+						<!-- header top-->
+						<span th:substituteby="commons :: common-top-menu"></span>
+
+						<!-- header main -->
+						<div class="col-md-12 header-main">
+							<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
+						</div>
+
+					</div>
+				</div>
+
+				<!-- menu main section-->
+				<span th:substituteby="commons :: common-menu"></span>
+
+				<!-- content section -->
+				<div class="col-md-12 content-area">
+					<div class="row">
+
+						<!-- Success / Error Messages -->
+						<div class="col-md-12">
+							<div th:if="${sm}" id="success-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${sm}">Message</span> 
+							</div>
+							<div th:if="${em}" id="error-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${em}">Message</span> 
+							</div>
+						</div>
+
+						<!-- dealer create form  -->
+						<div class="col-md-12 add-deller-page">
+							<div class="panel panel-primary">
+								<div class="panel-heading sadph">
+									<h4 style="margin: 0;">Create Donar Category</h4>
+								</div>
+								<div class="panel-body">
+									<form method="POST" th:action="@{/category}" th:object="${category}">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label>Category Name</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Please enter category name</span>
+												<input type="text" th:field="*{name}" class="form-control"/>
+											</div>
+											<div class="form-group">
+												<label>Days</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('days')}" th:errors="*{days}">Please enter days</span>
+												<input type="number" th:field="*{days}" class="form-control" min="1"/>
+											</div>
+											<div class="form-group">
+												<label class="checkbox-inline"><input type="checkbox" th:field="*{status}"/> Active</label>
+											</div>
+										</div>
+										<div class="col-md-12" style="text-align: center;">
+											<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Create Category</button>
+										</div>
+									</form>
+								</div>
+							</div>
+							
+							<div class="panel panel-success">
+								<div class="panel-heading cdph">
+									<h4 style="margin: 0; color: #fff;">Category List</h4>
+								</div>
+								<div class="panel-body">
+									<table class="table table-bordered table-responsive table-hover" id="example" width="100%">
+										<thead>
+											<tr>
+												<th>SN.</th>
+												<th>Category Name</th>
+												<th>Days</th>
+												<th>Status</th>
+												<th data-nosort="Y">Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="row,num : ${categories}">
+												<td th:text="${num.count}"></td>
+												<td th:text="${row.name}"></td>
+												<td th:text="${row.days}"></td>
+												<td th:text="${row.status == true?'Active':'Inactive'}"></td>
+												<td style="text-align: center;">
+													<div class="btn-group">
+														<a th:if="${row.status == true}" th:href="@{/category/changeStatus/} + ${row.categoryId}" class="btn btn-warning btn-sm" title=" Make inactive"><i class="fa fa-arrow-down"></i></a>
+														<a th:unless="${row.status == true}" th:href="@{/category/changeStatus/} + ${row.categoryId}" class="btn btn-success btn-sm" title="Make active"><i class="fa fa-arrow-up"></i></a>
+														<a th:href="@{/category/archive/} + ${row.categoryId}" class="btn btn-danger btn-sm" title="Delete"><i class="fa fa-trash"></i></a>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div><!-- / end dealer create form  -->
+
+					</div>
+				</div><!-- / end content section -->
+
+			</div><!-- / end row -->
+		</div><!-- / end conatiner -->
+
+		<span th:substituteby="commons :: common-js"></span>
+	</body>
+</html>

@@ -1,0 +1,125 @@
+<div xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<!-- Top Menus -->
+	<span th:remove="tag" th:fragment="common-top-menu" xmlns:th="http://www.thymeleaf.org">
+		<div class="col-md-12 header-top">
+			<ul class="top-menu">
+				<li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/logout}"><i class="fa fa-sign-out"></i> Logout</a></li>
+				<li th:if="${#authentication.name == 'anonymousUser'}" ><a th:href="@{/login}"><i class="fa fa-sign-in"></i> Login</a></li>
+				<li th:if="${#authentication.name != 'anonymousUser'}"><a href=""><i class="fa fa-user-circle-o"></i> <span th:text="${#authentication.name}"></span> Profile Edit</a></li>
+				<li th:if="${#authentication.name != 'anonymousUser'}"><a href=""><i class="fa fa-envelope-open-o"></i> Last login today night 8.00 pm</a></li>
+			</ul>
+		</div>
+	</span>
+	<!-- Main Menus -->
+	<span th:remove="tag" th:fragment="common-menu" xmlns:th="http://www.thymeleaf.org">
+		<div class="col-md-12 menu-area">
+			<ul class="main-menu">
+				<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add donation')}?active"><a th:href="@{/donation}">Add Donation</a></li>
+				<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add category')}?active"><a th:href="@{/category}">Add Category</a></li>
+				<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add donar')}?active"><a th:href="@{/donar}">Add Donar</a></li>
+				<li sec:authorize="${hasRole('ROLE_DEALER')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add client')}?active"><a th:href="@{/client}">Add Client</a></li>
+				<li th:if="${#authentication.name != 'anonymousUser'}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Report')}?active"><a th:href="@{/report}">Report</a></li>
+				<li sec:authorize="${hasRole('ROLE_ADMIN')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add dealer')}?active"><a th:href="@{/dealer}">Add Deller</a></li>
+				<li th:if="${#authentication.name != 'anonymousUser'}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Dashboard')}?active"><a th:href="@{/}">You</a></li>
+			</ul>
+		</div>
+	</span>
+	<!-- css -->
+	<span th:remove="tag" th:fragment="common-css" xmlns:th="http://www.thymeleaf.org">
+		<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}" href="/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/dataTables.bootstrap.css}" />
+		<link rel="stylesheet" type="text/css" th:href="@{/css/dataTables.responsive.css}" />
+		<link rel="stylesheet" type="text/css" th:href="@{/css/font-awesome.css}" />
+		<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+	</span>
+	<!-- login-css -->
+	<span th:remove="tag" th:fragment="common-login-css" xmlns:th="http://www.thymeleaf.org">
+		<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/animate.css}"/>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/animation.css}"/>
+	</span>
+	<!-- JS -->
+	<span th:remove="tag" th:fragment="common-js" xmlns:th="http://www.thymeleaf.org"> 
+		<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script> 
+		<script type="text/javascript" th:src="@{/js/bootstrap.js}"></script> 
+		<script type="text/javascript" th:src="@{/js/jquery.dataTable.min.js}"></script> 
+		<script type="text/javascript" th:src="@{/js/dataTables.bootstrap.js}"></script> 
+		<script type="text/javascript" th:src="@{/js/dataTables.responsive.js}"></script> 
+		<script type="text/javascript" th:src="@{/js/angular.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/tooltip.js}"></script>
+		<!-- Page-Level Demo Scripts - Tables - Use for reference --> 
+		<script>
+			$(document).ready(function() {
+				$('table#example').each(function (tindex, table) {
+					var noSortColumns = [];
+					$(table).find('th').each(function (thindex, column) {
+						if ($(this).attr('data-nosort')) {
+							var value = $(this).attr('data-nosort');
+							if(value == 'Y'){
+								noSortColumns.push(thindex);
+							}
+						}
+					});
+					$(table).DataTable({
+						"responsive" : true,
+						"columnDefs": [{
+							"targets": noSortColumns,
+							"orderable": false
+						}]
+					});
+				});
+				
+				$("#success-alert, #error-alert").delay(4000).slideUp(200, function() {
+					$(this).alert('close');
+				});
+				
+				$('[data-toggle="tooltip"]').tooltip(); 
+				$('.required-icon').tooltip({
+					placement: 'left',
+					title: 'Required field'
+				});
+			});
+		</script>
+		<!-- file upload and image preview -->
+		<script type="text/javascript">
+			$(function () {
+				// We can attach the `fileselect` event to all file inputs on the page
+				$(document).on('change', ':file', function () {
+					var input = $(this),
+					numFiles = input.get(0).files ? input.get(0).files.length : 1,
+					label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+					input.trigger('fileselect', [numFiles, label]);
+				});
+				// We can watch for our custom `fileselect` event like this
+				$(document).ready(function () {
+					$(':file').on('fileselect', function (event, numFiles, label) {
+						var input = $(this).parents('.input-group').find(':text'),
+						log = numFiles > 1 ? numFiles + ' files selected' : label;
+						if (input.length) {
+							input.val(log);
+						} else {
+							if (log)
+							alert(log);
+						}
+					});
+				});
+			});
+			//preview image
+			$(document).ready(function() {
+				var _URL = window.URL || window.webkitURL;
+				$("#file").change(function(e) {
+					var image, file;
+					if ((file = this.files[0])) {
+						image = new Image();
+						image.onload = function() {
+							src = this.src;
+							$('#uploadPreview').html('<img src="'+ src +'" width="100%" height="100%"></div>');
+							e.preventDefault();
+						}
+					};
+					image.src = _URL.createObjectURL(file);
+				});
+			});
+		</script>
+	</span>
+</div>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1" />
+		<title th:text="${pageTitle}">DashBoard</title>
+		<span th:substituteby="commons :: common-css"></span>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+
+				<!-- header section -->
+				<div class="header col-md-12">
+					<div class="row">
+
+						<!-- header top-->
+						<span th:substituteby="commons :: common-top-menu"></span>
+
+						<!-- header main -->
+						<div class="col-md-12 header-main">
+							<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
+						</div>
+
+					</div>
+				</div>
+
+				<!-- menu main section-->
+				<span th:substituteby="commons :: common-menu"></span>
+
+				<!-- content section -->
+				<div class="col-md-12 content-area">
+					<div class="row">
+
+						<!-- Success / Error Messages -->
+						<div class="col-md-12">
+							<div th:if="${success}" id="success-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${success}">Message</span> 
+							</div>
+							<div th:if="${error}" id="error-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${error}">Message</span> 
+							</div>
+						</div>
+
+						<!-- Client details -->
+						<div class="col-md-12 super-admin-dashboard">
+							<div class="panel panel-primary">
+								<div class="panel-heading sadph">
+									<h4 style="margin: 0; color: #fff;" th:text="#{dashboard.table.clientInfo}">Client Lists</h4>
+								</div>
+								<div class="panel-body">
+									<table class="sadt client-profile-table" style="margin-bottom: 50px;">
+										<tr>
+											<td>Donar Name</td>
+											<td>:</td>
+											<td><span th:text="${donar.donarName}"></span></td>
+										</tr>
+										<tr>
+											<td>Mobile Number</td>
+											<td>:</td>
+											<td><span th:text="${donar.mobile}"></span></td>
+										</tr>
+										<tr>
+											<td>Email Address</td>
+											<td>:</td>
+											<td><span th:text="${donar.email}"></span></td>
+										</tr>
+										<tr>
+											<td>Address</td>
+											<td>:</td>
+											<td><span th:text="${donar.address}"></span></td>
+										</tr>
+										<tr>
+											<td>Category</td>
+											<td>:</td>
+											<td><span th:text="${donar.categoryName}"></span></td>
+										</tr>
+										<tr>
+											<td>Category</td>
+											<td>:</td>
+											<td><span th:text="${donar.payableAmount}"></span></td>
+										</tr>
+										<tr>
+											<td>Sms Service</td>
+											<td>:</td>
+											<td><span th:text="${donar.smsService?'Active':'Inactive'}"></span></td>
+										</tr>
+										<tr>
+											<td>Register Date</td>
+											<td>:</td>
+											<td><span th:text="${donar.registerDate}"></span></td>
+										</tr>
+										<tr>
+											<td>Status</td>
+											<td>:</td>
+											<td><span th:text="${donar.status?'Active':'Inactive'}"></span></td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div><!-- / end content section -->
+
+			</div><!-- / end row -->
+		</div><!-- / end conatiner -->
+
+		<span th:substituteby="commons :: common-js"></span>
+	</body>
+</html>

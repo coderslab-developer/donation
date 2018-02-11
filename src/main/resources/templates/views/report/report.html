@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1" />
+<title th:text="${pageTitle}">DashBoard</title>
+<span th:substituteby="commons :: common-css"></span>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+
+			<!-- header section -->
+			<div class="header col-md-12">
+				<div class="row">
+
+					<!-- header top-->
+					<span th:substituteby="commons :: common-top-menu"></span>
+
+					<!-- header main -->
+					<div class="col-md-12 header-main">
+						<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- menu main section-->
+			<span th:substituteby="commons :: common-menu"></span>
+
+			<!-- content section -->
+			<div class="col-md-12 content-area">
+				<div class="row">
+
+					<!-- Success / Error Messages -->
+					<div class="col-md-4 col-md-offset-4">
+						<div th:if="${param.error}" id="success-alert" class="alert alert-success alert-dismissable">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> 
+							<strong>Invalid username or password</strong>
+						</div>
+						<div th:if="${param.logout}" id="error-alert" class="alert alert-success alert-dismissable">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>You have been logged out</strong>
+						</div>
+					</div>
+
+					<!-- Report Form -->
+					<div class="col-md-12 super-admin-dashboard">
+						
+					</div>
+					<!-- /end Report Form -->
+
+				</div>
+			</div>
+			<!-- / end content section -->
+
+		</div>
+		<!-- / end row -->
+	</div>
+	<!-- / end conatiner -->
+
+	<span th:substituteby="commons :: common-js"></span>
+</body>
+</html>
