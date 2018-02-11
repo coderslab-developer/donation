@@ -50,6 +50,9 @@
 									<h4 style="margin: 0; color: #fff;" th:text="#{dashboard.table.clientInfo}">Client Lists</h4>
 								</div>
 								<div class="panel-body">
+									<div class="profile-photo pull-right" th:unless="${#strings.isEmpty(donar.photo)}">
+										<img th:src="@{/resources/upload/donar/} + ${donar.photo}"/>
+									</div>
 									<table class="sadt client-profile-table" style="margin-bottom: 50px;">
 										<tr>
 											<td>Donar Name</td>
@@ -100,7 +103,7 @@
 								</div>
 							</div>
 						</div>
-
+						<span th:substituteby="commons :: common-copyright"></span>
 					</div>
 				</div><!-- / end content section -->
 

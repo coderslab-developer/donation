@@ -127,7 +127,7 @@
 													</div>
 												</div>
 												<div id="uploadPreview">
-													<img th:unless="${#strings.isEmpty(dealer.photo)}" th:src="@{/upload/dealer/} + ${dealer.photo}"/>
+													<img th:unless="${#strings.isEmpty(dealer.photo)}" th:src="@{/resources/upload/dealer/} + ${dealer.photo}"/>
 													<img th:if="${#strings.isEmpty(dealer.photo)}" th:src="@{/img/dummy_photo.png}"/>
 												</div>
 											</div>
@@ -140,7 +140,7 @@
 								</div>
 							</div>
 						</div><!-- / end dealer create form  -->
-
+						<span th:substituteby="commons :: common-copyright"></span>
 					</div>
 				</div><!-- / end content section -->
 

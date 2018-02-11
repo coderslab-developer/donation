@@ -307,10 +307,16 @@ public class ClientController {
 			
 			Users users = usersService.findByUsernameAndArchive(client.getUsername(), false);
 			users.setArchive(true);
+			users.setEnabled(false);
 
 			Authorities authorities = authoritiesService.findByUsernameAndArchive(client.getUsername(), false);
 			authorities.setArchive(true);
 			
+			List<Donar> donars = donarService.findAllByClientId(client.getClientId());
+			for(Donar d : donars) {
+				d.setArchive(true);
+				donarService.save(d);
+			}
 			clientService.save(client);
 			usersService.save(users);
 			authoritiesService.save(authorities);

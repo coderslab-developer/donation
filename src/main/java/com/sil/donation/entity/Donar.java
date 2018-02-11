@@ -41,8 +41,10 @@ public class Donar {
 	private boolean status;
 	private boolean smsService;
 	private Date registerDate;
+	private Date updateDate;
 	private List<Category> categories;
 	private String categoryName;
+	private String photo;
 	private boolean archive;
 
 	@Id
@@ -156,6 +158,16 @@ public class Donar {
 		this.registerDate = registerDate;
 	}
 
+	@Temporal(TemporalType.DATE)
+	@Column(name = "updateDate", length = 10)
+	public Date getUpdateDate() {
+		return registerDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
+
 	@Column(name = "archive")
 	public boolean isArchive() {
 		return archive;
@@ -174,6 +186,15 @@ public class Donar {
 		this.categories = categories;
 	}
 
+	@Column(name = "photo", length = 225)
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
 	@Transient
 	public String getCategoryName() {
 		return categoryName;
@@ -188,8 +209,8 @@ public class Donar {
 		return "Donar [donarId=" + donarId + ", donarName=" + donarName + ", clientId=" + clientId + ", categoryId="
 				+ categoryId + ", address=" + address + ", mobile=" + mobile + ", payableAmount=" + payableAmount
 				+ ", email=" + email + ", instituteName=" + instituteName + ", status=" + status + ", smsService="
-				+ smsService + ", registerDate=" + registerDate + ", archive=" + archive + ", categories=" + categories
-				+ ", categoryName=" + categoryName + "]";
+				+ smsService + ", registerDate=" + registerDate + ", categories=" + categories + ", categoryName="
+				+ categoryName + ", photo=" + photo + ", archive=" + archive + "]";
 	}
 
 }

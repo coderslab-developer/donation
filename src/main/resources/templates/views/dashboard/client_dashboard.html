@@ -105,11 +105,11 @@
 												<td th:text="${row.smsService == true? 'Active' : 'Inactive'}"></td>
 												<td style="text-align: center;">
 													<div class="btn-group">
-														<a th:href="@{/donar/view/} + ${row.donarId}" class="btn btn-sm btn-info" title="View Profile"><i class="fa fa-eye"></i></a>
-														<a th:href="@{/donar/edit/} + ${row.donarId}" class="btn btn-primary btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
-														<a th:if="${row.status}" th:href="@{/donar/changeStatus/} + ${row.donarId}" class="btn btn-warning btn-sm" title="Make inactive"><i class="fa fa-arrow-down"></i></a>
-														<a th:unless="${row.status}" th:href="@{/donar/changeStatus/} + ${row.donarId}" class="btn btn-warning btn-sm" title="Make active"><i class="fa fa-arrow-up"></i></a>
-														<a th:href="@{/donar/archive/} + ${row.donarId}" class="btn btn-danger btn-sm" title="Delete"><i class="fa fa-trash"></i></a>
+														<a th:href="@{/donar/view/} + ${row.donarId}" class="btn btn-sm btn-info" data-toggle="tooltip" title="View Profile"><i class="fa fa-eye"></i></a>
+														<a th:href="@{/donar/edit/} + ${row.donarId}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Edit"><i class="fa fa-edit"></i></a>
+														<a th:if="${row.status}" th:href="@{/donar/changeStatus/} + ${row.donarId}" data-toggle="tooltip" class="btn btn-warning btn-sm" title="Make inactive"><i class="fa fa-arrow-down"></i></a>
+														<a th:unless="${row.status}" th:href="@{/donar/changeStatus/} + ${row.donarId}" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Make active"><i class="fa fa-arrow-up"></i></a>
+														<a th:href="@{/donar/archive/} + ${row.donarId}" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a>
 													</div>
 												</td>
 											</tr>
@@ -118,7 +118,7 @@
 								</div>
 							</div>
 						</div>
-
+						<span th:substituteby="commons :: common-copyright"></span>
 					</div>
 				</div><!-- / end content section -->
 

@@ -32,12 +32,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.sil.donation.entity.Authorities;
 import com.sil.donation.entity.Client;
 import com.sil.donation.entity.Dealer;
+import com.sil.donation.entity.Donar;
 import com.sil.donation.entity.Users;
 import com.sil.donation.exception.SilException;
 import com.sil.donation.model.DealerDashboard;
 import com.sil.donation.service.AuthoritiesService;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DealerService;
+import com.sil.donation.service.DonarService;
 import com.sil.donation.service.UsersService;
 import com.sil.donation.util.ImageResizer;
 
@@ -61,6 +63,7 @@ public class DealerController {
 	@Autowired private UsersService usersService;
 	@Autowired private AuthoritiesService authoritiesService;
 	@Autowired private ClientService clientService;
+	@Autowired private DonarService donarService;
 	@Autowired private Environment environment;
 
 	@RequestMapping
@@ -277,10 +280,11 @@ public class DealerController {
 	public String archiveDealer(@PathVariable("dealerId") int dealerId, RedirectAttributes redirect) {
 		try {
 			Dealer dealer = dealerService.findByDealerIdAndArchive(dealerId, false);
-			dealer.setArchive(!dealer.isArchive());
+			dealer.setArchive(true);
 
 			Users users = usersService.findByUsernameAndArchive(dealer.getUsername(), false);
 			users.setArchive(true);
+			users.setEnabled(false);
 
 			Authorities authorities = authoritiesService.findByUsernameAndArchive(dealer.getUsername(), false);
 			authorities.setArchive(true);
@@ -288,6 +292,25 @@ public class DealerController {
 			dealerService.save(dealer);
 			usersService.save(users);
 			authoritiesService.save(authorities);
+			List<Client> clients = clientService.findAllByDealerId(dealer.getDealerId());
+			for(Client c : clients) {
+				List<Donar> donars = donarService.findAllByClientId(c.getClientId());
+				for(Donar d : donars) {
+					d.setArchive(true);
+					donarService.save(d);
+				}
+				Users u = usersService.findByUsernameAndArchive(c.getUsername(), false);
+				u.setArchive(true);
+				u.setEnabled(false);
+				usersService.save(u);
+				
+				Authorities auth = authoritiesService.findByUsernameAndArchive(c.getUsername(), false);
+				auth.setArchive(true);
+				authoritiesService.save(auth);
+				
+				c.setArchive(true);
+				clientService.save(c);
+			}
 
 			redirect.addFlashAttribute("sm", "Delaer deleted successfully");
 		} catch (Exception e) {

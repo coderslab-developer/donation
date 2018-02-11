@@ -39,6 +39,10 @@ public class ClientService {
 		return clientRepository.findAllByArchive(archive);
 	}
 
+	public List<Client> findAllByDealerId(Integer dealerId) throws SilException {
+		return clientRepository.findAllByDealerId(dealerId);
+	}
+
 	public List<Client> findByDealerIdAndStatusAndArchive(Integer dealerId, boolean status, boolean archive) throws SilException {
 		return clientRepository.findByDealerIdAndStatusAndArchive(dealerId, status, archive);
 	}

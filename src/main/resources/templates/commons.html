@@ -38,6 +38,10 @@
 		<link rel="stylesheet" type="text/css" th:href="@{/css/animate.css}"/>
 		<link rel="stylesheet" type="text/css" th:href="@{/css/animation.css}"/>
 	</span>
+	<!-- CopyRights -->
+	<span th:remove="tag" th:fragment="common-copyright" xmlns:th="http://www.thymeleaf.org">
+		<p style="text-align: center;">&copy; <a th:href="#{sil.company.website}" target="_blank">Software Industry Ltd</a></p>
+	</span>
 	<!-- JS -->
 	<span th:remove="tag" th:fragment="common-js" xmlns:th="http://www.thymeleaf.org"> 
 		<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script> 
