@@ -47,116 +47,120 @@
 						<div class="col-md-12 super-admin-dashboard">
 							<div class="panel panel-primary">
 								<div class="panel-heading sadph">
-									<h4 style="margin: 0; color: #fff;" th:text="#{dashboard.table.clientInfo}">Client Lists</h4>
+									<div class="row panel-heading-row">
+										<h4 style="margin: 0; color: #fff;" th:text="#{dashboard.table.clientInfo}">Client Lists</h4>
+										<div class="btn-group pull-right">
+											<a th:href="@{/}" class="btn btn-sm btn-success"><i class="fa fa-backward"></i> Back</a>
+											<a th:href="@{/client/edit/} + ${client.clientId}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a>
+											<a th:href="@{/}" class="btn btn-sm btn-info"><i class="fa fa-print"></i> Print</a>
+										</div>
+									</div>
 								</div>
 								<div class="panel-body">
-									<div class="profile-photo pull-right" th:unless="${#strings.isEmpty(client.photo)}">
-										<img th:src="@{/resources/upload/client/} + ${client.photo}" th:alt="${client.clientName}"/>
+									<div class="col-md-12">
+										<div class="row">
+											<div class="col-md-9">
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Client Name</label>
+													<div class="col-md-8 profileView-div" th:text="${client.clientName}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Mobile Number</label>
+													<div class="col-md-8 profileView-div" th:text="${client.mobile}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Email Address</label>
+													<div class="col-md-8 profileView-div" th:text="${client.email}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Fax</label>
+													<div class="col-md-8 profileView-div" th:text="${client.fax}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Website</label>
+													<div class="col-md-8 profileView-div" th:text="${client.website}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Address</label>
+													<div class="col-md-8 profileView-div" th:text="${client.address}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Dealer Name</label>
+													<div class="col-md-8 profileView-div" th:text="${client.dealerName}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Register Date</label>
+													<div class="col-md-8 profileView-div" th:text="${client.registerDate}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Expire Date</label>
+													<div class="col-md-8 profileView-div" th:text="${client.expireDate}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Remaining Date</label>
+													<div class="col-md-8 profileView-div" th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="${days.convert(client.expireDate.getTime() - client.registerDate.getTime(), millis)}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Status</label>
+													<div class="col-md-8 profileView-div" th:text="${client.status?'Active':'Inactive'}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Total Donar</label>
+													<div class="col-md-8 profileView-div" th:text="${clientDashboard.totalDonar}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Active Donar</label>
+													<div class="col-md-8 profileView-div" th:text="${clientDashboard.activeDonar}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Inactive Donar</label>
+													<div class="col-md-8 profileView-div" th:text="${clientDashboard.inactiveDonar}"></div>
+												</div>
+											</div>
+											<div class="col-md-2 pull-right">
+												<div class="profile-photo pull-right" th:unless="${#strings.isEmpty(client.photo)}">
+													<img th:src="@{/resources/upload/client/} + ${client.photo}" th:alt="${client.clientName}"/>
+												</div>
+											</div>
+										</div>
 									</div>
-									<table class="sadt client-profile-table" style="margin-bottom: 50px;">
-										<tr>
-											<td>Client Name</td>
-											<td>:</td>
-											<td><span th:text="${client.clientName}"></span></td>
-										</tr>
-										<tr>
-											<td>Mobile Number</td>
-											<td>:</td>
-											<td><span th:text="${client.mobile}"></span></td>
-										</tr>
-										<tr>
-											<td>Email Address</td>
-											<td>:</td>
-											<td><span th:text="${client.email}"></span></td>
-										</tr>
-										<tr>
-											<td>Fax</td>
-											<td>:</td>
-											<td><span th:text="${client.fax}"></span></td>
-										</tr>
-										<tr>
-											<td>Website</td>
-											<td>:</td>
-											<td><span th:text="${client.website}"></span></td>
-										</tr>
-										<tr>
-											<td>Address</td>
-											<td>:</td>
-											<td><span th:text="${client.address}"></span></td>
-										</tr>
-										<tr>
-											<td>Dealer Name</td>
-											<td>:</td>
-											<td><span th:text="${client.dealerName}"></span></td>
-										</tr>
-										<tr>
-											<td>Register Date</td>
-											<td>:</td>
-											<td><span th:text="${client.registerDate}"></span></td>
-										</tr>
-										<tr>
-											<td>Expire Date</td>
-											<td>:</td>
-											<td><span th:text="${client.expireDate}"></span></td>
-										</tr>
-										<tr>
-											<td>Remaining Date</td>
-											<td>:</td>
-											<td><span th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="${days.convert(client.expireDate.getTime() - client.registerDate.getTime(), millis)}"></span></td>
-										</tr>
-										<tr>
-											<td>Status</td>
-											<td>:</td>
-											<td><span th:text="${client.status?'Active':'Inactive'}"></span></td>
-										</tr>
-										<tr>
-											<td>Total Donar</td>
-											<td>:</td>
-											<td><span th:text="${clientDashboard.totalDonar}"></span></td>
-										</tr>
-										<tr>
-											<td>Active Donar</td>
-											<td>:</td>
-											<td><span th:text="${clientDashboard.activeDonar}"></span></td>
-										</tr>
-										<tr>
-											<td>Inactive Donar</td>
-											<td>:</td>
-											<td><span th:text="${clientDashboard.inactiveDonar}"></span></td>
-										</tr>
-									</table>
-									<h3 align="center">Donars List</h3>
-									<table class="table table-bordered table-responsive table-hover" id="example" width="100%">
-										<thead>
-											<tr style="color: tomato;">
-												<th th:text="#{dashboard.table.no}">No.</th>
-												<th th:text="#{dashboard.table.donarName}">Donar name</th>
-												<th th:text="#{dashboard.table.category}">Category</th>
-												<th th:text="#{dashboard.table.mobileNo}">Mobile Number</th>
-												<th>Payable Amount</th>
-												<th th:text="#{dashboard.table.status}">Status</th>
-												<th th:text="#{dashboard.table.smsService}">Sms service</th>
-												<th th:text="#{dashboard.table.action}">Action</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr th:each="row,num : ${client.donars}">
-												<td th:text="${num.count}"></td>
-												<td th:text="${row.donarName}"></td>
-												<td th:text="${row.categoryName}"></td>
-												<td th:text="${row.mobile}"></td>
-												<td th:text="${row.payableAmount}"></td>
-												<td th:text="${row.status == true? 'Active' : 'Inactive'}"></td>
-												<td th:text="${row.smsService == true? 'Active' : 'Inactive'}"></td>
-												<td>
-													<a th:href="@{/donar/edit/} + ${row.donarId}" class="btn btn-primary btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
-													<a th:if="${row.status}" th:href="@{/donar/changeStatus/} + ${row.donarId}" class="btn btn-warning btn-sm" title="Make inactive"><i class="fa fa-arrow-down"></i></a>
-													<a th:unless="${row.status}" th:href="@{/donar/changeStatus/} + ${row.donarId}" class="btn btn-warning btn-sm" title="Make active"><i class="fa fa-arrow-up"></i></a>
-													<a th:href="@{/donar/archive/} + ${row.donarId}" class="btn btn-danger btn-sm" title="Delete"><i class="fa fa-trash"></i></a>
-												</td>
-											</tr>
-										</tbody>
-									</table>
+									<div class="col-md-12">
+										<div class="row">
+											<hr/>
+											<h3 align="center">Donars List</h3>
+											<table class="table table-bordered table-responsive table-hover" id="example" width="100%">
+												<thead>
+													<tr style="color: tomato;">
+														<th th:text="#{dashboard.table.no}">No.</th>
+														<th th:text="#{dashboard.table.donarName}">Donar name</th>
+														<th th:text="#{dashboard.table.category}">Category</th>
+														<th th:text="#{dashboard.table.mobileNo}">Mobile Number</th>
+														<th>Payable Amount</th>
+														<th th:text="#{dashboard.table.status}">Status</th>
+														<th th:text="#{dashboard.table.smsService}">Sms service</th>
+														<th th:text="#{dashboard.table.action}">Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="row,num : ${client.donars}">
+														<td th:text="${num.count}"></td>
+														<td th:text="${row.donarName}"></td>
+														<td th:text="${row.categoryName}"></td>
+														<td th:text="${row.mobile}"></td>
+														<td th:text="${row.payableAmount}"></td>
+														<td th:text="${row.status == true? 'Active' : 'Inactive'}"></td>
+														<td th:text="${row.smsService == true? 'Active' : 'Inactive'}"></td>
+														<td>
+															<a th:href="@{/donar/edit/} + ${row.donarId}" class="btn btn-primary btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
+															<a th:if="${row.status}" th:href="@{/donar/changeStatus/} + ${row.donarId}" class="btn btn-warning btn-sm" title="Make inactive"><i class="fa fa-arrow-down"></i></a>
+															<a th:unless="${row.status}" th:href="@{/donar/changeStatus/} + ${row.donarId}" class="btn btn-warning btn-sm" title="Make active"><i class="fa fa-arrow-up"></i></a>
+															<a th:href="@{/donar/archive/} + ${row.donarId}" class="btn btn-danger btn-sm" title="Delete"><i class="fa fa-trash"></i></a>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>

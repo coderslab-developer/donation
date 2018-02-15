@@ -26,6 +26,10 @@ public class CategoryService {
 	public List<Category> findByClientIdAndArchive(Integer clientId, boolean archive) throws SilException {
 		return categoryRepository.findByClientIdAndArchive(clientId, archive);
 	}
+	
+	public List<Category> findByClientIdAndStatusAndArchive(Integer clientId, boolean status, boolean archive) throws SilException {
+		return categoryRepository.findByClientIdAndStatusAndArchive(clientId, status, archive);
+	}
 
 	public Category findByCategoryIdAndArchive(Integer categoryId, boolean archive) throws SilException {
 		return categoryRepository.findByCategoryIdAndArchive(categoryId, archive);

@@ -19,6 +19,8 @@ import com.sil.donation.exception.SilException;
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
 	List<Category> findByClientIdAndArchive(Integer clientId, boolean archive) throws SilException;
+	
+	List<Category> findByClientIdAndStatusAndArchive(Integer clientId, boolean status, boolean archive) throws SilException;
 
 	Category findByCategoryIdAndArchive(Integer categoryId, boolean archive) throws SilException;
 

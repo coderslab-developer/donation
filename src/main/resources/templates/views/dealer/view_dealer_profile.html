@@ -47,87 +47,95 @@
 						<div class="col-md-12 super-admin-dashboard">
 							<div class="panel panel-primary">
 								<div class="panel-heading sadph">
-									<h4 style="margin: 0; color: #fff;" th:text="#{dashboard.table.dealerInfo}">Dealer Info</h4>
+									<div class="row panel-heading-row">
+										<h4 th:text="#{dashboard.table.dealerInfo}">Dealer Info</h4>
+										<div class="btn-group pull-right">
+											<a th:href="@{/}" class="btn btn-sm btn-success"><i class="fa fa-backward"></i> Back</a>
+											<a th:href="@{/dealer/edit/} + ${dealer.dealerId}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a>
+											<a th:href="@{/}" class="btn btn-sm btn-info"><i class="fa fa-print"></i> Print</a>
+										</div>
+									</div>
 								</div>
 								<div class="panel-body">
-									<div class="profile-photo pull-right" th:unless="${#strings.isEmpty(dealer.photo)}">
-										<img th:src="@{/resources/upload/dealer/} + ${dealer.photo}"/>
+									<div class="col-md-12">
+										<div class="row">
+											<div class="col-md-9">
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Dealer Name</label>
+													<div class="col-md-8 profileView-div" th:text="${dealer.dealerName}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Mobile Number</label>
+													<div class="col-md-8 profileView-div" th:text="${dealer.mobile}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Email</label>
+													<div class="col-md-8 profileView-div" th:text="${dealer.email}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Address</label>
+													<div class="col-md-8 profileView-div" th:text="${dealer.address}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Status</label>
+													<div class="col-md-8 profileView-div" th:text="${dealer.status?'Active':'Inactive'}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">Register Date</label>
+													<div class="col-md-8 profileView-div" th:text="${dealer.registerDate}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label" th:text="#{dashboard.totalSellOfSoftware}">Total Sell of software</label>
+													<div class="col-md-8 profileView-div" th:text="${dealerDashboard.totalSellOfSoftware}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label" th:text="#{dashboard.activeClient}">Active Client</label>
+													<div class="col-md-8 profileView-div" th:text="${dealerDashboard.activeClient}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label" th:text="#{dashboard.inactiveClient}">Deactive Client</label>
+													<div class="col-md-8 profileView-div" th:text="${dealerDashboard.inactiveClient}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label" th:text="#{dashboard.serviceRenewOnThisMonth}">Deactive Client</label>
+													<div class="col-md-8 profileView-div" th:text="${dealerDashboard.serviceRenewOnThisMonth}"></div>
+												</div>
+											</div>
+											<div class="col-md-2 pull-right">
+												<div class="profile-photo pull-right" th:unless="${#strings.isEmpty(dealer.photo)}">
+													<img th:src="@{/resources/upload/dealer/} + ${dealer.photo}"/>
+												</div>
+											</div>
+										</div>
 									</div>
-									<table class="sadt dealer-profile-table span" style="margin-bottom: 50px;">
-										<tr>
-											<td>Dealer Name</td>
-											<td>:</td>
-											<td><span th:text="${dealer.dealerName}"></span></td>
-										</tr>
-										<tr>
-											<td>Mobile Number</td>
-											<td>:</td>
-											<td><span th:text="${dealer.mobile}"></span></td>
-										</tr>
-										<tr>
-											<td>Email</td>
-											<td>:</td>
-											<td><span th:text="${dealer.email}"></span></td>
-										</tr>
-										<tr>
-											<td>Address</td>
-											<td>:</td>
-											<td><span th:text="${dealer.address}"></span></td>
-										</tr>
-										<tr>
-											<td>Status</td>
-											<td>:</td>
-											<td><span th:text="${dealer.status?'Active':'Inactive'}"></span></td>
-										</tr>
-										<tr>
-											<td>Register Date</td>
-											<td>:</td>
-											<td><span th:text="${dealer.registerDate}"></span></td>
-										</tr>
-										<tr>
-											<td th:text="#{dashboard.totalSellOfSoftware}">Total Sell of software</td>
-											<td>:</td>
-											<td><span th:text="${dealerDashboard.totalSellOfSoftware}"></span></td>
-										</tr>
-										<tr>
-											<td th:text="#{dashboard.activeClient}">Active Client</td>
-											<td>:</td>
-											<td> <span th:text="${dealerDashboard.activeClient}"></span></td>
-										</tr>
-										<tr>
-											<td th:text="#{dashboard.inactiveClient}">Deactive Client</td>
-											<td>:</td>
-											<td> <span th:text="${dealerDashboard.inactiveClient}"></span></td>
-										</tr>
-										<tr>
-											<td th:text="#{dashboard.serviceRenewOnThisMonth}">Deactive Client</td>
-											<td>:</td>
-											<td> <span th:text="${dealerDashboard.serviceRenewOnThisMonth}"></span></td>
-										</tr>
-									</table>
-									<h3 align="center">Clients List</h3>
-									<table class="table table-bordered table-responsive table-hover" id="example" width="100%">
-										<thead>
-											<tr style="color: tomato;">
-												<th th:text="#{dashboard.table.no}">No.</th>
-												<th th:text="#{dashboard.table.clientName}">Client name</th>
-												<th th:text="#{dashboard.table.mobileNo}">Mobile Number</th>
-												<th th:text="#{dashboard.table.status}">Status</th>
-												<th th:text="#{dashboard.table.expireDate}">Expire Date</th>
-												<th th:text="#{dashboard.table.remainingDay}">Remaining Day</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr th:each="row,num : ${dealer.clients}">
-												<td th:text="${num.count}">1</td>
-												<td th:text="${row.clientName}"></td>
-												<td th:text="${row.mobile}"></td>
-												<td th:text="${row.status == true?'Active':'Inactive'}"></td>
-												<td th:text="${row.expireDate}"></td>
-												<td th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="${days.convert(row.expireDate.getTime() - row.registerDate.getTime(), millis)}"></td>
-											</tr>
-										</tbody>
-									</table>
+									<div class="col-md-12">
+										<div class="row">
+											<hr/>
+											<h3 align="center">Clients List</h3>
+											<table class="table table-bordered table-responsive table-hover" id="example" width="100%">
+												<thead>
+													<tr style="color: tomato;">
+														<th th:text="#{dashboard.table.no}">No.</th>
+														<th th:text="#{dashboard.table.clientName}">Client name</th>
+														<th th:text="#{dashboard.table.mobileNo}">Mobile Number</th>
+														<th th:text="#{dashboard.table.status}">Status</th>
+														<th th:text="#{dashboard.table.expireDate}">Expire Date</th>
+														<th th:text="#{dashboard.table.remainingDay}">Remaining Day</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="row,num : ${dealer.clients}">
+														<td th:text="${num.count}">1</td>
+														<td th:text="${row.clientName}"></td>
+														<td th:text="${row.mobile}"></td>
+														<td th:text="${row.status == true?'Active':'Inactive'}"></td>
+														<td th:text="${row.expireDate}"></td>
+														<td th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="${days.convert(row.expireDate.getTime() - row.registerDate.getTime(), millis)}"></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>

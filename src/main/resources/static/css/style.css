@@ -271,3 +271,11 @@ table ul {
 	box-sizing: border-box;
 	box-shadow: 0px 0px 5px #DDD;
 }
+
+.profileView-label{background-color: #DBF9E3; padding:7px; margin-right:4px;}
+.profileView-div{background-color: #DBF9E3; padding:7px; margin-left:4px;}
+.panel-heading-row{padding: 0px 10px;}
+.panel-heading-row h4{display: inline-block; margin: 0; color: #fff; line-height:28px;}
+
+
+

@@ -63,7 +63,7 @@ public class DonarController {
 		model.addAttribute("pageTitle", PAGE_TITLE);
 		Donar donar = new Donar();
 		try {
-			donar.setCategories(categoryService.findByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false));
+			donar.setCategories(categoryService.findByClientIdAndStatusAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), true, false));
 		} catch (SilException e) {
 			LOGGER.error("Error : {}" , e.getMessage());
 		}
