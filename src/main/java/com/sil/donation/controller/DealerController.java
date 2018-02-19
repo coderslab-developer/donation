@@ -1,6 +1,7 @@
 package com.sil.donation.controller;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -9,15 +10,22 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.xml.transform.TransformerException;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -40,6 +49,7 @@ import com.sil.donation.service.AuthoritiesService;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DealerService;
 import com.sil.donation.service.DonarService;
+import com.sil.donation.service.PrintingService;
 import com.sil.donation.service.UsersService;
 import com.sil.donation.util.ImageResizer;
 
@@ -58,6 +68,7 @@ public class DealerController {
 	private static final String LOCATION = "views/dealer/";
 	private static final String DEALER_PHOTO_DIR = "resources/upload/dealer/";
 	private static final Logger LOGGER = LoggerFactory.getLogger(DealerController.class);
+	private static final String XSL_DIR = "src//main//resources//static//xsl//";
 
 	@Autowired private DealerService dealerService;
 	@Autowired private UsersService usersService;
@@ -65,6 +76,7 @@ public class DealerController {
 	@Autowired private ClientService clientService;
 	@Autowired private DonarService donarService;
 	@Autowired private Environment environment;
+	@Autowired private PrintingService printingService;
 
 	@RequestMapping
 	public String loadDealerPage(Model model) {
@@ -353,6 +365,56 @@ public class DealerController {
 		}
 		dealerDashboard.setServiceRenewOnThisMonth(renewalClients.size());
 		return dealerDashboard;
+	}
+	
+	@RequestMapping(value = "/print/{dealerId}")
+	public ResponseEntity<byte[]> printDealerProfile(@PathVariable("dealerId") Integer dealerId, Model model, Locale locale) {
+		String xslTemplate = "standard_dealer_profile_xsl_template.xsl";
+		
+		Dealer dealer = null;
+		try {
+			dealer = dealerService.findByDealerIdAndArchive(dealerId, false);
+			return responseDocument(dealer, xslTemplate, locale);
+		} catch (SilException e) {
+			LOGGER.error(e.getMessage());
+		}
+		if(LOGGER.isDebugEnabled()) LOGGER.debug("Dealer : {}", dealer);
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(new MediaType("text", "html"));
+		String em = "Print create pdf error";
+		
+		return new ResponseEntity<>(em.getBytes(), headers, HttpStatus.INTERNAL_SERVER_ERROR); 
+	}
+	
+	private ResponseEntity<byte[]> responseDocument(Dealer dealer, String template, Locale locale){
+		HttpHeaders headers = new HttpHeaders();
+		
+		ByteArrayOutputStream out = null;
+		try {
+			out = printingService.transformDealerToThermal(dealer, template);
+			//headers.setContentType(new MediaType("application", "pdf"));
+			//headers.setContentType(new MediaType("application", "csv"));
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
+		
+		String documentName = "dealer_" + Math.round((Math.random() * 10000)) + "" + (Calendar.getInstance().getTimeInMillis() % dealer.hashCode());
+		String absolutePath = null;
+		File tempFile = null;
+		try {
+			tempFile = File.createTempFile(documentName, ".pdf");
+			FileOutputStream fout = new FileOutputStream(tempFile);
+			//out.writeTo(fout);
+			fout.write(out.toByteArray());
+			fout.close();
+			
+			absolutePath = tempFile.getAbsolutePath();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<byte[]>(out.toByteArray(), headers, HttpStatus.OK);
 	}
 
 }

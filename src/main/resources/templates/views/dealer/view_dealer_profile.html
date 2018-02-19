@@ -45,18 +45,18 @@
 
 						<!-- Client details -->
 						<div class="col-md-12 super-admin-dashboard">
-							<div class="panel panel-primary">
+							<div class="panel panel-primary" id="print-element">
 								<div class="panel-heading sadph">
 									<div class="row panel-heading-row">
 										<h4 th:text="#{dashboard.table.dealerInfo}">Dealer Info</h4>
 										<div class="btn-group pull-right">
 											<a th:href="@{/}" class="btn btn-sm btn-success"><i class="fa fa-backward"></i> Back</a>
 											<a th:href="@{/dealer/edit/} + ${dealer.dealerId}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a>
-											<a th:href="@{/}" class="btn btn-sm btn-info"><i class="fa fa-print"></i> Print</a>
+											<button class="btn btn-sm btn-info print"><i class="fa fa-print"></i> Print</buton>
 										</div>
 									</div>
 								</div>
-								<div class="panel-body">
+								<div class="panel-body" id="inside_element">
 									<div class="col-md-12">
 										<div class="row">
 											<div class="col-md-9">
@@ -147,5 +147,6 @@
 		</div><!-- / end conatiner -->
 
 		<span th:substituteby="commons :: common-js"></span>
+		<script type="text/javascript" th:src="@{/js/dealer/dealer.js}"></script> 
 	</body>
 </html>

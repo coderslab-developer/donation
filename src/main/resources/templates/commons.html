@@ -13,28 +13,39 @@
 	<!-- Main Menus -->
 	<span th:remove="tag" th:fragment="common-menu" xmlns:th="http://www.thymeleaf.org">
 		<div class="col-md-12 menu-area">
-			<ul class="main-menu">
-				<!-- <li class="dropdown">
-					<a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> <span class="caret"></span></button></a>
-					<ul class="dropdown-menu">
-						<li><a href="#">HTML</a></li>
-						<li><a href="#">CSS</a></li>
-						<li><a href="#">JavaScript</a></li>
+			<nav class="navbar">
+				<div class="container-fluid">
+					<ul class="nav navbar-nav navbar-right">
+						<li th:if="${#authentication.name != 'anonymousUser'}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Dashboard')}?active"><a th:href="@{/}">You</a></li>
+						<li sec:authorize="${hasRole('ROLE_ADMIN')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add dealer')}?active"><a th:href="@{/dealer}">Add Deller</a></li>
+						<li sec:authorize="${hasRole('ROLE_DEALER')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add client')}?active"><a th:href="@{/client}">Add Client</a></li>
+						<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add category')}?active"><a th:href="@{/category}">Add Category</a></li>
+						<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add donar')}?active"><a th:href="@{/donar}">Add Donar</a></li>
+						<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add donation')}?active"><a th:href="@{/donation}">Add Donation</a></li>
+						<li th:if="${#authentication.name != 'anonymousUser'}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Report')}?active"><a th:href="@{/report}">Report</a></li>
+						<!-- site settings -->
+						<li class="dropdown">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+								<i class="fa fa-cogs"></i>
+								<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a href="#">User</a></li>
+								<li><a href="#">Activity</a></li>
+								<li><a href="#">Role</a></li>
+								<li><a href="#">Map User Role</a></li>
+								<li><a href="#">Map User Activity</a></li>
+							</ul>
+						</li>
 					</ul>
-				</li> -->
-				<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add donation')}?active"><a th:href="@{/donation}">Add Donation</a></li>
-				<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add category')}?active"><a th:href="@{/category}">Add Category</a></li>
-				<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add donar')}?active"><a th:href="@{/donar}">Add Donar</a></li>
-				<li sec:authorize="${hasRole('ROLE_DEALER')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add client')}?active"><a th:href="@{/client}">Add Client</a></li>
-				<li th:if="${#authentication.name != 'anonymousUser'}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Report')}?active"><a th:href="@{/report}">Report</a></li>
-				<li sec:authorize="${hasRole('ROLE_ADMIN')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add dealer')}?active"><a th:href="@{/dealer}">Add Deller</a></li>
-				<li th:if="${#authentication.name != 'anonymousUser'}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Dashboard')}?active"><a th:href="@{/}">You</a></li>
-			</ul>
+				</div>
+			</nav>
 		</div>
 	</span>
 	<!-- css -->
 	<span th:remove="tag" th:fragment="common-css" xmlns:th="http://www.thymeleaf.org">
 		<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}" href="/css/bootstrap.css"/>
+		<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" th:href="@{/css/dataTables.bootstrap.css}" />
 		<link rel="stylesheet" type="text/css" th:href="@{/css/dataTables.responsive.css}" />
 		<link rel="stylesheet" type="text/css" th:href="@{/css/font-awesome.css}" />
@@ -57,8 +68,10 @@
 		<script type="text/javascript" th:src="@{/js/jquery.dataTable.min.js}"></script> 
 		<script type="text/javascript" th:src="@{/js/dataTables.bootstrap.js}"></script> 
 		<script type="text/javascript" th:src="@{/js/dataTables.responsive.js}"></script> 
+		<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 		<script type="text/javascript" th:src="@{/js/angular.min.js}"></script>
 		<script type="text/javascript" th:src="@{/js/tooltip.js}"></script>
+		<script type="text/javascript" th:src="@{/js/jQuery.print.js}"></script>
 		<!-- Page-Level Demo Scripts - Tables - Use for reference --> 
 		<script>
 			$(document).ready(function() {
@@ -132,6 +145,41 @@
 					image.src = _URL.createObjectURL(file);
 				});
 			});
+		</script>
+		<!-- Printing Script -->
+		<script type='text/javascript'>
+			jQuery(function ($) {
+				'use strict';
+				$("#print-element").find('.print-link').on('click', function () {
+					//Print ele2 with default options
+					$("#inside_element").print({
+						//Use Global styles
+						globalStyles : true,
+						//Add link with attrbute media=print
+						mediaPrint : true,
+						//Custom stylesheet
+						stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
+						//Print in a hidden iframe
+						iframe : true,
+						//Don't print this
+						noPrintSelector : ".avoid-this",
+						//Add this at top
+						prepend : "Hello World!!!<br/>",
+						//Add this on bottom
+						append : "<br/>Buh Bye!",
+						//Log to console when printing is done via a deffered callback
+						deferred: $.Deferred().done(function() { console.log('Printing done', arguments); })
+					});
+				});
+			});
+		</script>
+		<script>
+			$(document).ready(function(){
+				$('.print').on('click', function(){
+					console.log("hi");
+					$('#inside_element').print();
+				})
+			})
 		</script>
 	</span>
 </div>

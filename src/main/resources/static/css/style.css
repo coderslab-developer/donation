@@ -47,25 +47,18 @@ body {
 	border-bottom: 5px solid #0077bb;
 }
 
-.main-menu {
-	list-style: none;
-	padding: 0;
-	margin: 0;
+.navbar {
+	margin: 0px;
+	border: 0px;
+	border-radius: 0px;
+	background: none;
+	min-height: 36px;
 }
 
-.main-menu li {
-	float: right;
+.navbar ul li {
 	margin-left: 5px;
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
-	overflow: hidden;
-}
-
-.main-menu li a {
-	display: block;
-	padding: 8px 15px;
-	color: #fff;
-	text-decoration: none;
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#cedce7+0,596a72+100;Grey+3D+%231 */
 	background: #cedce7; /* Old browsers */
 	background: -moz-linear-gradient(top, #cedce7 0%, #596a72 100%);
@@ -78,7 +71,14 @@ body {
 		endColorstr='#596a72', GradientType=0); /* IE6-9 */
 }
 
-.main-menu li a:hover {
+.navbar ul li a {
+	padding: 8px 15px;
+	color: #fff !important;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+
+.navbar ul li a:hover {
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2490d0+0,2490d0+46,0172b6+100 */
 	background: rgb(36, 144, 208); /* Old browsers */
 	background: -moz-linear-gradient(top, rgb(36, 144, 208) 0%,
@@ -93,7 +93,7 @@ body {
 		endColorstr='#0172b6', GradientType=0); /* IE6-9 */
 }
 
-.main-menu .active a {
+.navbar ul li.active a {
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2490d0+0,2490d0+46,0172b6+100 */
 	background: rgb(36, 144, 208); /* Old browsers */
 	background: -moz-linear-gradient(top, rgb(36, 144, 208) 0%,
@@ -107,6 +107,59 @@ body {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2490d0',
 		endColorstr='#0172b6', GradientType=0); /* IE6-9 */
 }
+
+.navbar ul li ul {
+	margin: 0px;
+	padding: 0px;
+	background: #fff;
+	border: 0px;
+}
+
+.navbar ul li ul li {
+	border-radius: 0px;
+	margin: 0px;
+	background: none;
+}
+
+.navbar ul li ul li a {
+	border-radius: 0px;
+	background: none;
+	color: #6a6a6a !important;
+}
+
+.navbar ul li ul li a:hover {
+	color: #fff !important;
+}
+
+.nav .open>a, .nav .open>a:hover, .nav .open>a:focus {
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2490d0+0,2490d0+46,0172b6+100 */
+	background: rgb(36, 144, 208); /* Old browsers */
+	background: -moz-linear-gradient(top, rgb(36, 144, 208) 0%,
+		rgb(36, 144, 208) 46%, rgb(1, 114, 182) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, rgb(36, 144, 208) 0%,
+		rgb(36, 144, 208) 46%, rgb(1, 114, 182) 100%);
+	/* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, rgb(36, 144, 208) 0%,
+		rgb(36, 144, 208) 46%, rgb(1, 114, 182) 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2490d0',
+		endColorstr='#0172b6', GradientType=0); /* IE6-9 */
+}
+
+.dropdown, .dropdown-toggle {
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#cedce7+0,596a72+100;Grey+3D+%231 */
+	background: #cedce7; /* Old browsers */
+	background: -moz-linear-gradient(top, #cedce7 0%, #596a72 100%);
+	/* FF3.6-15 */
+	background: -webkit-linear-gradient(top, #cedce7 0%, #596a72 100%);
+	/* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, #cedce7 0%, #596a72 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cedce7',
+		endColorstr='#596a72', GradientType=0); /* IE6-9 */
+	color: #fff !important;
+}
+
 
 /*
 === content area 
@@ -252,30 +305,45 @@ table ul {
 	margin: -3px 0 0 12px;
 }
 /* Required field END */
-
-#uploadPreview{
+#uploadPreview {
 	width: 300px;
 	height: 320px;
 	margin: 0 auto;
 	border: 1px solid #ddd;
 	overflow: hidden;
 }
-#uploadPreview img{
+
+#uploadPreview img {
 	width: 100%;
 	height: 100%;
 }
 
-.profile-photo{
+.profile-photo {
 	width: 200px;
 	height: 220px;
 	box-sizing: border-box;
 	box-shadow: 0px 0px 5px #DDD;
 }
 
-.profileView-label{background-color: #DBF9E3; padding:7px; margin-right:4px;}
-.profileView-div{background-color: #DBF9E3; padding:7px; margin-left:4px;}
-.panel-heading-row{padding: 0px 10px;}
-.panel-heading-row h4{display: inline-block; margin: 0; color: #fff; line-height:28px;}
+.profileView-label {
+	background-color: #DBF9E3;
+	padding: 7px;
+	margin-right: 4px;
+}
 
+.profileView-div {
+	background-color: #DBF9E3;
+	padding: 7px;
+	margin-left: 4px;
+}
 
+.panel-heading-row {
+	padding: 0px 10px;
+}
 
+.panel-heading-row h4 {
+	display: inline-block;
+	margin: 0;
+	color: #fff;
+	line-height: 28px;
+}
