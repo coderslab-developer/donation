@@ -83,8 +83,8 @@ public class Client implements Serializable {
 	@Column(name = "password", nullable = false, length = 100)
 	private String password;
 
-	@Column(name = "logo", length = 225)
-	private String logo;
+	@Column(name = "smsService")
+	private boolean smsService;
 
 	@Column(name = "archive", columnDefinition = "BOOLEAN")
 	private boolean archive;

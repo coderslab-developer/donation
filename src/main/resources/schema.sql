@@ -1,12 +1,11 @@
-CREATE DATABASE  IF NOT EXISTS `dms` /*!40100 DEFAULT CHARACTER SET utf8 */;
+CREATE DATABASE IF NOT EXISTS `dms` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `dms`;
 
 --
 -- Table structure for table `admin`
 --
 
-DROP TABLE IF EXISTS `admin`;
-CREATE TABLE `admin` (
+CREATE TABLE IF NOT EXISTS `admin` (
   `adminId` int(11) NOT NULL AUTO_INCREMENT,
   `adminName` varchar(100) NOT NULL,
   `archive` tinyint(1) DEFAULT NULL,
@@ -24,8 +23,7 @@ CREATE TABLE `admin` (
 -- Table structure for table `authorities`
 --
 
-DROP TABLE IF EXISTS `authorities`;
-CREATE TABLE `authorities` (
+CREATE TABLE IF NOT EXISTS `authorities` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `archive` tinyint(1) DEFAULT NULL,
   `authority` varchar(45) NOT NULL,
@@ -37,8 +35,7 @@ CREATE TABLE `authorities` (
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `userId` int(11) NOT NULL AUTO_INCREMENT,
   `archive` tinyint(1) DEFAULT NULL,
   `authority` varchar(45) NOT NULL,

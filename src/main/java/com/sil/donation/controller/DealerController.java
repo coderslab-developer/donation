@@ -200,8 +200,10 @@ public class DealerController {
 			String imageName = d.getPhoto();
 			String uploadPath = request.getServletContext().getRealPath(DEALER_PHOTO_DIR);
 			File image = new File(uploadPath +  imageName);
-			if(!image.delete()) {
-				image.delete();
+			if(image.exists()) {
+				if(!image.delete()) {
+					image.delete();
+				}
 			}
 		}
 

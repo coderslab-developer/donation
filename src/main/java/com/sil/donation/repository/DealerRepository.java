@@ -16,13 +16,15 @@ import com.sil.donation.exception.SilException;
  */
 @Repository
 @Transactional
-public interface DealerRepository extends JpaRepository<Dealer, Integer>{
+public interface DealerRepository extends JpaRepository<Dealer, Integer> {
 
 	@Transactional
 	Dealer findByUsernameAndArchive(String username, boolean archive) throws SilException;
 
 	Dealer findByDealerIdAndArchive(Integer dealerId, boolean archive) throws SilException;
-	
+
 	List<Dealer> findAllByArchive(boolean archive) throws SilException;
+
+	List<Dealer> findAllByStatusAndArchive(boolean status, boolean archive) throws SilException;
 
 }

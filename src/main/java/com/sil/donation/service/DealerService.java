@@ -21,26 +21,30 @@ public class DealerService {
 
 	public boolean save(Dealer dealer) throws Exception {
 		Dealer d = dealerRepository.save(dealer);
-		if(d != null) {
+		if (d != null) {
 			return true;
 		}
 		return false;
 	}
-	
-	public Dealer findByDealerIdAndArchive(Integer dealerId, boolean archive) throws SilException{
+
+	public Dealer findByDealerIdAndArchive(Integer dealerId, boolean archive) throws SilException {
 		return dealerRepository.findByDealerIdAndArchive(dealerId, archive);
 	}
-	
+
 	public Dealer findByUsernameAndArchive(String username, boolean archive) throws SilException {
 		return dealerRepository.findByUsernameAndArchive(username, archive);
 	}
-	
-	public List<Dealer> findAll(){
+
+	public List<Dealer> findAll() {
 		return dealerRepository.findAll();
 	}
-	
-	public List<Dealer> findAllByArchive(boolean archive) throws SilException{
+
+	public List<Dealer> findAllByArchive(boolean archive) throws SilException {
 		return dealerRepository.findAllByArchive(archive);
 	}
-	
+
+	public List<Dealer> findAllByStatusAndArchive(boolean status, boolean archive) throws SilException {
+		return dealerRepository.findAllByStatusAndArchive(status, archive);
+	}
+
 }

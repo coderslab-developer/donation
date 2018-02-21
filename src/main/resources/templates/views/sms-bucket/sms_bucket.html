@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1" />
+		<title th:text="${pageTitle}">SMS Bucket</title>
+		<span th:substituteby="commons :: common-css"></span>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+
+				<!-- header section -->
+				<div class="header col-md-12">
+					<div class="row">
+
+						<!-- header top-->
+						<span th:substituteby="commons :: common-top-menu"></span>
+
+						<!-- header main -->
+						<div class="col-md-12 header-main">
+							<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
+						</div>
+						
+					</div>
+				</div>
+
+				<!-- menu main section-->
+				<span th:substituteby="commons :: common-menu"></span>
+
+				<!-- content section -->
+				<div class="col-md-12 content-area">
+					<div class="row">
+
+						<!-- Success / Error Messages -->
+						<div class="col-md-12">
+							<div th:if="${success}" id="success-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${success}">Message</span> 
+							</div>
+							<div th:if="${error}" id="error-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${error}">Message</span> 
+							</div>
+						</div>
+
+						<!-- SMS Bucket -->
+						<div class="col-md-12 super-admin-dashboard">
+							<div class="panel panel-primary">
+								<div class="panel-heading sadph">
+									<h4 style="margin: 0;" th:text="#{smsBucket}">SMS Bucket</h4>
+								</div>
+								<div class="panel-body" style="font-size: 60px; text-align:center;">
+									<div class="col-md-6">
+										<p style="font-size: 25px;">AVAILABLE</p>
+										<i class="fa fa-bitbucket text-success"></i> 
+										<span th:text="${smsBucket.availableSMS}"></span>
+									</div>
+									<div class="col-md-6">
+										<p style="font-size: 25px;">USED</p>
+										<i class="fa fa-bitbucket text-danger"></i> 
+										<span th:text="${smsBucket.usedSMS}"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- / end SMS Bucket -->
+
+						<div sec:authorize="${hasRole('ROLE_ADMIN')}" class="col-md-12">
+							<div class="row">
+								<!-- Update SMS from Bucket if Admin -->
+								<div class="col-md-6 super-admin-dashboard">
+									<div class="panel panel-primary">
+										<div class="panel-heading sadph">
+											<h4 style="margin: 0;">Update SMS</h4>
+										</div>
+										<div class="panel-body">
+											<form th:action="@{/smsTransaction/updateSMS/}", method="POST">
+												<div class="form-group">
+													<input type="hidden" id="username" name="username" th:value="${username}" class="form-control"/>
+												</div>
+												<div class="form-group">
+													<label>SMS Quantity</label>
+													<div class="input-group">
+														
+														<input type="number" id="smsAmount" name="smsAmount" class="form-control" min="0"/>
+														<div class="input-group-btn">
+															<button type="submit" class="btn btn-success">Update</button>
+														</div>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+		
+								<!-- Update SMS from Bucket if Admin -->
+								<div class="col-md-6 super-admin-dashboard">
+									<div class="panel panel-primary">
+										<div class="panel-heading sadph">
+											<h4 style="margin: 0;">Sell SMS</h4>
+										</div>
+										<div class="panel-body">
+											<form th:action="@{/smsTransaction/dealer}" method="post">
+												<div class="form-group">
+													<label>Select Dealer</label>
+													<select name="username" class="selectpicker form-control" data-live-search="true">
+														<option th:each="item : ${dealers}" th:value="${item.username}" th:text="${item.dealerName}">Dealer Name</option>
+													</select>
+												</div>
+												<div class="form-group">
+													<label>SMS amount</label>
+													<input type="number" id="smsAmount" name="smsAmount" class="form-control" min="0"/>
+												</div>
+												<div class="form-group">
+													<input id="smsKey" type="hidden" name="smsKey" class="form-control" readonly="readonly" style="text-align:center;"/>
+												</div>
+												<a id="generateSMSKey" th:href="@{/smsKey/generate}" th:unless="${#strings.equalsIgnoreCase(status, 'success')}" type="button" class="btn btn-info col-md-12">Click for generate secret code</a>
+												<button id="sellButton" type="submit" class="btn btn-success col-md-12 hidden">Sell</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<span th:substituteby="commons :: common-copyright"></span>
+					</div>
+				</div><!-- / end content section -->
+
+			</div><!-- / end row -->
+		</div><!-- / end conatiner -->
+
+		<span th:substituteby="commons :: common-js"></span>
+		<script type="text/javascript" th:src="@{/js/sms-bucket/sms_bucket.js}"></script> 
+	</body>
+</html>

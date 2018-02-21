@@ -1,5 +1,6 @@
 package com.sil.donation.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +29,7 @@ import lombok.Data;
 @Table(name = "dealer", catalog = "dms", uniqueConstraints = { @UniqueConstraint(columnNames = "email"),
 		@UniqueConstraint(columnNames = "username") })
 @Data
-public class Dealer implements java.io.Serializable {
+public class Dealer implements Serializable {
 
 	private static final long serialVersionUID = 7619514728719338221L;
 
@@ -74,9 +75,6 @@ public class Dealer implements java.io.Serializable {
 
 	@Column(name = "status", columnDefinition = "BOOLEAN")
 	private boolean status;
-
-	@Column(name = "logo", length = 225)
-	private String logo;
 
 	@Column(name = "photo", length = 225)
 	private String photo;
