@@ -1,5 +1,6 @@
 package com.sil.donation.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -18,199 +19,75 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import lombok.Data;
+
 /**
  * @author Zubayer Ahamed
  *
  */
 @Entity
 @Table(name = "donar", catalog = "dms", uniqueConstraints = { @UniqueConstraint(columnNames = "email") })
-public class Donar {
+@Data
+public class Donar implements Serializable {
 
-	private Integer donarId;
-	@NotEmpty(message = "Please enter donar name")
-	private String donarName;
-	private Integer clientId;
-	private Integer categoryId;
-	private String address;
-	@Size(min = 11, max = 11, message = "Mobile number should be 11 character")
-	private String mobile;
-	@Min(value = 1, message = "Plese enter amount to create donar")
-	private double payableAmount;
-	private String email;
-	private String instituteName;
-	private boolean status;
-	private boolean smsService;
-	private Date registerDate;
-	private Date updateDate;
-	private List<Category> categories;
-	private String categoryName;
-	private String photo;
-	private boolean archive;
+	private static final long serialVersionUID = 7898141064460416531L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "donarId", unique = true, nullable = false)
-	public Integer getDonarId() {
-		return donarId;
-	}
+	private Integer donarId;
 
-	public void setDonarId(Integer donarId) {
-		this.donarId = donarId;
-	}
-
+	@NotEmpty(message = "Please enter donar name")
 	@Column(name = "donarName", nullable = false, length = 100)
-	public String getDonarName() {
-		return donarName;
-	}
-
-	public void setDonarName(String donarName) {
-		this.donarName = donarName;
-	}
+	private String donarName;
 
 	@Column(name = "clientId", nullable = false)
-	public Integer getClientId() {
-		return clientId;
-	}
-
-	public void setClientId(Integer clientId) {
-		this.clientId = clientId;
-	}
+	private Integer clientId;
 
 	@Column(name = "categoryId")
-	public Integer getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(Integer categoryId) {
-		this.categoryId = categoryId;
-	}
+	private Integer categoryId;
 
 	@Column(name = "address", nullable = false, length = 65535)
-	public String getAddress() {
-		return address;
-	}
+	private String address;
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
+	@Size(min = 11, max = 11, message = "Mobile number should be 11 character")
 	@Column(name = "mobile", nullable = false, length = 11)
-	public String getMobile() {
-		return mobile;
-	}
+	private String mobile;
 
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-
+	@Min(value = 1, message = "Plese enter amount to create donar")
 	@Column(name = "payableAmount")
-	public double getPayableAmount() {
-		return payableAmount;
-	}
-
-	public void setPayableAmount(double payableAmount) {
-		this.payableAmount = payableAmount;
-	}
+	private double payableAmount;
 
 	@Column(name = "email", unique = true, nullable = false, length = 100)
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
+	private String email;
 
 	@Column(name = "instituteName", nullable = false, length = 255)
-	public String getInstituteName() {
-		return instituteName;
-	}
+	private String instituteName;
 
-	public void setInstituteName(String instituteName) {
-		this.instituteName = instituteName;
-	}
-
-	@Column(name = "status")
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
+	@Column(name = "status", columnDefinition = "BOOLEAN")
+	private boolean status;
 
 	@Column(name = "smsService")
-	public boolean isSmsService() {
-		return smsService;
-	}
-
-	public void setSmsService(boolean smsService) {
-		this.smsService = smsService;
-	}
+	private boolean smsService;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "registerDate", nullable = false, length = 10)
-	public Date getRegisterDate() {
-		return registerDate;
-	}
-
-	public void setRegisterDate(Date registerDate) {
-		this.registerDate = registerDate;
-	}
+	private Date registerDate;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "updateDate", length = 10)
-	public Date getUpdateDate() {
-		return registerDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	@Column(name = "archive")
-	public boolean isArchive() {
-		return archive;
-	}
-
-	public void setArchive(boolean archive) {
-		this.archive = archive;
-	}
+	private Date updateDate;
 
 	@Transient
-	public List<Category> getCategories() {
-		return categories;
-	}
+	private List<Category> categories;
 
-	public void setCategories(List<Category> categories) {
-		this.categories = categories;
-	}
+	@Transient
+	private String categoryName;
 
 	@Column(name = "photo", length = 225)
-	public String getPhoto() {
-		return photo;
-	}
+	private String photo;
 
-	public void setPhoto(String photo) {
-		this.photo = photo;
-	}
-
-	@Transient
-	public String getCategoryName() {
-		return categoryName;
-	}
-
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
-	}
-
-	@Override
-	public String toString() {
-		return "Donar [donarId=" + donarId + ", donarName=" + donarName + ", clientId=" + clientId + ", categoryId="
-				+ categoryId + ", address=" + address + ", mobile=" + mobile + ", payableAmount=" + payableAmount
-				+ ", email=" + email + ", instituteName=" + instituteName + ", status=" + status + ", smsService="
-				+ smsService + ", registerDate=" + registerDate + ", categories=" + categories + ", categoryName="
-				+ categoryName + ", photo=" + photo + ", archive=" + archive + "]";
-	}
+	@Column(name = "archive", columnDefinition = "BOOLEAN")
+	private boolean archive;
 
 }

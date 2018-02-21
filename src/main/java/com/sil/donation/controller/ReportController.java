@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/report")
 public class ReportController {
 
+	private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
 	private static final String PAGE_TITLE = "Report";
-	//private static final String REDIRECT = "redirect:/";
-	//private static final String REDIRECT_TO = "report";
 	private static final String LOCATION = "views/report/";
-	private static final Logger LOGGER = LoggerFactory.getLogger(ReportController.class);
 	
 	@RequestMapping
 	public String loadReportPage(Model model) {

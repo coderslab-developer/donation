@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sil.donation.entity.Users;
-import com.sil.donation.exception.SilException;
 import com.sil.donation.model.ResponseMessage;
 import com.sil.donation.service.UsersService;
 
@@ -21,7 +20,7 @@ import com.sil.donation.service.UsersService;
 @RequestMapping("/users")
 public class UsersController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UsersController.class);
+	private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
 
 	@Autowired private UsersService usersService; 
 

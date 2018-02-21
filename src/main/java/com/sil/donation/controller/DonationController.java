@@ -33,7 +33,7 @@ public class DonationController {
 	private static final String REDIRECT_TO = "donation";
 	private static final String LOCATION_TO = "add_donation";
 	private static final String LOCATION = "views/donation/";
-	private static final Logger LOGGER = LoggerFactory.getLogger(DonationController.class);
+	private static final Logger logger = LoggerFactory.getLogger(DonationController.class);
 
 	@Autowired private DonationService donationService;
 	@Autowired private DonarService donarService;
@@ -48,7 +48,7 @@ public class DonationController {
 		try {
 			donation.setDonars(donarService.findAllByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false));
 		} catch (SilException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		model.addAttribute("donation", donation);
 		return LOCATION + LOCATION_TO;
@@ -64,7 +64,7 @@ public class DonationController {
 		try {
 			donar = donarService.findByDonarId(donation.getDonarId(), false);
 		} catch (SilException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		donation.setPayableAmount(donar.getPayableAmount());
 		donation.setDue(donation.getPayableAmount() - donation.getPaid());

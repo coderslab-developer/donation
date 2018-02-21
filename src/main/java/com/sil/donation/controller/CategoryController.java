@@ -29,12 +29,12 @@ import com.sil.donation.service.ClientService;
 @RequestMapping("/category")
 public class CategoryController {
 
+	private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
 	private static final String PAGE_TITLE = "Add category";
 	private static final String REDIRECT = "redirect:/";
 	private static final String REDIRECT_TO = "category";
 	private static final String LOCATION_TO = "add_category";
 	private static final String LOCATION = "views/category/";
-	private static final Logger LOGGER = LoggerFactory.getLogger(CategoryController.class);
 
 	@Autowired private CategoryService categoryService;
 	@Autowired private ClientService clientService;
@@ -47,7 +47,7 @@ public class CategoryController {
 		try {
 			model.addAttribute("categories", categoryService.findByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false));
 		} catch (SilException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		model.addAttribute("pageTitle", PAGE_TITLE);
 		return LOCATION + LOCATION_TO;
@@ -57,19 +57,18 @@ public class CategoryController {
 	public String createCategory(@ModelAttribute("category") @Valid Category category, BindingResult result, Model model, RedirectAttributes redirect) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String username = authentication.getName();
-		System.out.println(category.toString());
 		if (result.hasErrors()) {
 			try {
 				model.addAttribute("categories", categoryService.findByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false));
 			} catch (SilException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			return LOCATION + LOCATION_TO;
 		}
 		try {
 			category.setClientId(clientService.findByUsernameAndArchive(username, false).getClientId());
 		} catch (SilException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		category.setArchive(false);
 		categoryService.save(category);
@@ -82,11 +81,11 @@ public class CategoryController {
 		Category category = null;
 		try {
 			category = categoryService.findByCategoryIdAndArchive(categoryId, false);
+			category.setStatus(!category.isStatus());
+			categoryService.save(category);
 		} catch (SilException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
-		category.setStatus(!category.isStatus());
-		categoryService.save(category);
 		redirect.addFlashAttribute("sm", "Status changed successfully");
 		return REDIRECT + REDIRECT_TO;
 	}
@@ -96,11 +95,11 @@ public class CategoryController {
 		Category category = null;
 		try {
 			category = categoryService.findByCategoryIdAndArchive(categoryId, false);
+			category.setArchive(true);
+			categoryService.save(category);
 		} catch (SilException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
-		category.setArchive(true);
-		categoryService.save(category);
 		redirect.addFlashAttribute("sm", "Category deleted successfully");
 		return REDIRECT + REDIRECT_TO;
 	}

@@ -12,89 +12,39 @@ import javax.validation.constraints.Min;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import lombok.Data;
+
 /**
  * @author Zubayer Ahamed
  *
  */
 @Entity
 @Table(name = "category", catalog = "dms")
+@Data
 public class Category implements Serializable {
 
 	private static final long serialVersionUID = 8762132733306871437L;
 
-	private Integer categoryId;
-	@NotEmpty(message = "Please enter category name")
-	private String name;
-	@Min(value = 1, message = "You hvae to select atleast one day to create category")
-	private int days;
-	private Integer clientId;
-	private boolean status;
-	private boolean archive;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "categoryId", unique = true, nullable = false)
-	public Integer getCategoryId() {
-		return categoryId;
-	}
+	private Integer categoryId;
 
-	public void setCategoryId(Integer categoryId) {
-		this.categoryId = categoryId;
-	}
-
+	@NotEmpty(message = "Please enter category name")
 	@Column(name = "name", nullable = false, length = 100)
-	public String getName() {
-		return name;
-	}
+	private String name;
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
+	@Min(value = 1, message = "You hvae to select atleast one day to create category")
 	@Column(name = "days", nullable = false)
-	public int getDays() {
-		return days;
-	}
-
-	public void setDays(int days) {
-		this.days = days;
-	}
+	private int days;
 
 	@Column(name = "clientId", nullable = false)
-	public Integer getClientId() {
-		return clientId;
-	}
+	private Integer clientId;
 
-	public void setClientId(Integer clientId) {
-		this.clientId = clientId;
-	}
+	@Column(name = "status", columnDefinition = "BOOLEAN")
+	private boolean status;
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	@Column(name = "status")
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	@Column(name = "archive")
-	public boolean isArchive() {
-		return archive;
-	}
-
-	public void setArchive(boolean archive) {
-		this.archive = archive;
-	}
-
-	@Override
-	public String toString() {
-		return "Category [categoryId=" + categoryId + ", name=" + name + ", days=" + days + ", clientId=" + clientId
-				+ ", status=" + status + ", archive=" + archive + "]";
-	}
+	@Column(name = "archive", columnDefinition = "BOOLEAN")
+	private boolean archive;
 
 }

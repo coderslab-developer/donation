@@ -11,64 +11,33 @@ import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import lombok.Data;
+
 /**
  * @author Zubayer Ahamed
  *
  */
 @Entity
 @Table(name = "authorities", catalog = "dms")
+@Data
 public class Authorities implements Serializable {
 
 	private static final long serialVersionUID = -5868673689552689079L;
-	private Integer id;
-	@NotEmpty(message = "Please enter username")
-	private String username;
-	@NotEmpty(message = "Please define authority")
-	private String authority;
-	private boolean archive;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
-	public Integer getId() {
-		return id;
-	}
+	private Integer id;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
+	@NotEmpty(message = "Please enter username")
 	@Column(name = "username", nullable = false, length = 50)
-	public String getUsername() {
-		return this.username;
-	}
+	private String username;
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
+	@NotEmpty(message = "Please define authority")
 	@Column(name = "authority", nullable = false, length = 45)
-	public String getAuthority() {
-		return this.authority;
-	}
+	private String authority;
 
-	public void setAuthority(String authority) {
-		this.authority = authority;
-	}
-
-	@Column(name = "archive")
-	public boolean isArchive() {
-		return archive;
-	}
-
-	public void setArchive(boolean archive) {
-		this.archive = archive;
-	}
-
-	@Override
-	public String toString() {
-		return "Authorities [id=" + id + ", username=" + username + ", authority=" + authority + ", archive=" + archive
-				+ "]";
-	}
+	@Column(name = "archive", columnDefinition = "BOOLEAN")
+	private boolean archive;
 
 }

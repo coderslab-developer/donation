@@ -38,19 +38,19 @@ import com.sil.donation.service.DonarService;
 @RequestMapping({"/", "/home"})
 public class DashboardController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
 	private static final String PAGE_TITLE = "Dashboard";
 	private static final String REDIRECT = "redirect:/";
 	private static final String REDIRECT_TO_ADMIN = "admin_dashboard";
 	private static final String REDIRECT_TO_DEALER = "dealer_dashboard";
 	private static final String REDIRECT_TO_CLIENT = "client_dashboard";
 	private static final String LOCATION = "views/dashboard/";
-	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
-	
+
 	@Autowired private DealerService dealerService;
 	@Autowired private ClientService clientService;
 	@Autowired private DonarService donarService;
 	@Autowired private CategoryService categoryService;
-	
+
 	@RequestMapping
 	public String loadHomePage(Model model) {
 		model.addAttribute("pageTitle", PAGE_TITLE);
@@ -60,13 +60,13 @@ public class DashboardController {
 		for(String r : roles) {
 			role = r;
 		}
-		
+
 		if(role.equalsIgnoreCase("ROLE_ADMIN")) {
 			Map<String, Object> map = getAllDealerAndClientInfo();
 			try {
 				model.addAttribute("adminDashboard", getAdminDashBoardInfo());
 			} catch (SilException e) {
-				LOGGER.error("Error : {}", e.getMessage());
+				logger.error("Error : {}", e.getMessage());
 			}
 			model.addAttribute("clients", map.get("clients"));
 			model.addAttribute("dealers", map.get("dealers"));
@@ -86,7 +86,7 @@ public class DashboardController {
 				model.addAttribute("donars", getAllDonarsInfo(authentication.getName()).get("donars"));
 				//model.addAttribute("categories", categoryService.findByClientIdAndArchive(clientService.findByUsernameAndArchive(authentication.getName(), false).getClientId(), false));
 			} catch (SilException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			return LOCATION + REDIRECT_TO_CLIENT;
 		}else {
@@ -101,7 +101,7 @@ public class DashboardController {
 			try {
 				d.setCategoryName(categoryService.findByCategoryIdAndArchive(d.getCategoryId(), false).getName());
 			} catch (SilException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		});
 		map.put("donars", donars);
@@ -113,7 +113,7 @@ public class DashboardController {
 		try {
 			dealer = dealerService.findByUsernameAndArchive(username, false);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		DealerDashboard dealerDashboard = new DealerDashboard();
 		dealerDashboard.setActiveClient(clientService.findByDealerIdAndStatusAndArchive(dealer.getDealerId(), true, false).size());
@@ -142,7 +142,7 @@ public class DashboardController {
 			List<Client> clients = clientService.findByDealerIdAndArchive(dealerService.findByUsernameAndArchive(username, false).getDealerId(), false);
 			map.put("clients", clients);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return map;
 	}
@@ -153,28 +153,28 @@ public class DashboardController {
 		List<Dealer> dealers = null;
 		try {
 			dealers = dealerService.findAllByArchive(false);
-		} catch (SilException e2) {
-			e2.printStackTrace();
+		} catch (SilException e) {
+			logger.error(e.getMessage());
 		}
 		dealers.stream().forEach(d -> {
 			try {
 				d.setClients(clientService.findByDealerIdAndArchive(d.getDealerId(), false));
-			} catch (SilException e1) {
-				e1.printStackTrace();
+			} catch (SilException e) {
+				logger.error(e.getMessage());
 			}
 		});
 		dealers.stream().forEach(d -> {
 			try {
 				d.setActiveClients(clientService.findByDealerIdAndStatusAndArchive(d.getDealerId(), true, false).size());
-			} catch (SilException e1) {
-				e1.printStackTrace();
+			} catch (SilException e) {
+				logger.error(e.getMessage());
 			}
 		});
 		dealers.stream().forEach(d -> {
 			try {
 				d.setDeactiveClients(clientService.findByDealerIdAndStatusAndArchive(d.getDealerId(), false, false).size());
-			} catch (SilException e1) {
-				e1.printStackTrace();
+			} catch (SilException e) {
+				logger.error(e.getMessage());
 			}
 		});
 		map.put("dealers", dealers.size() > 0 ? dealers : null);
@@ -182,14 +182,14 @@ public class DashboardController {
 		List<Client> clients = null;
 		try {
 			clients = clientService.findAllByArchive(false);
-		} catch (SilException e1) {
-			e1.printStackTrace();
+		} catch (SilException e) {
+			logger.error(e.getMessage());
 		}
 		clients.stream().forEach(c -> {
 			try {
 				c.setDealerName(dealerService.findByDealerIdAndArchive(c.getDealerId(), false).getDealerName());
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		});
 		map.put("clients", clients.size() > 0 ? clients : null);

@@ -21,11 +21,14 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,7 +37,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -45,6 +47,7 @@ import com.sil.donation.entity.Donar;
 import com.sil.donation.entity.Users;
 import com.sil.donation.exception.SilException;
 import com.sil.donation.model.DealerDashboard;
+import com.sil.donation.service.AdminService;
 import com.sil.donation.service.AuthoritiesService;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DealerService;
@@ -59,16 +62,16 @@ import com.sil.donation.util.ImageResizer;
  */
 @Controller
 @RequestMapping("/dealer")
+@PropertySource("classpath:sil.properties")
 public class DealerController {
 
+	private static final Logger logger = LoggerFactory.getLogger(DealerController.class);
 	private static final String PAGE_TITLE = "Add dealer";
 	private static final String REDIRECT = "redirect:/";
 	private static final String REDIRECT_TO = "dealer";
 	private static final String LOCATION_TO = "add_dealer";
 	private static final String LOCATION = "views/dealer/";
 	private static final String DEALER_PHOTO_DIR = "resources/upload/dealer/";
-	private static final Logger LOGGER = LoggerFactory.getLogger(DealerController.class);
-	private static final String XSL_DIR = "src//main//resources//static//xsl//";
 
 	@Autowired private DealerService dealerService;
 	@Autowired private UsersService usersService;
@@ -77,6 +80,7 @@ public class DealerController {
 	@Autowired private DonarService donarService;
 	@Autowired private Environment environment;
 	@Autowired private PrintingService printingService;
+	@Autowired private AdminService adminService;
 
 	@RequestMapping
 	public String loadDealerPage(Model model) {
@@ -87,7 +91,7 @@ public class DealerController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public String addDealer(@ModelAttribute("dealer") @Valid Dealer dealer, BindingResult result, @RequestParam("file") MultipartFile file, Model model, RedirectAttributes redirect, HttpServletRequest request) {
-		if(LOGGER.isDebugEnabled()) LOGGER.debug("Dealer values {}" , dealer);
+		if(logger.isDebugEnabled()) logger.debug("Dealer values {}" , dealer);
 
 		if (result.hasErrors()) {
 			model.addAttribute("pageTitle", PAGE_TITLE);
@@ -104,7 +108,7 @@ public class DealerController {
 			}
 			String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 			String fileName = UUID.randomUUID() +  timeStamp + "." + extension;
-			if(LOGGER.isDebugEnabled()) LOGGER.debug("File name is now: {}", fileName);
+			if(logger.isDebugEnabled()) logger.debug("File name is now: {}", fileName);
 
 			try {
 				//create a directory if not exist
@@ -125,12 +129,19 @@ public class DealerController {
 				//set photo name into database
 				dealer.setPhoto(fileName);
 			} catch (IOException e) {
-				LOGGER.error("Error: {}" , e.getMessage());
+				logger.error(e.getMessage());
 			}
 		}
 
 		//without image part
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String username = authentication.getName();
 		dealer.setRegisterDate(new Date());
+		try {
+			dealer.setAdminId(adminService.findByUsername(username).getAdminId());
+		} catch (SilException e) {
+			logger.error(e.getMessage());
+		}
 		try {
 			dealerService.save(dealer);
 			usersService.createUsersFromDealer(dealer);
@@ -138,7 +149,7 @@ public class DealerController {
 			redirect.addFlashAttribute("sm", "A new dealer add successfully into your system");
 		} catch (Exception e) {
 			redirect.addFlashAttribute("em", "Dealer info not saved");
-			LOGGER.error("Error: {}" , e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return REDIRECT + REDIRECT_TO;
 	}
@@ -158,7 +169,7 @@ public class DealerController {
 			users = usersService.findByUsernameAndArchive(d.getUsername(), false);
 			authorities = authoritiesService.findByUsernameAndArchive(d.getUsername(), false);
 		} catch (SilException e1) {
-			LOGGER.error("Error: {}", e1.getMessage());
+			logger.error(e1.getMessage());
 		}
 		
 		if(!dealer.getDealerName().isEmpty()) {
@@ -188,7 +199,6 @@ public class DealerController {
 		if(!file.isEmpty() && dealer.getDealerId() != null && d.getPhoto() != null) {
 			String imageName = d.getPhoto();
 			String uploadPath = request.getServletContext().getRealPath(DEALER_PHOTO_DIR);
-			System.out.println(uploadPath + imageName);
 			File image = new File(uploadPath +  imageName);
 			if(!image.delete()) {
 				image.delete();
@@ -205,7 +215,7 @@ public class DealerController {
 			}
 			String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 			String fileName = UUID.randomUUID() +  timeStamp + "." + extension;
-			if(LOGGER.isDebugEnabled()) LOGGER.debug("File name is now: {}", fileName);
+			if(logger.isDebugEnabled()) logger.debug("File name is now: {}", fileName);
 
 			try {
 				//create a directory if not exist
@@ -226,7 +236,7 @@ public class DealerController {
 				//set photo name into database
 				d.setPhoto(fileName);
 			} catch (IOException e) {
-				LOGGER.error("Error: {}" , e.getMessage());
+				logger.error(e.getMessage());
 			}
 		}
 
@@ -239,7 +249,7 @@ public class DealerController {
 			redirect.addFlashAttribute("sm", "Dealer info update successfully");
 		} catch (Exception e) {
 			redirect.addFlashAttribute("em", "Dealer info not saved");
-			LOGGER.error("Error: {}" , e.getMessage());
+			logger.error(e.getMessage());
 		}
 
 		return REDIRECT + "dealer/edit/" + dealer.getDealerId();
@@ -251,7 +261,7 @@ public class DealerController {
 			model.addAttribute("pageTitle", PAGE_TITLE);
 			model.addAttribute("dealer", dealerService.findByDealerIdAndArchive(dealerId, false));
 		} catch (SilException e) {
-			LOGGER.error("Error: {}" , e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return LOCATION + "edit_dealer";
 	}
@@ -262,7 +272,7 @@ public class DealerController {
 		try {
 			model.addAttribute("dealerDashboard", getDealerDashboardInfo(dealerId));
 		} catch (SilException e) {
-			LOGGER.error("Error: {}" , e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return LOCATION + "view_dealer_profile";
 	}
@@ -283,7 +293,7 @@ public class DealerController {
 			
 			redirect.addFlashAttribute("sm", "Dealer status change successfully");
 		} catch (Exception e) {
-			LOGGER.error("Error: {}" , e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return REDIRECT;
 	}
@@ -326,7 +336,7 @@ public class DealerController {
 
 			redirect.addFlashAttribute("sm", "Delaer deleted successfully");
 		} catch (Exception e) {
-			LOGGER.error("Error: {}" , e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return REDIRECT;
 	}
@@ -337,7 +347,7 @@ public class DealerController {
 			dealer = dealerService.findByDealerIdAndArchive(dealerId, false);
 			dealer.setClients(clientService.findByDealerIdAndArchive(dealerId, false));
 		} catch (Exception e) {
-			LOGGER.error("Error: {}" , e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return dealer;
 	}
@@ -347,7 +357,7 @@ public class DealerController {
 		try {
 			dealer = dealerService.findByDealerIdAndArchive(dealerId, false);
 		} catch (Exception e) {
-			LOGGER.error("Error: {}" , e.getMessage());
+			logger.error(e.getMessage());
 		}
 		DealerDashboard dealerDashboard = new DealerDashboard();
 		dealerDashboard.setActiveClient(clientService.findByDealerIdAndStatusAndArchive(dealer.getDealerId(), true, false).size());
@@ -376,9 +386,9 @@ public class DealerController {
 			dealer = dealerService.findByDealerIdAndArchive(dealerId, false);
 			return responseDocument(dealer, xslTemplate, locale);
 		} catch (SilException e) {
-			LOGGER.error(e.getMessage());
+			logger.error(e.getMessage());
 		}
-		if(LOGGER.isDebugEnabled()) LOGGER.debug("Dealer : {}", dealer);
+		if(logger.isDebugEnabled()) logger.debug("Dealer : {}", dealer);
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(new MediaType("text", "html"));

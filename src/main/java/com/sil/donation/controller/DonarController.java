@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,15 +42,16 @@ import com.sil.donation.util.ImageResizer;
  */
 @Controller
 @RequestMapping("/donar")
+@PropertySource("classpath:sil.properties")
 public class DonarController {
 
+	private static final Logger logger = LoggerFactory.getLogger(DonarController.class);
 	private static final String PAGE_TITLE = "Add donar";
 	private static final String REDIRECT = "redirect:/";
 	private static final String REDIRECT_TO = "donar";
 	private static final String LOCATION_TO = "add_donar";
 	private static final String LOCATION = "views/donar/";
 	private static final String DONAR_PHOTO_DIR = "resources/upload/donar/";
-	private static final Logger LOGGER = LoggerFactory.getLogger(DonarController.class);
 
 	@Autowired private DonarService donarService;
 	@Autowired private CategoryService categoryService;
@@ -65,7 +67,7 @@ public class DonarController {
 		try {
 			donar.setCategories(categoryService.findByClientIdAndStatusAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), true, false));
 		} catch (SilException e) {
-			LOGGER.error("Error : {}" , e.getMessage());
+			logger.error("Error : {}" , e.getMessage());
 		}
 		model.addAttribute("donar", donar);
 		return LOCATION + LOCATION_TO;
@@ -80,7 +82,7 @@ public class DonarController {
 			try {
 				donar.setCategories(categoryService.findByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false));
 			} catch (SilException e) {
-				LOGGER.error("Error : {}" , e.getMessage());
+				logger.error("Error : {}" , e.getMessage());
 			}
 			return LOCATION + LOCATION_TO;
 		}
@@ -95,7 +97,7 @@ public class DonarController {
 			}
 			String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 			String fileName = UUID.randomUUID() +  timeStamp + "." + extension;
-			if(LOGGER.isDebugEnabled()) LOGGER.debug("File name is now: {}", fileName);
+			if(logger.isDebugEnabled()) logger.debug("File name is now: {}", fileName);
 
 			try {
 				//create a directory if not exist
@@ -116,7 +118,7 @@ public class DonarController {
 				//set photo name into database
 				donar.setPhoto(fileName);
 			} catch (IOException e) {
-				LOGGER.error("Error: {}" , e.getMessage());
+				logger.error("Error: {}" , e.getMessage());
 			}
 		}
 
@@ -124,7 +126,7 @@ public class DonarController {
 		try {
 			donar.setClientId(clientService.findByUsernameAndArchive(username, false).getClientId());
 		} catch (SilException e) {
-			LOGGER.error("Error : {}" , e.getMessage());
+			logger.error("Error : {}" , e.getMessage());
 		}
 		donar.setRegisterDate(new Date());
 		donar.setArchive(false);
@@ -142,7 +144,7 @@ public class DonarController {
 			try {
 				donar.setCategories(categoryService.findByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false));
 			} catch (SilException e) {
-				LOGGER.error("Error : {}" , e.getMessage());
+				logger.error("Error : {}" , e.getMessage());
 			}
 			return LOCATION + "edit_donar";
 		}
@@ -152,7 +154,7 @@ public class DonarController {
 			try {
 				d = donarService.findByDonarId(donar.getDonarId(), false);
 			} catch (SilException e) {
-				LOGGER.error("Error : {}" , e.getMessage());
+				logger.error("Error : {}" , e.getMessage());
 			}
 		}
 
@@ -176,7 +178,7 @@ public class DonarController {
 			}
 			String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 			String fileName = UUID.randomUUID() +  timeStamp + "." + extension;
-			if(LOGGER.isDebugEnabled()) LOGGER.debug("File name is now: {}", fileName);
+			if(logger.isDebugEnabled()) logger.debug("File name is now: {}", fileName);
 
 			try {
 				//create a directory if not exist
@@ -197,7 +199,7 @@ public class DonarController {
 				//set photo name into database
 				d.setPhoto(fileName);
 			} catch (IOException e) {
-				LOGGER.error("Error: {}" , e.getMessage());
+				logger.error("Error: {}" , e.getMessage());
 			}
 		}
 
@@ -224,7 +226,7 @@ public class DonarController {
 			donar = donarService.findByDonarId(donarId, false);
 			donar.setCategories(categoryService.findByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false));
 		} catch (SilException e) {
-			LOGGER.error("Error : {}" , e.getMessage());
+			logger.error("Error : {}" , e.getMessage());
 		}
 		model.addAttribute("pageTitle", "Edit Donar");
 		model.addAttribute("donar", donar);
@@ -239,7 +241,7 @@ public class DonarController {
 			donarService.save(donar);
 			redirect.addFlashAttribute("sm", "Donar status change successfully");
 		} catch (SilException e) {
-			LOGGER.error("Error : {}" , e.getMessage());
+			logger.error("Error : {}" , e.getMessage());
 		}
 		return REDIRECT;
 	}
@@ -251,7 +253,7 @@ public class DonarController {
 			donar.setCategoryName(categoryService.findByCategoryIdAndArchive(donar.getCategoryId(), false).getName());
 			model.addAttribute("donar", donar);
 		} catch (SilException e) {
-			LOGGER.error("Error : {}" , e.getMessage());
+			logger.error("Error : {}" , e.getMessage());
 		}
 		return LOCATION + "view_donar_profile";
 	}
@@ -264,7 +266,7 @@ public class DonarController {
 			donarService.save(donar);
 			redirect.addFlashAttribute("sm", "Donar deleted successfully");
 		} catch (SilException e) {
-			LOGGER.error("Error : {}" , e.getMessage());
+			logger.error("Error : {}" , e.getMessage());
 		}
 		return REDIRECT;
 	}

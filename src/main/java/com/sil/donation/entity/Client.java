@@ -18,6 +18,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import lombok.Data;
+
 /**
  * @author Zubayer Ahamed
  *
@@ -25,206 +27,72 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "client", catalog = "dms")
+@Data
 public class Client implements Serializable {
 
 	private static final long serialVersionUID = 2688296504512493855L;
-	private Integer clientId;
-	@NotEmpty(message = "Please enter client/institute name")
-	private String clientName;
-	@NotEmpty(message = "Please enter email address")
-	@Email(message = "Please enter valid email address")
-	private String email;
-	@Size(min = 11, max = 11, message = "Mobile Number must be 11 character")
-	private String mobile;
-	private String fax;
-	private String website;
-	private Date registerDate;
-	private Date expireDate;
-	@NotEmpty(message = "Please enter client address")
-	private String address;
-	private boolean status;
-	private String photo;
-	private Integer dealerId;
-	private String username;
-	private String password;
-	private String logo;
-	private String dealerName;
-	private List<Donar> donars;
-	private boolean archive;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "clientId", unique = true, nullable = false)
-	public Integer getClientId() {
-		return this.clientId;
-	}
+	private Integer clientId;
 
-	public void setClientId(Integer clientId) {
-		this.clientId = clientId;
-	}
-
+	@NotEmpty(message = "Please enter client/institute name")
 	@Column(name = "clientName", nullable = false, length = 100)
-	public String getClientName() {
-		return this.clientName;
-	}
+	private String clientName;
 
-	public void setClientName(String clientName) {
-		this.clientName = clientName;
-	}
-
+	@NotEmpty(message = "Please enter email address")
+	@Email(message = "Please enter valid email address")
 	@Column(name = "email", nullable = false, length = 100)
-	public String getEmail() {
-		return this.email;
-	}
+	private String email;
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
+	@Size(min = 11, max = 11, message = "Mobile Number must be 11 character")
 	@Column(name = "mobile", nullable = false, length = 11)
-	public String getMobile() {
-		return this.mobile;
-	}
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
+	private String mobile;
 
 	@Column(name = "fax", length = 45)
-	public String getFax() {
-		return this.fax;
-	}
-
-	public void setFax(String fax) {
-		this.fax = fax;
-	}
+	private String fax;
 
 	@Column(name = "website", length = 100)
-	public String getWebsite() {
-		return this.website;
-	}
-
-	public void setWebsite(String website) {
-		this.website = website;
-	}
+	private String website;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "registerDate", nullable = false, length = 10)
-	public Date getRegisterDate() {
-		return this.registerDate;
-	}
-
-	public void setRegisterDate(Date registerDate) {
-		this.registerDate = registerDate;
-	}
+	private Date registerDate;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "expireDate", nullable = false, length = 10)
-	public Date getExpireDate() {
-		return this.expireDate;
-	}
+	private Date expireDate;
 
-	public void setExpireDate(Date expireDate) {
-		this.expireDate = expireDate;
-	}
-
+	@NotEmpty(message = "Please enter client address")
 	@Column(name = "address", nullable = false, length = 65535)
-	public String getAddress() {
-		return this.address;
-	}
+	private String address;
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	@Column(name = "status")
-	public boolean isStatus() {
-		return this.status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
+	@Column(name = "status", columnDefinition = "BOOLEAN")
+	private boolean status;
 
 	@Column(name = "photo", length = 65535)
-	public String getPhoto() {
-		return this.photo;
-	}
-
-	public void setPhoto(String photo) {
-		this.photo = photo;
-	}
+	private String photo;
 
 	@Column(name = "dealerId", nullable = false)
-	public Integer getDealerId() {
-		return dealerId;
-	}
-
-	public void setDealerId(Integer dealerId) {
-		this.dealerId = dealerId;
-	}
+	private Integer dealerId;
 
 	@Column(name = "username", nullable = false, length = 100)
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
+	private String username;
 
 	@Column(name = "password", nullable = false, length = 100)
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	@Transient
-	public List<Donar> getDonars() {
-		return donars;
-	}
-
-	public void setDonars(List<Donar> donars) {
-		this.donars = donars;
-	}
+	private String password;
 
 	@Column(name = "logo", length = 225)
-	public String getLogo() {
-		return logo;
-	}
+	private String logo;
 
-	public void setLogo(String logo) {
-		this.logo = logo;
-	}
+	@Column(name = "archive", columnDefinition = "BOOLEAN")
+	private boolean archive;
 
 	@Transient
-	public String getDealerName() {
-		return dealerName;
-	}
+	private String dealerName;
 
-	public void setDealerName(String dealerName) {
-		this.dealerName = dealerName;
-	}
-
-	@Column(name = "archive")
-	public boolean isArchive() {
-		return archive;
-	}
-
-	public void setArchive(boolean archive) {
-		this.archive = archive;
-	}
-
-	@Override
-	public String toString() {
-		return "Client [clientId=" + clientId + ", clientName=" + clientName + ", email=" + email + ", mobile=" + mobile
-				+ ", fax=" + fax + ", website=" + website + ", registerDate=" + registerDate + ", expireDate="
-				+ expireDate + ", address=" + address + ", status=" + status + ", photo=" + photo + ", dealerId="
-				+ dealerId + ", username=" + username + ", password=" + password + ", logo=" + logo + ", dealerName="
-				+ dealerName + ", donars=" + donars + ", archive=" + archive + "]";
-	}
+	@Transient
+	private List<Donar> donars;
 
 }

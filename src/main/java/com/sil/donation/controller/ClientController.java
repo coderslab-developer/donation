@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,15 +52,16 @@ import com.sil.donation.util.ImageResizer;
  */
 @Controller
 @RequestMapping("/client")
+@PropertySource("classpath:sil.properties")
 public class ClientController {
 
+	private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
 	private static final String PAGE_TITLE = "Add client";
 	private static final String REDIRECT = "redirect:/";
 	private static final String REDIRECT_TO = "client";
 	private static final String LOCATION_TO = "add_client";
 	private static final String LOCATION = "views/client/";
 	private static final String CLIENT_PHOTO_DIR = "resources/upload/client/";
-	private static final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
 
 	@Autowired private ClientService clientService;
 	@Autowired private DealerService dealerService;
@@ -82,7 +84,7 @@ public class ClientController {
 			model.addAttribute("pageTitle", PAGE_TITLE);
 			return LOCATION + LOCATION_TO;
 		}
-		
+
 		//Image part
 		if(!file.isEmpty()) {
 			//Rename the file 
@@ -93,7 +95,7 @@ public class ClientController {
 			}
 			String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 			String fileName = UUID.randomUUID() +  timeStamp + "." + extension;
-			if(LOGGER.isDebugEnabled()) LOGGER.debug("File name is now: {}", fileName);
+			if(logger.isDebugEnabled()) logger.debug("File name is now: {}", fileName);
 
 			try {
 				//create a directory if not exist
@@ -114,10 +116,10 @@ public class ClientController {
 				//set photo name into database
 				client.setPhoto(fileName);
 			} catch (IOException e) {
-				LOGGER.error("Error: {}" , e.getMessage());
+				logger.error(e.getMessage());
 			}
 		}
-		
+
 		//without image part
 		Calendar calendar = Calendar.getInstance();
 		Date today = calendar.getTime();
@@ -131,7 +133,7 @@ public class ClientController {
 		try {
 			client.setDealerId(dealerService.findByUsernameAndArchive(username, false).getDealerId());
 		} catch (SilException e) {
-			LOGGER.error("Error: {}" , e.getMessage());
+			logger.error(e.getMessage());
 		}
 
 		try {
@@ -141,7 +143,7 @@ public class ClientController {
 			redirect.addFlashAttribute("sm", "You are successfully add client info into your system");
 		} catch (Exception e) {
 			redirect.addFlashAttribute("em", "Client info not saved successfully");
-			LOGGER.error("Error : {}" , e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return REDIRECT + REDIRECT_TO;
 	}
@@ -161,7 +163,7 @@ public class ClientController {
 			users = usersService.findByUsernameAndArchive(c.getUsername(), false);
 			authorities = authoritiesService.findByUsernameAndArchive(c.getUsername(), false);
 		} catch (SilException e) {
-			LOGGER.error("Error : {}" , e.getMessage());
+			logger.error("Error : {}" , e.getMessage());
 		}
 		
 		if(!client.getClientName().isEmpty()) {
@@ -191,7 +193,6 @@ public class ClientController {
 		if(!file.isEmpty() && client.getClientId() != null && c.getPhoto() != null) {
 			String imageName = c.getPhoto();
 			String uploadPath = request.getServletContext().getRealPath(CLIENT_PHOTO_DIR);
-			System.out.println(uploadPath + imageName);
 			File image = new File(uploadPath +  imageName);
 			if(!image.delete()) {
 				image.delete();
@@ -208,7 +209,7 @@ public class ClientController {
 			}
 			String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 			String fileName = UUID.randomUUID() +  timeStamp + "." + extension;
-			if(LOGGER.isDebugEnabled()) LOGGER.debug("File name is now: {}", fileName);
+			if(logger.isDebugEnabled()) logger.debug("File name is now: {}", fileName);
 
 			try {
 				//create a directory if not exist
@@ -229,7 +230,7 @@ public class ClientController {
 				//set photo name into database
 				c.setPhoto(fileName);
 			} catch (IOException e) {
-				LOGGER.error("Error: {}" , e.getMessage());
+				logger.error(e.getMessage());
 			}
 		}
 		
@@ -241,7 +242,7 @@ public class ClientController {
 			redirect.addFlashAttribute("sm", "Client info update successfully");
 		} catch (Exception e) {
 			redirect.addFlashAttribute("em", "Client info not update");
-			LOGGER.error("Error : {}" , e.getMessage());
+			logger.error(e.getMessage());
 		}
 		
 		return REDIRECT + "client/edit/" + client.getClientId();
@@ -253,7 +254,7 @@ public class ClientController {
 		try {
 			model.addAttribute("client", clientService.findByClientIdAndArchive(clientId, false));
 		} catch (SilException e) {
-			LOGGER.error("Error : {}" , e.getMessage());
+			logger.error("Error : {}" , e.getMessage());
 		}
 		return LOCATION + "edit_client";
 	}
@@ -267,7 +268,7 @@ public class ClientController {
 				try {
 					d.setCategoryName(categoryService.findByCategoryIdAndArchive(d.getCategoryId(), false).getName());
 				} catch (SilException e) {
-					LOGGER.error("Error : {}" , e.getMessage());
+					logger.error(e.getMessage());
 				}
 			});
 			client.setDonars(donars);
@@ -275,7 +276,7 @@ public class ClientController {
 			model.addAttribute("client", client);
 			model.addAttribute("clientDashboard", getClientDashboardInfo(clientId));
 		} catch (SilException e) {
-			LOGGER.error("Error : {}" , e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return LOCATION + "view_client_profile";
 	}
@@ -294,7 +295,7 @@ public class ClientController {
 			
 			redirect.addFlashAttribute("sm", "Client status chage successfully");
 		} catch (Exception e) {
-			LOGGER.error("Error : {}" , e.getMessage());
+			logger.error("Error : {}" , e.getMessage());
 		}
 		return REDIRECT;
 	}
@@ -323,7 +324,7 @@ public class ClientController {
 			
 			redirect.addFlashAttribute("sm", "Client deleted successfully");
 		} catch (Exception e) {
-			LOGGER.info("Error: {}" , e.getMessage());
+			logger.info(e.getMessage());
 		}
 		return REDIRECT;
 	}

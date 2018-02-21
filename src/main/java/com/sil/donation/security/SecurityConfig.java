@@ -61,10 +61,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication()
-			.withUser("user").password("password").roles("USER")
-			.and()
-			.withUser("admin").password("admin").roles("ADMIN");
+//		auth.inMemoryAuthentication()
+//			.withUser("user").password("password").roles("USER")
+//			.and()
+//			.withUser("admin").password("admin").roles("ADMIN");
 		auth.jdbcAuthentication().dataSource(dataSource)
 			.usersByUsernameQuery("select username, password, enabled from users where username = ?")
 			.authoritiesByUsernameQuery("select username, authority from authorities where username = ?");
