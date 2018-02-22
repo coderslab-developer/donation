@@ -28,7 +28,7 @@ public class Admin implements Serializable {
 	private static final long serialVersionUID = -8327881487089084713L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "adminId", unique = true, nullable = false)
 	private Integer adminId;
 

@@ -38,14 +38,14 @@ public class SMSBucketController {
 	@Autowired SMSTransactionService smsTransactionService;
 	@Autowired DealerService dealerService;
 
-	@GetMapping("/{username}")
+	@RequestMapping("/{username}")
 	public String smsBucket(@PathVariable("username") String username, Model model) {
 		model.addAttribute("pageTitle", PAGE_TITLE);
 
 		List<SMSTransaction> list = null;
 		List<Dealer> dealers = null;
 		try {
-			list = smsTransactionService.findByUsernameOrderByUsernameDesc(username);
+			list = smsTransactionService.findByUsernameOrderByIdDesc(username);
 			dealers = dealerService.findAllByStatusAndArchive(true, false);
 		} catch (SilException e) {
 			logger.error(e.getMessage());

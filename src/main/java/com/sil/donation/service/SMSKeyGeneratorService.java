@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sil.donation.entity.SMSKeyGenerator;
+import com.sil.donation.exception.SilException;
 import com.sil.donation.repository.SMSKeyGeneratorRepository;
 
 /**
@@ -22,5 +23,9 @@ public class SMSKeyGeneratorService {
 	public SMSKeyGenerator save(SMSKeyGenerator smsKeyGenerator) {
 		SMSKeyGenerator s = smsKeyGeneratorRepository.save(smsKeyGenerator);
 		return s != null ? s : null;
+	}
+
+	public SMSKeyGenerator findBySmsKeyAndStatus(String smsKey, boolean status) throws SilException {
+		return smsKeyGeneratorRepository.findBySmsKeyAndStatus(smsKey, status);
 	}
 }

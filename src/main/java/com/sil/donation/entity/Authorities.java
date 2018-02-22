@@ -25,7 +25,7 @@ public class Authorities implements Serializable {
 	private static final long serialVersionUID = -5868673689552689079L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id;
 

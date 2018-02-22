@@ -22,8 +22,8 @@ public class SMSTransactionService {
 	@Autowired
 	SMSTransactionRepository smsTransactionRepository;
 
-	public List<SMSTransaction> findByUsernameOrderByUsernameDesc(String username) throws SilException {
-		return smsTransactionRepository.findByUsernameOrderByUsernameDesc(username);
+	public List<SMSTransaction> findByUsernameOrderByIdDesc(String username) throws SilException {
+		return smsTransactionRepository.findByUsernameOrderByIdDesc(username);
 	}
 
 	public SMSTransaction save(SMSTransaction smsTransaction) {

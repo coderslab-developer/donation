@@ -20,6 +20,6 @@ public interface SMSTransactionRepository extends JpaRepository<SMSTransaction, 
 
 	public List<SMSTransaction> findByUsername(String username) throws SilException;
 
-	public List<SMSTransaction> findByUsernameOrderByUsernameDesc(String username) throws SilException;
+	public List<SMSTransaction> findByUsernameOrderByIdDesc(String username) throws SilException;
 
 }

@@ -49,7 +49,7 @@ public class SMSTransaction implements Serializable {
 	@Column(name = "actionDate", nullable = false, length = 10)
 	private Date actionDate;
 
-	@Column(name = "smsKey", length = 65535)
+	@Column(name = "smsKey", length = 65535, nullable = false)
 	private String smsKey; 
 
 }
