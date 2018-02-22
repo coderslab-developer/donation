@@ -87,10 +87,11 @@ public class SMSTransactionController {
 
 	@RequestMapping(value = "/dealer", method = RequestMethod.POST)
 	public String smsSellToDealer(String username, String smsKey, String smsAmount, String sellerUsername, RedirectAttributes redirect) {
-		if(username == null || smsKey == null || smsAmount == null) {
+		if(username.equalsIgnoreCase("none") || smsKey == null || smsAmount == null) {
 			redirect.addFlashAttribute("em", "Please fillup the form correctly");
 			return "redirect:/smsBucket/" + sellerUsername;
 		}
+		logger.info(username);
 
 		List<SMSTransaction> sellers = null;
 		SMSTransaction seller = null;

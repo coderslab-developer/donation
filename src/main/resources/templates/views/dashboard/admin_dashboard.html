@@ -33,20 +33,20 @@
 
 						<!-- Success / Error Messages -->
 						<div class="col-md-12">
-							<div th:if="${success}" id="success-alert" class="alert alert-success alert-dismissable">
+							<div th:if="${sm}" id="success-alert" class="alert alert-success alert-dismissable">
 								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-								<strong>Success!</strong> <span th:text="${success}">Message</span> 
+								<strong>Success!</strong> <span th:text="${sm}">Message</span> 
 							</div>
-							<div th:if="${error}" id="error-alert" class="alert alert-success alert-dismissable">
+							<div th:if="${em}" id="error-alert" class="alert alert-danger alert-dismissable">
 								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-								<strong>Success!</strong> <span th:text="${error}">Message</span> 
+								<strong>Error!</strong> <span th:text="${em}">Message</span> 
 							</div>
 						</div>
 
 						<!-- super admin dashboard -->
 						<div class="col-md-12 super-admin-dashboard">
 							<div class="panel panel-primary">
-								<div class="panel-heading sadph">
+								<div class="panel-heading custom-primary">
 									<h4 style="margin: 0;" th:text="#{dashboard.table.superAdminDashboard}">Super Admin Dashboard</h4>
 								</div>
 								<div class="panel-body">
@@ -117,8 +117,8 @@
 						<!-- Client details -->
 						<div class="col-md-12 client-details" style="margin-top: 20px;">
 							<div class="panel panel-success">
-								<div class="panel-heading cdph">
-									<h4 style="margin: 0; color: #fff;" th:text="#{dashboard.table.clientLists}">Client Lists</h4>
+								<div class="panel-heading custom-success">
+									<h4 style="margin: 0;" th:text="#{dashboard.table.clientLists}">Client Lists</h4>
 								</div>
 								<div class="panel-body">
 									<table class="table table-bordered table-responsive table-hover" id="example" width="100%">

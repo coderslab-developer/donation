@@ -46,7 +46,7 @@
 						<!-- dealer create form  -->
 						<div class="col-md-12 add-deller-page">
 							<div class="panel panel-primary">
-								<div class="panel-heading sadph">
+								<div class="panel-heading custom-primary">
 									<h4 style="margin: 0;">Add Dealer</h4>
 								</div>
 								<div class="panel-body">
@@ -94,7 +94,7 @@
 												<div class="form-group">
 													<label>Mobile</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}">Error</span>
 													<div class="required-field-block">
-														<input type="text" th:field="*{mobile}" class="form-control" required="required"/>
+														<input type="text" th:field="*{mobile}" class="form-control numeric-only" maxlength="11" required="required"/>
 														<div class="required-icon">
 															<div class="text">*</div>
 														</div>
