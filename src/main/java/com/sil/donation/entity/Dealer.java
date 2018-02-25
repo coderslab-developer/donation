@@ -89,6 +89,12 @@ public class Dealer implements Serializable {
 	private Integer activeClients;
 
 	@Transient
-	private Integer deactiveClients;
+	private Integer inactiveClients;
+
+	@Transient
+	private Integer totalSellOfSoftware;
+
+	@Transient
+	private Integer serviceRenewOnThisMonth;
 
 }

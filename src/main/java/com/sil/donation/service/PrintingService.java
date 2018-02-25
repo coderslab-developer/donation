@@ -3,10 +3,15 @@
  */
 package com.sil.donation.service;
 
-import javax.xml.transform.TransformerException;
+import java.io.ByteArrayOutputStream;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+
+import org.apache.fop.apps.FOPException;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
 
 import com.sil.donation.entity.Dealer;
 
@@ -18,12 +23,21 @@ import com.sil.donation.entity.Dealer;
 public interface PrintingService {
 
 	/**
-	 * Transform dealer profile to thermal print
-	 * @param dealer
-	 * @param xslTemplate
-	 * @return
-	 * @throws TransformerException
+	 * Transform any document object to Byte Array output Stream for print
+	 * 
+	 * @param doc
+	 * @param template
+	 * @return ByteArrayOutputStream
 	 */
-	public ByteArrayOutputStream transformDealerToThermal(Dealer dealer, String xslTemplate) throws TransformerException;
-	
+	public ByteArrayOutputStream transfromToPDFBytes(Document doc, String template)
+			throws TransformerFactoryConfigurationError, TransformerException, FOPException;
+
+	/**
+	 * Generate Dealer Profile XML Document object with all information
+	 * 
+	 * @param dealer
+	 * @return Document
+	 */
+	public Document generateDealerProfileDocument(Dealer dealer) throws ParserConfigurationException;
+
 }

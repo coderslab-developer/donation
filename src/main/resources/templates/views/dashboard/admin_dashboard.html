@@ -68,7 +68,7 @@
 										</tr>
 										<tr>
 											<td style="width: 30%" th:text="#{dashboard.inactiveClient}">Deactive Client</td>
-											<td style="width: 5%"> <span class="dashboardItmes" th:text="${adminDashboard.deactiveClient}"></span></td>
+											<td style="width: 5%"> <span class="dashboardItmes" th:text="${adminDashboard.inactiveClients}"></span></td>
 											<td style="width: 30%; text-align: center;"></td>
 											<td style="width: 30%"></td>
 											<td style="width: 5%"></td>
@@ -94,7 +94,7 @@
 												<td th:text="${row.mobile}">01515634889</td>
 												<td th:text="${row.status == true?'Active':'Inactive'}"></td>
 												<td th:text="${row.activeClients}"></td>
-												<td th:text="${row.deactiveClients}">3</td>
+												<td th:text="${row.inactiveClients}">3</td>
 												<td style="text-align: center;">
 													<div class="btn-group">
 														<a th:href="@{/dealer/view/} + ${row.dealerId}" data-toggle="tooltip" th:title="#{dashboard.table.viewProfile}" class="btn btn-info btn-sm"><i class="fa fa-eye"></i> </a>

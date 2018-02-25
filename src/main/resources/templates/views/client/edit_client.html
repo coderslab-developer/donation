@@ -87,7 +87,7 @@
 													<div class="form-group">
 														<label>Password</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</span>
 														<div class="required-field-block">
-															<input type="password" th:field="*{password}" class="form-control"/>
+															<input type="password" th:field="*{password}" class="form-control password"/>
 															<div class="required-icon">
 																<div class="text">*</div>
 															</div>
@@ -98,7 +98,7 @@
 													<div class="form-group">
 														<label>Mobile Number</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}">Error</span>
 														<div class="required-field-block">
-															<input type="text" th:field="*{mobile}" class="form-control" required="required"/>
+															<input type="text" th:field="*{mobile}" class="form-control" maxlength="11" required="required"/>
 															<div class="required-icon">
 																<div class="text">*</div>
 															</div>
@@ -123,6 +123,9 @@
 												<label>Website</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('website')}" th:errors="*{website}">Error</span>
 												<input type="text" th:field="*{website}" class="form-control"/>
 											</div>
+											<div class="form-group">
+												<label class="checkbox-inline"><input type="checkbox" th:field="*{smsService}"/> SMS Service</label>
+											</div>
 										</div>
 										<div class="col-md-4">
 											<div class="form-group">
@@ -143,8 +146,7 @@
 											</div>
 										</div>
 										<div class="col-md-12" style="text-align: center;">
-											<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save Client</button>
-											<button type="reset" class="btn btn-danger"><i class="fa fa-refresh"></i> Reset</button>
+											<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Update Client</button>
 										</div>
 									</form>
 								</div>

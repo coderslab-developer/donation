@@ -58,7 +58,7 @@
 											</div>
 											<div class="form-group">
 												<label>Days</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('days')}" th:errors="*{days}">Please enter days</span>
-												<input type="number" th:field="*{days}" class="form-control" min="1"/>
+												<input type="text" th:field="*{days}" class="form-control numeric-only" min="1"/>
 											</div>
 											<div class="form-group">
 												<label class="checkbox-inline"><input type="checkbox" th:field="*{status}"/> Active</label>

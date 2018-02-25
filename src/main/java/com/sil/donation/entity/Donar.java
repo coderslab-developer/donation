@@ -75,19 +75,19 @@ public class Donar implements Serializable {
 	private Date registerDate;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "updateDate", length = 10)
-	private Date updateDate;
-
-	@Transient
-	private List<Category> categories;
-
-	@Transient
-	private String categoryName;
+	@Column(name = "smsDate", length = 10)
+	private Date smsDate;
 
 	@Column(name = "photo", length = 225)
 	private String photo;
 
 	@Column(name = "archive", columnDefinition = "BOOLEAN")
 	private boolean archive;
+
+	@Transient
+	private List<Category> categories;
+
+	@Transient
+	private String categoryName;
 
 }

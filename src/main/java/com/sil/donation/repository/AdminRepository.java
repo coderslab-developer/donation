@@ -17,4 +17,6 @@ import com.sil.donation.exception.SilException;
 public interface AdminRepository extends JpaRepository<Admin, Integer> {
 
 	public Admin findByUsername(String username) throws SilException;
+
+	public Admin findByUsernameAndArchive(String username, boolean archive) throws SilException;
 }

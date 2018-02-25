@@ -52,7 +52,7 @@
 										<div class="btn-group pull-right">
 											<a th:href="@{/}" class="btn btn-sm btn-success"><i class="fa fa-backward"></i> Back</a>
 											<a th:href="@{/dealer/edit/} + ${dealer.dealerId}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a>
-											<button class="btn btn-sm btn-info print"><i class="fa fa-print"></i> Print</buton>
+											<a th:href="@{/print/dealer/} + ${dealer.dealerId}" target="_blank" class="btn btn-sm btn-info"><i class="fa fa-print"></i> Print</buton>
 										</div>
 									</div>
 								</div>

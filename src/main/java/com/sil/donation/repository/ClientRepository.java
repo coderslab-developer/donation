@@ -32,4 +32,8 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
 
 	Client findByUsernameAndArchive(String username, boolean archive) throws SilException;
 
+	List<Client> findAllByDealerIdAndStatusAndSmsServiceAndArchive(Integer dealerId, boolean status, boolean smsService, boolean archive) throws SilException;
+
+	List<Client> findAllBySmsServiceAndStatusAndArchive(boolean smsService, boolean status, boolean archive) throws SilException;
+
 }

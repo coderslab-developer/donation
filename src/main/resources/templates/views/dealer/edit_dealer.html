@@ -86,7 +86,7 @@
 												<div class="form-group">
 													<label>Password</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</span>
 													<div class="required-field-block">
-														<input type="password" th:field="*{password}" class="form-control"/>
+														<input type="password" th:field="*{password}" class="form-control password"/>
 														<div class="required-icon">
 															<div class="text">*</div>
 														</div>
@@ -95,7 +95,7 @@
 												<div class="form-group">
 													<label>Mobile</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}">Error</span>
 													<div class="required-field-block">
-														<input type="text" th:field="*{mobile}" class="form-control" required="required"/>
+														<input type="text" th:field="*{mobile}" maxlength="11" class="form-control" required="required"/>
 														<div class="required-icon">
 															<div class="text">*</div>
 														</div>

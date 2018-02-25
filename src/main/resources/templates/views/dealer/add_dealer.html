@@ -66,7 +66,7 @@
 													<label>Dealer Username</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span>
 													<span id="usernameError" class="pull-right text-danger"></span>
 													<div class="required-field-block">
-														<input type="text" th:field="*{username}" class="form-control" th:attr="action=@{/users/checkusername}" required="required"/>
+														<input type="text" nospace="true" th:field="*{username}" class="form-control" th:attr="action=@{/users/checkusername}" required="required"/>
 														<div class="required-icon">
 															<div class="text">*</div>
 														</div>
@@ -85,7 +85,7 @@
 												<div class="form-group">
 													<label>Password</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</span>
 													<div class="required-field-block">
-														<input type="password" th:field="*{password}" class="form-control"/>
+														<input type="password" th:field="*{password}" class="form-control password" required="required"/>
 														<div class="required-icon">
 															<div class="text">*</div>
 														</div>

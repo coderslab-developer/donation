@@ -79,7 +79,7 @@
 											<div class="form-group">
 												<label>Mobile</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}">Please enter mobile number</span>
 												<div class="required-field-block">
-													<input type="text" th:field="*{mobile}" class="form-control" required="required"/>
+													<input type="text" th:field="*{mobile}" maxlength="11" class="form-control" required="required"/>
 													<div class="required-icon">
 														<div class="text">*</div>
 													</div>

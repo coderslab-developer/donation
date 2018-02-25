@@ -101,6 +101,10 @@
 													<div class="col-md-8 profileView-div" th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="${days.convert(client.expireDate.getTime() - client.registerDate.getTime(), millis)}"></div>
 												</div>
 												<div class="form-group row" style="margin-bottom: 10px;">
+													<label class="col-md-3 profileView-label">SMS Service</label>
+													<div class="col-md-8 profileView-div" th:text="${client.smsService?'Yes':'No'}"></div>
+												</div>
+												<div class="form-group row" style="margin-bottom: 10px;">
 													<label class="col-md-3 profileView-label">Status</label>
 													<div class="col-md-8 profileView-div" th:text="${client.status?'Active':'Inactive'}"></div>
 												</div>

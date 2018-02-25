@@ -25,6 +25,7 @@ import com.sil.donation.exception.SilException;
 import com.sil.donation.model.AdminDashboard;
 import com.sil.donation.model.ClientDashboard;
 import com.sil.donation.model.DealerDashboard;
+import com.sil.donation.model.UserRole;
 import com.sil.donation.service.CategoryService;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DealerService;
@@ -61,7 +62,7 @@ public class DashboardController {
 			role = r;
 		}
 
-		if(role.equalsIgnoreCase("ROLE_ADMIN")) {
+		if(role.equalsIgnoreCase(UserRole.ROLE_ADMIN.name())) {
 			Map<String, Object> map = getAllDealerAndClientInfo();
 			try {
 				model.addAttribute("adminDashboard", getAdminDashBoardInfo());
@@ -71,7 +72,7 @@ public class DashboardController {
 			model.addAttribute("clients", map.get("clients"));
 			model.addAttribute("dealers", map.get("dealers"));
 			return LOCATION + REDIRECT_TO_ADMIN;
-		}else if(role.equalsIgnoreCase("ROLE_DEALER")) {
+		}else if(role.equalsIgnoreCase(UserRole.ROLE_DEALER.name())) {
 			Map<String, Object> map = getAllDealersInfo(authentication.getName());
 			model.addAttribute("clients", map.get("clients"));
 			try {
@@ -80,7 +81,7 @@ public class DashboardController {
 				e.printStackTrace();
 			}
 			return LOCATION + REDIRECT_TO_DEALER;
-		}else if(role.equalsIgnoreCase("ROLE_CLIENT")){
+		}else if(role.equalsIgnoreCase(UserRole.ROLE_CLIENT.name())){
 			try {
 				model.addAttribute("clientDashboard", getClientDashboardInfo(authentication.getName()));
 				model.addAttribute("donars", getAllDonarsInfo(authentication.getName()).get("donars"));
@@ -172,7 +173,7 @@ public class DashboardController {
 		});
 		dealers.stream().forEach(d -> {
 			try {
-				d.setDeactiveClients(clientService.findByDealerIdAndStatusAndArchive(d.getDealerId(), false, false).size());
+				d.setInactiveClients(clientService.findByDealerIdAndStatusAndArchive(d.getDealerId(), false, false).size());
 			} catch (SilException e) {
 				logger.error(e.getMessage());
 			}
@@ -199,7 +200,7 @@ public class DashboardController {
 	public AdminDashboard getAdminDashBoardInfo() throws SilException {
 		AdminDashboard adminDashboard = new AdminDashboard();
 		adminDashboard.setActiveClient(clientService.findByStatusAndArchive(true, false).size());
-		adminDashboard.setDeactiveClient(clientService.findByStatusAndArchive(false, false).size());
+		adminDashboard.setInactiveClients(clientService.findByStatusAndArchive(false, false).size());
 		adminDashboard.setTotalDealerOfSoftware(dealerService.findAllByArchive(false).size());
 		adminDashboard.setTotalSellOfSoftware(dealerService.findAllByArchive(false).size() + clientService.findAllByArchive(false).size());
 		List<Client> renewalClients = new ArrayList<>();
@@ -222,8 +223,8 @@ public class DashboardController {
 		ClientDashboard clientDashboard = new ClientDashboard();
 		List<Donar> donars = donarService.findAllByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false);
 		clientDashboard.setTotalDonar(donars.size());
-		clientDashboard.setActiveDonar(donars.stream().filter(d -> d.isStatus() == true).collect(Collectors.toList()).size());
-		clientDashboard.setInactiveDonar(donars.stream().filter(d -> d.isStatus() == false).collect(Collectors.toList()).size());
+		clientDashboard.setActiveDonar(donars.stream().filter(d -> Boolean.TRUE == d.isStatus()).collect(Collectors.toList()).size());
+		clientDashboard.setInactiveDonar(donars.stream().filter(d -> Boolean.FALSE == d.isStatus()).collect(Collectors.toList()).size());
 		clientDashboard.setNumberOfPayeeDonarInThisMonth(0);
 		return clientDashboard;
 	}

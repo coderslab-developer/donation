@@ -85,7 +85,7 @@ public class SMSTransactionController {
 		return "redirect:/smsBucket/" + username;
 	}
 
-	@RequestMapping(value = "/dealer", method = RequestMethod.POST)
+	@RequestMapping(value = "/sellSMS", method = RequestMethod.POST)
 	public String smsSellToDealer(String username, String smsKey, String smsAmount, String sellerUsername, RedirectAttributes redirect) {
 		if(username.equalsIgnoreCase("none") || smsKey == null || smsAmount == null) {
 			redirect.addFlashAttribute("em", "Please fillup the form correctly");
@@ -104,6 +104,9 @@ public class SMSTransactionController {
 					redirect.addFlashAttribute("em", "You have no enough sms to sell");
 					return "redirect:/smsBucket/" + sellerUsername;
 				}
+			}else {
+				redirect.addFlashAttribute("em", "You have no enough sms to sell");
+				return "redirect:/smsBucket/" + sellerUsername;
 			}
 		} catch (SilException e) {
 			logger.error(e.getMessage());

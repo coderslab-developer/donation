@@ -66,7 +66,7 @@
 												<label>Username</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span>
 												<span id="usernameError" class="text-danger pull-right"></span>
 												<div class="required-field-block">
-													<input type="text" th:field="*{username}" class="form-control"  th:attr="action=@{/users/checkusername}" required="required"/>
+													<input type="text" nospace="true" th:field="*{username}" class="form-control"  th:attr="action=@{/users/checkusername}" required="required"/>
 													<div class="required-icon">
 														<div class="text">*</div>
 													</div>
@@ -87,7 +87,7 @@
 													<div class="form-group">
 														<label>Password</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</span>
 														<div class="required-field-block">
-															<input type="password" th:field="*{password}" class="form-control" required="required"/>
+															<input type="password" th:field="*{password}" class="form-control password" required="required"/>
 															<div class="required-icon">
 																<div class="text">*</div>
 															</div>
@@ -98,7 +98,7 @@
 													<div class="form-group">
 														<label>Mobile Number</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}">Error</span>
 														<div class="required-field-block">
-															<input type="text" th:field="*{mobile}" class="form-control" required="required"/>
+															<input type="text" th:field="*{mobile}" class="form-control" maxlength="11" required="required"/>
 															<div class="required-icon">
 																<div class="text">*</div>
 															</div>
@@ -122,6 +122,9 @@
 											<div class="form-group">
 												<label>Website</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('website')}" th:errors="*{website}">Error</span>
 												<input type="text" th:field="*{website}" class="form-control"/>
+											</div>
+											<div class="form-group">
+												<label class="checkbox-inline"><input type="checkbox" th:field="*{smsService}"/> SMS Service</label>
 											</div>
 											<div class="form-group">
 												<label class="checkbox-inline"><input type="checkbox" th:field="*{status}"/> Active</label>

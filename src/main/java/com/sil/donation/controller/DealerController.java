@@ -378,55 +378,5 @@ public class DealerController {
 		dealerDashboard.setServiceRenewOnThisMonth(renewalClients.size());
 		return dealerDashboard;
 	}
-	
-	@RequestMapping(value = "/print/{dealerId}")
-	public ResponseEntity<byte[]> printDealerProfile(@PathVariable("dealerId") Integer dealerId, Model model, Locale locale) {
-		String xslTemplate = "standard_dealer_profile_xsl_template.xsl";
-		
-		Dealer dealer = null;
-		try {
-			dealer = dealerService.findByDealerIdAndArchive(dealerId, false);
-			return responseDocument(dealer, xslTemplate, locale);
-		} catch (SilException e) {
-			logger.error(e.getMessage());
-		}
-		if(logger.isDebugEnabled()) logger.debug("Dealer : {}", dealer);
-		
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(new MediaType("text", "html"));
-		String em = "Print create pdf error";
-		
-		return new ResponseEntity<>(em.getBytes(), headers, HttpStatus.INTERNAL_SERVER_ERROR); 
-	}
-	
-	private ResponseEntity<byte[]> responseDocument(Dealer dealer, String template, Locale locale){
-		HttpHeaders headers = new HttpHeaders();
-		
-		ByteArrayOutputStream out = null;
-		try {
-			out = printingService.transformDealerToThermal(dealer, template);
-			//headers.setContentType(new MediaType("application", "pdf"));
-			//headers.setContentType(new MediaType("application", "csv"));
-		} catch (TransformerException e) {
-			e.printStackTrace();
-		}
-		
-		String documentName = "dealer_" + Math.round((Math.random() * 10000)) + "" + (Calendar.getInstance().getTimeInMillis() % dealer.hashCode());
-		String absolutePath = null;
-		File tempFile = null;
-		try {
-			tempFile = File.createTempFile(documentName, ".pdf");
-			FileOutputStream fout = new FileOutputStream(tempFile);
-			//out.writeTo(fout);
-			fout.write(out.toByteArray());
-			fout.close();
-			
-			absolutePath = tempFile.getAbsolutePath();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return new ResponseEntity<byte[]>(out.toByteArray(), headers, HttpStatus.OK);
-	}
 
 }

@@ -23,4 +23,6 @@ public interface DonarRepository extends JpaRepository<Donar, Integer> {
 	List<Donar> findAllByClientId(Integer clientId) throws SilException;
 
 	Donar findByDonarIdAndArchive(Integer donarId, boolean archive) throws SilException;
+
+	List<Donar> findAllByClientIdAndSmsServiceAndStatusAndArchive(Integer clientId, boolean smsService, boolean status, boolean archive) throws SilException;
 }

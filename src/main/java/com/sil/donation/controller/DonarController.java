@@ -11,6 +11,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,7 +119,7 @@ public class DonarController {
 				//set photo name into database
 				donar.setPhoto(fileName);
 			} catch (IOException e) {
-				logger.error("Error: {}" , e.getMessage());
+				if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 			}
 		}
 
@@ -126,9 +127,14 @@ public class DonarController {
 		try {
 			donar.setClientId(clientService.findByUsernameAndArchive(username, false).getClientId());
 		} catch (SilException e) {
-			logger.error("Error : {}" , e.getMessage());
+			if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 		}
 		donar.setRegisterDate(new Date());
+		try {
+			donar.setSmsDate(DateUtils.addDays(donar.getRegisterDate(), categoryService.findByCategoryIdAndArchive(donar.getCategoryId(), false).getDays()));
+		} catch (SilException e) {
+			if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
+		}
 		donar.setArchive(false);
 		donarService.save(donar);
 		redirect.addFlashAttribute("sm", "Donar created successfully");

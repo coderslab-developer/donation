@@ -58,4 +58,14 @@ public class ClientService {
 	public Client findByUsernameAndArchive(String username, boolean archive) throws SilException {
 		return clientRepository.findByUsernameAndArchive(username, archive);
 	}
+
+	public List<Client> findAllByDealerIdAndStatusAndSmsServiceAndArchive(Integer dealerId, boolean status, boolean smsService, boolean archive) throws SilException{
+		return clientRepository.findAllByDealerIdAndStatusAndSmsServiceAndArchive(dealerId, status, smsService, archive);
+	}
+	
+	public List<Client> findAllBySmsServiceAndStatusAndArchive(boolean smsService, boolean status, boolean archive) throws SilException{
+		return clientRepository.findAllBySmsServiceAndStatusAndArchive(smsService, status, archive);
+	}
+	
+	
 }

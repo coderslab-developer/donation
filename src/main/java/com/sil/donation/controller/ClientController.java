@@ -188,6 +188,8 @@ public class ClientController {
 		if(!client.getAddress().isEmpty()) {
 			c.setAddress(client.getAddress());
 		}
+		c.setSmsService(client.isSmsService());
+		
 		
 		//Remove previous image
 		if(!file.isEmpty() && client.getClientId() != null && c.getPhoto() != null) {

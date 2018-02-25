@@ -22,6 +22,10 @@ public class SMSTransactionService {
 	@Autowired
 	SMSTransactionRepository smsTransactionRepository;
 
+	public List<SMSTransaction> findAll() {
+		return smsTransactionRepository.findAll();
+	}
+
 	public List<SMSTransaction> findByUsernameOrderByIdDesc(String username) throws SilException {
 		return smsTransactionRepository.findByUsernameOrderByIdDesc(username);
 	}

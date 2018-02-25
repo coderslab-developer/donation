@@ -78,7 +78,7 @@
 											<div class="form-group">
 												<label>Mobile</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}">Please enter mobile number</span>
 												<div class="required-field-block">
-													<input type="text" th:field="*{mobile}" class="form-control" required="required"/>
+													<input type="text" th:field="*{mobile}" maxlength="11" class="form-control" required="required"/>
 													<div class="required-icon">
 														<div class="text">*</div>
 													</div>
@@ -87,7 +87,7 @@
 											<div class="form-group">
 												<label>Payable Amount</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('payableAmount')}" th:errors="*{payableAmount}">Please enter amount</span>
 												<div class="required-field-block">
-													<input type="text" th:field="*{payableAmount}" class="form-control" required="required"/>
+													<input type="text" th:field="*{payableAmount}" class="form-control numeric-only" required="required"/>
 													<div class="required-icon">
 														<div class="text">*</div>
 													</div>

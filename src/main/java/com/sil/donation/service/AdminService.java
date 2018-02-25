@@ -32,4 +32,8 @@ public class AdminService {
 		return adminRepository.findByUsername(username);
 	}
 
+	public Admin findByUsernameAndArchive(String username, boolean archive) throws SilException {
+		return adminRepository.findByUsernameAndArchive(username, archive);
+	}
+
 }

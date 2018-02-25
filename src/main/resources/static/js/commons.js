@@ -31,9 +31,9 @@ $(document).ready(function(){
 	$('.numeric-only').on('keydown', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||(/65|67|86|88/.test(e.keyCode)&&(e.ctrlKey===true||e.metaKey===true))&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
 
 	//password strength checker
-	//declare id name 'password'
+	//declare class name 'password'
 	$(document).ready(function() {
-		$('#password').password().on('password.score', function (e, score) {
+		$('.password').password().on('password.score', function (e, score) {
 			if (score > 75) {console.log(score)}
 		});
 	});
@@ -70,6 +70,22 @@ $(document).ready(function(){
 			removeClass($(this));
 			$(this).after($("<div/>").addClass('text-success').html("Valid"));
 		}
+	});
+
+	//prevent space character
+	//declare nospace="true" attribute
+	$('input[nospace="true"]').keypress(function( e ) {
+		if(!/[0-9a-zA-Z-]/.test(String.fromCharCode(e.which)))
+		return false;
+	});
+
+	//Print button
+	//declare class name 'print'
+	$(document).ready(function(){
+		$('.print').on('click', function(){
+			console.log("hi");
+			$('#inside_element').print();
+		})
 	});
 
 });
