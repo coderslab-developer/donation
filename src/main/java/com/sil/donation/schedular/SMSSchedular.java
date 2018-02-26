@@ -36,8 +36,8 @@ public class SMSSchedular {
 	@Autowired
 	private DonarService donarService;
 
-	//@Scheduled(cron = "0 0 23 * * *") // 8 o'clock of every day
-	@Scheduled(fixedRate = 30000) // 8 o'clock of every day
+	// 8 o'clock of every day
+	@Scheduled(cron = "0 0 20 * * *") 
 	private void sendSMSSchedular()  {
 		List<Client> clients = new ArrayList<>();
 		List<Donar> donars = new ArrayList<>();

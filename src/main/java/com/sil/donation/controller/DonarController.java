@@ -68,7 +68,7 @@ public class DonarController {
 		try {
 			donar.setCategories(categoryService.findByClientIdAndStatusAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), true, false));
 		} catch (SilException e) {
-			logger.error("Error : {}" , e.getMessage());
+			if(logger.isErrorEnabled()) logger.error(e.getMessage() , e);
 		}
 		model.addAttribute("donar", donar);
 		return LOCATION + LOCATION_TO;
@@ -83,7 +83,7 @@ public class DonarController {
 			try {
 				donar.setCategories(categoryService.findByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false));
 			} catch (SilException e) {
-				logger.error("Error : {}" , e.getMessage());
+				if(logger.isErrorEnabled()) logger.error(e.getMessage() , e);
 			}
 			return LOCATION + LOCATION_TO;
 		}
@@ -150,7 +150,7 @@ public class DonarController {
 			try {
 				donar.setCategories(categoryService.findByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false));
 			} catch (SilException e) {
-				logger.error("Error : {}" , e.getMessage());
+				if(logger.isErrorEnabled()) logger.error(e.getMessage() , e);
 			}
 			return LOCATION + "edit_donar";
 		}
@@ -160,7 +160,7 @@ public class DonarController {
 			try {
 				d = donarService.findByDonarId(donar.getDonarId(), false);
 			} catch (SilException e) {
-				logger.error("Error : {}" , e.getMessage());
+				if(logger.isErrorEnabled()) logger.error(e.getMessage() , e);
 			}
 		}
 
@@ -203,9 +203,11 @@ public class DonarController {
 				ImageResizer.resize(dir + "\\" + fileName, dir + "\\" + fileName, Integer.valueOf(width), Integer.valueOf(height));
 
 				//set photo name into database
-				d.setPhoto(fileName);
+				if(fileName != null) {
+					d.setPhoto(fileName);
+				}
 			} catch (IOException e) {
-				logger.error("Error: {}" , e.getMessage());
+				if(logger.isErrorEnabled()) logger.error(e.getMessage() , e);
 			}
 		}
 
@@ -232,7 +234,7 @@ public class DonarController {
 			donar = donarService.findByDonarId(donarId, false);
 			donar.setCategories(categoryService.findByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false));
 		} catch (SilException e) {
-			logger.error("Error : {}" , e.getMessage());
+			if(logger.isErrorEnabled()) logger.error(e.getMessage() , e);
 		}
 		model.addAttribute("pageTitle", "Edit Donar");
 		model.addAttribute("donar", donar);
@@ -247,7 +249,7 @@ public class DonarController {
 			donarService.save(donar);
 			redirect.addFlashAttribute("sm", "Donar status change successfully");
 		} catch (SilException e) {
-			logger.error("Error : {}" , e.getMessage());
+			if(logger.isErrorEnabled()) logger.error(e.getMessage() , e);
 		}
 		return REDIRECT;
 	}
@@ -259,7 +261,7 @@ public class DonarController {
 			donar.setCategoryName(categoryService.findByCategoryIdAndArchive(donar.getCategoryId(), false).getName());
 			model.addAttribute("donar", donar);
 		} catch (SilException e) {
-			logger.error("Error : {}" , e.getMessage());
+			if(logger.isErrorEnabled()) logger.error(e.getMessage() , e);
 		}
 		return LOCATION + "view_donar_profile";
 	}
@@ -272,7 +274,7 @@ public class DonarController {
 			donarService.save(donar);
 			redirect.addFlashAttribute("sm", "Donar deleted successfully");
 		} catch (SilException e) {
-			logger.error("Error : {}" , e.getMessage());
+			if(logger.isErrorEnabled()) logger.error(e.getMessage() , e);
 		}
 		return REDIRECT;
 	}

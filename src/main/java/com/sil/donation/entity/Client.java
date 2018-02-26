@@ -95,4 +95,7 @@ public class Client implements Serializable {
 	@Transient
 	private List<Donar> donars;
 
+	@Transient
+	private String remainingDay;
+
 }

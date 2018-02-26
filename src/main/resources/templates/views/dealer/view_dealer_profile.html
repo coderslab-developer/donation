@@ -35,11 +35,11 @@
 						<div class="col-md-12">
 							<div th:if="${success}" id="success-alert" class="alert alert-success alert-dismissable">
 								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-								<strong>Success!</strong> <span th:text="${success}">Message</span> 
+								<strong>Success!</strong> <span th:text="${success}">Message</span>
 							</div>
 							<div th:if="${error}" id="error-alert" class="alert alert-success alert-dismissable">
 								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-								<strong>Success!</strong> <span th:text="${error}">Message</span> 
+								<strong>Success!</strong> <span th:text="${error}">Message</span>
 							</div>
 						</div>
 
@@ -50,8 +50,8 @@
 									<div class="row panel-heading-row">
 										<h4 th:text="#{dashboard.table.dealerInfo}">Dealer Info</h4>
 										<div class="btn-group pull-right">
-											<a th:href="@{/}" class="btn btn-sm btn-success"><i class="fa fa-backward"></i> Back</a>
-											<a th:href="@{/dealer/edit/} + ${dealer.dealerId}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a>
+											<a th:href="@{/}" class="btn btn-sm btn-success"><i class="fa fa-backward"></i> Back</a> 
+											<a th:href="@{/dealer/edit/} + ${dealer.dealerId}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a> 
 											<a th:href="@{/print/dealer/} + ${dealer.dealerId}" target="_blank" class="btn btn-sm btn-info"><i class="fa fa-print"></i> Print</buton>
 										</div>
 									</div>
@@ -103,16 +103,18 @@
 											</div>
 											<div class="col-md-2 pull-right">
 												<div class="profile-photo pull-right" th:unless="${#strings.isEmpty(dealer.photo)}">
-													<img th:src="@{/resources/upload/dealer/} + ${dealer.photo}"/>
+													<img th:src="@{/resources/upload/dealer/} + ${dealer.photo}" />
 												</div>
 											</div>
 										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="row">
-											<hr/>
+											<hr />
 											<h3 align="center">Clients List</h3>
-											<table class="table table-bordered table-responsive table-hover" id="example" width="100%">
+											<table
+												class="table table-bordered table-responsive table-hover"
+												id="example" width="100%">
 												<thead>
 													<tr style="color: tomato;">
 														<th th:text="#{dashboard.table.no}">No.</th>
@@ -141,12 +143,15 @@
 						</div>
 						<span th:substituteby="commons :: common-copyright"></span>
 					</div>
-				</div><!-- / end content section -->
+				</div>
+				<!-- / end content section -->
 
-			</div><!-- / end row -->
-		</div><!-- / end conatiner -->
+			</div>
+			<!-- / end row -->
+		</div>
+		<!-- / end conatiner -->
 
 		<span th:substituteby="commons :: common-js"></span>
-		<script type="text/javascript" th:src="@{/js/dealer/dealer.js}"></script> 
+		<script type="text/javascript" th:src="@{/js/dealer/dealer.js}"></script>
 	</body>
 </html>

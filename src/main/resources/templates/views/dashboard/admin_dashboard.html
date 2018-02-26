@@ -99,7 +99,7 @@
 													<div class="btn-group">
 														<a th:href="@{/dealer/view/} + ${row.dealerId}" data-toggle="tooltip" th:title="#{dashboard.table.viewProfile}" class="btn btn-info btn-sm"><i class="fa fa-eye"></i> </a>
 														<a th:href="@{/dealer/edit/} + ${row.dealerId}" data-toggle="tooltip" th:title="#{dashboard.table.editProfile}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> </a>
-														<a th:href="@{/dealer/print/} + ${row.dealerId}" data-toggle="tooltip" th:title="#{dashboard.table.printProfile}" class="btn btn-success btn-sm"><i class="fa fa-print"></i> </a>
+														<a th:href="@{/print/dealer/} + ${row.dealerId}" target="_blank" data-toggle="tooltip" th:title="#{dashboard.table.printProfile}" class="btn btn-success btn-sm"><i class="fa fa-print"></i> </a>
 														<a th:href="@{/dealer/archive/} + ${row.dealerId}" data-toggle="tooltip" th:title="#{dashboard.table.deleteProfile}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> </a>
 														<a th:if="${row.status}" th:href="@{/dealer/changeStatus/} + ${row.dealerId}" data-toggle="tooltip" th:title="#{dashboard.table.suspendProfile}" class="btn btn-warning btn-sm"><i class="fa fa-arrow-down"></i> </a>
 														<a  th:unless="${row.status}" th:href="@{/dealer/changeStatus/} + ${row.dealerId}" data-toggle="tooltip" th:title="#{dashboard.table.activeProfile}" class="btn btn-warning btn-sm"><i class="fa fa-arrow-up"></i> </a>
@@ -139,7 +139,7 @@
 												<td th:text="${row.clientName}">Jatrabari Madrasha</td>
 												<td th:text="${row.dealerName}">Habibur rahman</td>
 												<td th:text="${row.expireDate}">15th june 2017</td>
-												<td th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="${days.convert(row.expireDate.getTime() - row.registerDate.getTime(), millis)}">152 days</td>
+												<td th:text="${row.RemainingDay}">Remaining Days</td>
 												<td th:text="${row.status == true?'Active':'Inactive'}"></td>
 												<td style="text-align: center;">
 													<div class="btn-group">

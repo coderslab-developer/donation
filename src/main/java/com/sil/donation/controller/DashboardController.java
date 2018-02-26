@@ -67,7 +67,7 @@ public class DashboardController {
 			try {
 				model.addAttribute("adminDashboard", getAdminDashBoardInfo());
 			} catch (SilException e) {
-				logger.error("Error : {}", e.getMessage());
+				if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 			}
 			model.addAttribute("clients", map.get("clients"));
 			model.addAttribute("dealers", map.get("dealers"));
@@ -78,16 +78,15 @@ public class DashboardController {
 			try {
 				model.addAttribute("dealerDashboard", getDealerDashboardInfo(authentication.getName()));
 			} catch (SilException e) {
-				e.printStackTrace();
+				if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 			}
 			return LOCATION + REDIRECT_TO_DEALER;
 		}else if(role.equalsIgnoreCase(UserRole.ROLE_CLIENT.name())){
 			try {
 				model.addAttribute("clientDashboard", getClientDashboardInfo(authentication.getName()));
 				model.addAttribute("donars", getAllDonarsInfo(authentication.getName()).get("donars"));
-				//model.addAttribute("categories", categoryService.findByClientIdAndArchive(clientService.findByUsernameAndArchive(authentication.getName(), false).getClientId(), false));
 			} catch (SilException e) {
-				logger.error(e.getMessage());
+				if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 			}
 			return LOCATION + REDIRECT_TO_CLIENT;
 		}else {
@@ -102,7 +101,7 @@ public class DashboardController {
 			try {
 				d.setCategoryName(categoryService.findByCategoryIdAndArchive(d.getCategoryId(), false).getName());
 			} catch (SilException e) {
-				logger.error(e.getMessage());
+				if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 			}
 		});
 		map.put("donars", donars);
@@ -114,7 +113,7 @@ public class DashboardController {
 		try {
 			dealer = dealerService.findByUsernameAndArchive(username, false);
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 		}
 		DealerDashboard dealerDashboard = new DealerDashboard();
 		dealerDashboard.setActiveClient(clientService.findByDealerIdAndStatusAndArchive(dealer.getDealerId(), true, false).size());
@@ -143,54 +142,53 @@ public class DashboardController {
 			List<Client> clients = clientService.findByDealerIdAndArchive(dealerService.findByUsernameAndArchive(username, false).getDealerId(), false);
 			map.put("clients", clients);
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 		}
 		return map;
 	}
 
 	public Map<String, Object> getAllDealerAndClientInfo() {
 		Map<String, Object> map = new HashMap<>();
-		
+
 		List<Dealer> dealers = null;
+		List<Client> clients = null;
 		try {
 			dealers = dealerService.findAllByArchive(false);
+			clients = clientService.findAllByArchive(false);
 		} catch (SilException e) {
-			logger.error(e.getMessage());
+			if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 		}
+
 		dealers.stream().forEach(d -> {
 			try {
 				d.setClients(clientService.findByDealerIdAndArchive(d.getDealerId(), false));
 			} catch (SilException e) {
-				logger.error(e.getMessage());
+				if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 			}
 		});
 		dealers.stream().forEach(d -> {
 			try {
 				d.setActiveClients(clientService.findByDealerIdAndStatusAndArchive(d.getDealerId(), true, false).size());
 			} catch (SilException e) {
-				logger.error(e.getMessage());
+				if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 			}
 		});
 		dealers.stream().forEach(d -> {
 			try {
 				d.setInactiveClients(clientService.findByDealerIdAndStatusAndArchive(d.getDealerId(), false, false).size());
 			} catch (SilException e) {
-				logger.error(e.getMessage());
+				if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 			}
 		});
 		map.put("dealers", dealers.size() > 0 ? dealers : null);
-		
-		List<Client> clients = null;
-		try {
-			clients = clientService.findAllByArchive(false);
-		} catch (SilException e) {
-			logger.error(e.getMessage());
-		}
+
 		clients.stream().forEach(c -> {
 			try {
 				c.setDealerName(dealerService.findByDealerIdAndArchive(c.getDealerId(), false).getDealerName());
+				long remainingDays = c.getExpireDate().getTime() - new Date().getTime();
+				c.setRemainingDay(String.valueOf(remainingDays / (24* 1000 * 60 * 60)));
 			} catch (Exception e) {
-				logger.error(e.getMessage());
+				if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 			}
 		});
 		map.put("clients", clients.size() > 0 ? clients : null);
