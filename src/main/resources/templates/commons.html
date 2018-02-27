@@ -6,7 +6,7 @@
 				<li th:if="${#authentication.name != 'anonymousUser'}"><a th:href="@{/logout}"><i class="fa fa-sign-out"></i> Logout</a></li>
 				<li th:if="${#authentication.name == 'anonymousUser'}" ><a th:href="@{/login}"><i class="fa fa-sign-in"></i> Login</a></li>
 				<li th:if="${#authentication.name != 'anonymousUser'}"><a href=""><i class="fa fa-user-circle-o"></i> <span th:text="${#authentication.name}"></span> Profile Edit</a></li>
-				<li th:if="${#authentication.name != 'anonymousUser'}"><a href=""><i class="fa fa-envelope-open-o"></i> Last login today night 8.00 pm</a></li>
+				<li th:if="${#authentication.name != 'anonymousUser'}"><a href="#"><i class="fa fa-clock-o"></i> <span th:text="${session.lastLogin}"></span></a></li>
 			</ul>
 		</div>
 	</span>

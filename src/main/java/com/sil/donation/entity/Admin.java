@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 
@@ -43,6 +44,10 @@ public class Admin implements Serializable {
 
 	@Column(name = "password", nullable = false, length = 20)
 	private String password;
+
+	@Size(min = 11, max = 11, message = "Mobile number must be 11 character")
+	@Column(name = "mobile", nullable = false, length = 11)
+	private String mobile;
 
 	@Column(name = "status", columnDefinition = "BOOLEAN")
 	private boolean status;
