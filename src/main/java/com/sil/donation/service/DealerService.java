@@ -47,4 +47,7 @@ public class DealerService {
 		return dealerRepository.findAllByStatusAndArchive(status, archive);
 	}
 
+	public List<Dealer> findAllByAdminIdAndStatusAndArchive(Integer adminId, boolean status, boolean archive) throws SilException {
+		return dealerRepository.findAllByAdminIdAndStatusAndArchive(adminId, status, archive);
+	}
 }

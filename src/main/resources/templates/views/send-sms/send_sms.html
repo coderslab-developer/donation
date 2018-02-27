@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1" />
+		<title th:text="${pageTitle}">SMS Bucket</title>
+		<span th:substituteby="commons :: common-css"></span>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+
+				<!-- header section -->
+				<div class="header col-md-12">
+					<div class="row">
+
+						<!-- header top-->
+						<span th:substituteby="commons :: common-top-menu"></span>
+
+						<!-- header main -->
+						<div class="col-md-12 header-main">
+							<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
+						</div>
+						
+					</div>
+				</div>
+
+				<!-- menu main section-->
+				<span th:substituteby="commons :: common-menu"></span>
+
+				<!-- content section -->
+				<div class="col-md-12 content-area">
+					<div class="row">
+
+						<!-- Success / Error Messages -->
+						<div class="col-md-12">
+							<div th:if="${sm}" id="success-alert" class="alert alert-success alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${sm}">Message</span> 
+							</div>
+							<div th:if="${em}" id="error-alert" class="alert alert-danger alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Error!</strong> <span th:text="${em}">Message</span> 
+							</div>
+						</div>
+
+						<!-- Send SMS Form -->
+						<div class="col-md-12 super-admin-dashboard">
+							<div class="panel panel-primary">
+								<div class="panel-heading custom-primary">
+									<div class="row panel-heading-row">
+										<h4><i class="fa fa-envelope-o"></i> <span th:text="#{sendSMS}">Send SMS</span></h4>
+										<button class="btn btn-success btn-sm pull-right"><i class="fa  fa-envelope-o"></i> <span th:text="${availableSMS}"></span></button>
+									</div>
+								</div>
+								<div class="panel-body" style="font-size: 60px;">
+									<h3>Available SMS <span th:text="${availableSMS}"></span></h3>
+									<hr/>
+								</div>
+							</div>
+						</div>
+						<!-- / end Send SMS Form -->
+
+						<span th:substituteby="commons :: common-copyright"></span>
+					</div>
+				</div><!-- / end content section -->
+
+			</div><!-- / end row -->
+		</div><!-- / end conatiner -->
+
+		<span th:substituteby="commons :: common-js"></span>
+		<script type="text/javascript" th:src="@{/js/sms-bucket/sms_bucket.js}"></script> 
+	</body>
+</html>

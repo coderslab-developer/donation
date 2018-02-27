@@ -1,7 +1,6 @@
 package com.sil.donation.controller;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -10,23 +9,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.xml.transform.TransformerException;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -66,6 +58,7 @@ import com.sil.donation.util.ImageResizer;
 public class DealerController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DealerController.class);
+
 	private static final String PAGE_TITLE = "Add dealer";
 	private static final String REDIRECT = "redirect:/";
 	private static final String REDIRECT_TO = "dealer";
@@ -160,7 +153,7 @@ public class DealerController {
 			redirect.addFlashAttribute("em", "Password must be greater then 6 character");
 			return REDIRECT + "dealer/edit/" + dealer.getDealerId();
 		}
-		
+
 		Dealer d = null;
 		Users users = null;
 		Authorities authorities = null;
@@ -171,7 +164,7 @@ public class DealerController {
 		} catch (SilException e1) {
 			logger.error(e1.getMessage());
 		}
-		
+
 		if(!dealer.getDealerName().isEmpty()) {
 			d.setDealerName(dealer.getDealerName());
 		}

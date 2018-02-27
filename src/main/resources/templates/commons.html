@@ -30,6 +30,7 @@
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
+								<li><a th:href="@{/sendSms/} + ${#authentication.getPrincipal().getUsername()}">Send SMS</a></li>
 								<li><a th:href="@{/smsBucket/} + ${#authentication.getPrincipal().getUsername()}">SMS Bucket</a></li>
 								<li><a th:href="@{/siteConfig/} + ${#authentication.getPrincipal().getUsername()}">Site Config</a></li>
 							</ul>

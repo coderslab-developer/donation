@@ -45,4 +45,8 @@ public class DonarService {
 	public List<Donar> findAllByArchive(boolean archive) throws SilException {
 		return donarRepository.findAllByArchive(archive);
 	}
+
+	public List<Donar> findAllByClientIdAndStatusAndArchive(Integer clientId, boolean status, boolean archive) throws SilException {
+		return donarRepository.findAllByClientIdAndStatusAndArchive(clientId, status, archive);
+	}
 }
