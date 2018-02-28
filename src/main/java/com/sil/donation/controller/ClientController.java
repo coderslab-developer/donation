@@ -34,6 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sil.donation.entity.Authorities;
 import com.sil.donation.entity.Client;
+import com.sil.donation.entity.ClientServiceUpdateInfo;
 import com.sil.donation.entity.Donar;
 import com.sil.donation.entity.Users;
 import com.sil.donation.exception.SilException;
@@ -41,6 +42,7 @@ import com.sil.donation.model.ClientDashboard;
 import com.sil.donation.service.AuthoritiesService;
 import com.sil.donation.service.CategoryService;
 import com.sil.donation.service.ClientService;
+import com.sil.donation.service.ClientServiceUpdateInfoService;
 import com.sil.donation.service.DealerService;
 import com.sil.donation.service.DonarService;
 import com.sil.donation.service.UsersService;
@@ -70,6 +72,7 @@ public class ClientController {
 	@Autowired private AuthoritiesService authoritiesService;
 	@Autowired private CategoryService categoryService;
 	@Autowired private Environment environment;
+	@Autowired private ClientServiceUpdateInfoService clientServiceUpdateInfoService;
 
 	@RequestMapping
 	public String loadClientPage(Model model) {
@@ -116,7 +119,7 @@ public class ClientController {
 				//set photo name into database
 				client.setPhoto(fileName);
 			} catch (IOException e) {
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(), e);
 			}
 		}
 
@@ -133,7 +136,7 @@ public class ClientController {
 		try {
 			client.setDealerId(dealerService.findByUsernameAndArchive(username, false).getDealerId());
 		} catch (SilException e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 
 		try {
@@ -143,7 +146,7 @@ public class ClientController {
 			redirect.addFlashAttribute("sm", "You are successfully add client info into your system");
 		} catch (Exception e) {
 			redirect.addFlashAttribute("em", "Client info not saved successfully");
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 		return REDIRECT + REDIRECT_TO;
 	}
@@ -154,7 +157,7 @@ public class ClientController {
 			redirect.addFlashAttribute("em", "Password must be greater then 6 character");
 			return REDIRECT + "client/edit/" + client.getClientId();
 		}
-		
+
 		Client c = null;
 		Users users = null;
 		Authorities authorities = null;
@@ -163,9 +166,9 @@ public class ClientController {
 			users = usersService.findByUsernameAndArchive(c.getUsername(), false);
 			authorities = authoritiesService.findByUsernameAndArchive(c.getUsername(), false);
 		} catch (SilException e) {
-			logger.error("Error : {}" , e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
-		
+
 		if(!client.getClientName().isEmpty()) {
 			c.setClientName(client.getClientName());
 		}
@@ -189,8 +192,7 @@ public class ClientController {
 			c.setAddress(client.getAddress());
 		}
 		c.setSmsService(client.isSmsService());
-		
-		
+
 		//Remove previous image
 		if(!file.isEmpty() && client.getClientId() != null && c.getPhoto() != null) {
 			String imageName = c.getPhoto();
@@ -200,7 +202,7 @@ public class ClientController {
 				image.delete();
 			}
 		}
-		
+
 		//Image part
 		if(!file.isEmpty()) {
 			//Rename the file 
@@ -232,7 +234,7 @@ public class ClientController {
 				//set photo name into database
 				c.setPhoto(fileName);
 			} catch (IOException e) {
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(), e);
 			}
 		}
 		
@@ -244,7 +246,7 @@ public class ClientController {
 			redirect.addFlashAttribute("sm", "Client info update successfully");
 		} catch (Exception e) {
 			redirect.addFlashAttribute("em", "Client info not update");
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 		
 		return REDIRECT + "client/edit/" + client.getClientId();
@@ -256,7 +258,7 @@ public class ClientController {
 		try {
 			model.addAttribute("client", clientService.findByClientIdAndArchive(clientId, false));
 		} catch (SilException e) {
-			logger.error("Error : {}" , e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 		return LOCATION + "edit_client";
 	}
@@ -270,7 +272,7 @@ public class ClientController {
 				try {
 					d.setCategoryName(categoryService.findByCategoryIdAndArchive(d.getCategoryId(), false).getName());
 				} catch (SilException e) {
-					logger.error(e.getMessage());
+					logger.error(e.getMessage(), e);
 				}
 			});
 			client.setDonars(donars);
@@ -278,7 +280,7 @@ public class ClientController {
 			model.addAttribute("client", client);
 			model.addAttribute("clientDashboard", getClientDashboardInfo(clientId));
 		} catch (SilException e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 		return LOCATION + "view_client_profile";
 	}
@@ -297,7 +299,7 @@ public class ClientController {
 			
 			redirect.addFlashAttribute("sm", "Client status chage successfully");
 		} catch (Exception e) {
-			logger.error("Error : {}" , e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 		return REDIRECT;
 	}
@@ -340,6 +342,87 @@ public class ClientController {
 		clientDashboard.setInactiveDonar(donars.stream().filter(d -> d.isStatus() == Boolean.FALSE).collect(Collectors.toList()).size());
 		clientDashboard.setNumberOfPayeeDonarInThisMonth(0);
 		return clientDashboard;
+	}
+
+	@RequestMapping(value = "/updateService/{clientId}", method = RequestMethod.GET)
+	public String updateClientService(@PathVariable("clientId") Integer clientId, Model model, RedirectAttributes redirect) {
+		Client client = null;
+		try {
+			client = clientService.findByClientIdAndArchive(clientId, false);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		if(client == null) {
+			redirect.addFlashAttribute("em", "No client found");
+			return REDIRECT;
+		}
+
+		ClientServiceUpdateInfo csui = new ClientServiceUpdateInfo();
+		csui.setClientId(client.getClientId());
+		csui.setPreviousExpireDate(client.getExpireDate());
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, 1);
+		Date nextExpireDate = calendar.getTime();
+		csui.setNextExpireDate(nextExpireDate);
+		csui.setClientName(client.getClientName());
+
+		model.addAttribute("csui", csui);
+		model.addAttribute("pageTitle", "Update Service");
+		return LOCATION + "update_service";
+	}
+
+	@RequestMapping(value = "/updateService", method = RequestMethod.POST)
+	public String updateService(Integer clientId, RedirectAttributes redirect) {
+		Client client = null;
+		try {
+			client = clientService.findByClientIdAndArchive(clientId, false);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		if(client == null) {
+			redirect.addFlashAttribute("em", "No client found");
+			return REDIRECT;
+		}
+
+		ClientServiceUpdateInfo csui = new ClientServiceUpdateInfo();
+		csui.setClientId(client.getClientId());
+		csui.setPreviousExpireDate(client.getExpireDate());
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, 1);
+		Date nextExpireDate = calendar.getTime();
+		csui.setNextExpireDate(nextExpireDate);
+		csui.setClientName(client.getClientName());
+		csui.setUpdateBy(client.getUsername());
+		csui.setUpdateDate(new Date());
+
+		boolean status = clientServiceUpdateInfoService.save(csui);
+		Users users = null;
+		if(Boolean.TRUE == status) {
+			try {
+				users = usersService.findByUsernameAndArchive(client.getUsername(), false);
+				users.setEnabled(true);
+			} catch (SilException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		if(users == null) {
+			redirect.addFlashAttribute("em", "Cant found userinfo for this client");
+			return REDIRECT;
+		}
+
+		client.setExpireDate(csui.getNextExpireDate());
+		client.setStatus(true);
+
+		try {
+			clientService.save(client);
+			usersService.save(users);
+			clientServiceUpdateInfoService.save(csui);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+
+		redirect.addFlashAttribute("sm", "Client Service update to " + client.getExpireDate() + " successfully");
+		return REDIRECT + "client/updateService/" + clientId;
 	}
 
 }

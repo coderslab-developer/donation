@@ -207,10 +207,8 @@ public class DashboardController {
 		for(Client c : clientService.findAllByArchive(false)) {
 			cal1.setTime(c.getExpireDate());
 			cal2.setTime(new Date());
-			if(cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)) {
-				if(cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)) {
-					renewalClients.add(c);
-				}
+			if(cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)) {
+				renewalClients.add(c);
 			}
 		}
 		adminDashboard.setServiceRenewCurrentMotnh(renewalClients.size());

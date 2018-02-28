@@ -22,10 +22,7 @@ public class AdminService {
 
 	public boolean save(Admin admin) {
 		Admin a = adminRepository.save(admin);
-		if (a != null) {
-			return true;
-		}
-		return false;
+		return a != null ? true : false;
 	}
 
 	public Admin findByUsername(String username) throws SilException {

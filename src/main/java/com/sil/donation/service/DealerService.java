@@ -21,10 +21,7 @@ public class DealerService {
 
 	public boolean save(Dealer dealer) throws Exception {
 		Dealer d = dealerRepository.save(dealer);
-		if (d != null) {
-			return true;
-		}
-		return false;
+		return d != null ? true : false;
 	}
 
 	public Dealer findByDealerIdAndArchive(Integer dealerId, boolean archive) throws SilException {
