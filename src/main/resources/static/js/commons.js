@@ -1,5 +1,4 @@
 $(document).ready(function(){
-
 	//prevent submitting form by pressing enter key
 	//declare class name 'no-enter'
 	$('.no-enter').on('keyup keypress', function(e) {
@@ -88,4 +87,49 @@ $(document).ready(function(){
 		})
 	});
 
+	//check username and email is already available in database table
+	$("#usersform").trigger("reset");
+	$("#username").focusout(function(){
+		$.post($(this).attr("action"), {'username' : $(this).val()}, function(data){
+			if(data.status){
+				$("#usernameError").html("Username already taken. Please try another username");
+			}else{
+				$("#usernameError").html("");
+			}
+		}).error(function(data){
+			Window.alert("error");
+		});
+	});
+
+	//success or error message alert
+	$("#success-alert, #error-alert").delay(4000).slideUp(200, function() {
+		$(this).alert('close');
+	});
+
+	//Required input field tooltip
+	$('[data-toggle="tooltip"]').tooltip(); 
+	$('.required-icon').tooltip({
+		placement: 'left',
+		title: 'Required field'
+	});
+
+	//Customize bootstrap data-table
+	$('table#example').each(function (tindex, table) {
+		var noSortColumns = [];
+		$(table).find('th').each(function (thindex, column) {
+			if ($(this).attr('data-nosort')) {
+				var value = $(this).attr('data-nosort');
+				if(value == 'Y'){
+					noSortColumns.push(thindex);
+				}
+			}
+		});
+		$(table).DataTable({
+			"responsive" : true,
+			"columnDefs": [{
+				"targets": noSortColumns,
+				"orderable": false
+			}]
+		});
+	});
 });

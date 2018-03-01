@@ -50,7 +50,7 @@
 									<h4 style="margin: 0;">Add Client</h4>
 								</div>
 								<div class="panel-body">
-									<form id="clientform" method="POST" th:action="@{/client}" th:object="${client}" autocomplete="off" enctype="multipart/form-data">
+									<form id="usersform" method="POST" th:action="@{/client}" th:object="${client}" autocomplete="off" enctype="multipart/form-data">
 										<div class="col-md-8">
 											<div class="form-group">
 												<label>Name of the Institute</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('clientName')}" th:errors="*{clientName}">Please enter client/institute name</span>
@@ -76,7 +76,7 @@
 												<label>Email Address</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Please enter email address</span>
 												<span id="emailError" class="pull-right text-danger"></span>
 												<div class="required-field-block">
-													<input type="email" th:field="*{email}" class="form-control" th:attr="action=@{/users/checkemail}" required="required"/>
+													<input type="email" nospace="true" th:field="*{email}" class="form-control" th:attr="action=@{/users/checkemail}" required="required"/>
 													<div class="required-icon">
 														<div class="text">*</div>
 													</div>
@@ -164,6 +164,5 @@
 		</div><!-- / end conatiner -->
 
 		<span th:substituteby="commons :: common-js"></span>
-		<script type="text/javascript" th:src="@{/js/client/client.js}"></script> 
 	</body>
 </html>

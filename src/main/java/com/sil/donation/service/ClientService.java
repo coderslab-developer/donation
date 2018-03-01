@@ -21,10 +21,7 @@ public class ClientService {
 
 	public boolean save(Client client) throws SilException{
 		Client c = clientRepository.save(client);
-		if (c != null) {
-			return true;
-		}
-		return false;
+		return c != null ? true : false;
 	}
 
 	public List<Client> findByDealerIdAndArchive(Integer dealerId, boolean archive) throws SilException {
@@ -62,10 +59,12 @@ public class ClientService {
 	public List<Client> findAllByDealerIdAndStatusAndSmsServiceAndArchive(Integer dealerId, boolean status, boolean smsService, boolean archive) throws SilException{
 		return clientRepository.findAllByDealerIdAndStatusAndSmsServiceAndArchive(dealerId, status, smsService, archive);
 	}
-	
+
 	public List<Client> findAllBySmsServiceAndStatusAndArchive(boolean smsService, boolean status, boolean archive) throws SilException{
 		return clientRepository.findAllBySmsServiceAndStatusAndArchive(smsService, status, archive);
 	}
-	
-	
+
+	public Client findByUsername(String username) throws SilException {
+		return clientRepository.findByUsername(username);
+	}
 }

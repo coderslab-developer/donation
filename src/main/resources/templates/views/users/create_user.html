@@ -50,20 +50,20 @@
 									<h4 style="margin: 0;">Add Dealer</h4>
 								</div>
 								<div class="panel-body">
-									<form id="usersform" th:action="@{/dealer}" method="post" th:object="${dealer}" autocomplete="off" enctype="multipart/form-data">
+									<form th:action="@{/users}" method="post" th:object="${users}" autocomplete="off" enctype="multipart/form-data">
 										<div class="row">
 											<div class="col-md-8">
 												<div class="form-group">
-													<label>Dealer Name</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('dealerName')}" th:errors="*{dealerName}">Error</span>
+													<label>Name</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</span>
 													<div class="required-field-block">
-														<input type="text" th:field="*{dealerName}" class="form-control" required="required"/>
+														<input type="text" th:field="*{name}" class="form-control" required="required"/>
 														<div class="required-icon">
 															<div class="text">*</div>
 														</div>
 													</div>
 												</div>
 												<div class="form-group">
-													<label>Dealer Username</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span>
+													<label>Username</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span>
 													<span id="usernameError" class="pull-right text-danger"></span>
 													<div class="required-field-block">
 														<input type="text" nospace="true" th:field="*{username}" class="form-control" th:attr="action=@{/users/checkusername}" required="required"/>
@@ -110,7 +110,7 @@
 													</div>
 												</div>
 												<div class="form-group">
-													<label class="checkbox-inline"><input type="checkbox" th:field="*{status}"/> Active</label>
+													<label class="checkbox-inline"><input type="checkbox" th:field="*{enabled}"/> Active</label>
 												</div>
 											</div>
 											<div class="col-md-4">
@@ -127,8 +127,8 @@
 													</div>
 												</div>
 												<div id="uploadPreview">
-													<img th:unless="${#strings.isEmpty(dealer.photo)}" th:src="@{/resources/upload/dealer/} + ${dealer.photo}"/>
-													<img th:if="${#strings.isEmpty(dealer.photo)}" th:src="@{/img/dummy_photo.png}"/>
+													<img th:unless="${#strings.isEmpty(users.photo)}" th:src="@{/resources/upload/users/} + ${users.photo}"/>
+													<img th:if="${#strings.isEmpty(users.photo)}" th:src="@{/img/dummy_photo.png}"/>
 												</div>
 											</div>
 										</div>
@@ -148,5 +148,6 @@
 		</div><!-- / end conatiner -->
 
 		<span th:substituteby="commons :: common-js"></span>
+		<script type="text/javascript" th:src="@{/js/dealer/dealer.js}"></script> 
 	</body>
 </html>

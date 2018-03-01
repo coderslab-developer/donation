@@ -30,6 +30,8 @@
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
+								<li><a th:href="@{/users}">All Users</a></li>
+								<li><a th:href="@{/users/create}">Create User</a></li>
 								<li><a th:href="@{/sendSms/} + ${#authentication.getPrincipal().getUsername()}">Send SMS</a></li>
 								<li><a th:href="@{/smsBucket/} + ${#authentication.getPrincipal().getUsername()}">SMS Bucket</a></li>
 								<li><a th:href="@{/siteConfig/} + ${#authentication.getPrincipal().getUsername()}">Site Config</a></li>
@@ -76,39 +78,6 @@
 		<script type="text/javascript" th:src="@{/js/password.js}"></script>
 		<script type="text/javascript" th:src="@{/js/jquery.maxlength.js}"></script>
 		<script type="text/javascript" th:src="@{/js/commons.js}"></script>
-		<!-- Page-Level Demo Scripts - Tables - Use for reference --> 
-		<script>
-			$(document).ready(function() {
-				$('table#example').each(function (tindex, table) {
-					var noSortColumns = [];
-					$(table).find('th').each(function (thindex, column) {
-						if ($(this).attr('data-nosort')) {
-							var value = $(this).attr('data-nosort');
-							if(value == 'Y'){
-								noSortColumns.push(thindex);
-							}
-						}
-					});
-					$(table).DataTable({
-						"responsive" : true,
-						"columnDefs": [{
-							"targets": noSortColumns,
-							"orderable": false
-						}]
-					});
-				});
-				
-				$("#success-alert, #error-alert").delay(4000).slideUp(200, function() {
-					$(this).alert('close');
-				});
-				
-				$('[data-toggle="tooltip"]').tooltip(); 
-				$('.required-icon').tooltip({
-					placement: 'left',
-					title: 'Required field'
-				});
-			});
-		</script>
 		<!-- file upload and image preview -->
 		<script type="text/javascript">
 			$(function () {
@@ -176,7 +145,6 @@
 					});
 				});
 			});
-			
 		</script>
 	</span>
 </div>

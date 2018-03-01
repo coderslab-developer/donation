@@ -28,4 +28,6 @@ public interface DealerRepository extends JpaRepository<Dealer, Integer> {
 	List<Dealer> findAllByStatusAndArchive(boolean status, boolean archive) throws SilException;
 
 	List<Dealer> findAllByAdminIdAndStatusAndArchive(Integer adminId, boolean status, boolean archive) throws SilException;
+
+	Dealer findByUsername(String username) throws SilException;
 }

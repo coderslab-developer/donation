@@ -18,6 +18,8 @@ import com.sil.donation.exception.SilException;
 @Transactional
 public interface ClientRepository extends JpaRepository<Client, Integer> {
 
+	Client findByUsername(String username) throws SilException;
+
 	List<Client> findAllByArchive(boolean archive) throws SilException;
 
 	List<Client> findAllByDealerId(Integer dealerId) throws SilException;

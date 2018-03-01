@@ -43,8 +43,8 @@
 							</div>
 						</div>
 
-						<!-- Client details -->
-						<div class="col-md-12 super-admin-dashboard">
+						<!-- All users details -->
+						<div class="col-md-12">
 							<div class="panel panel-primary">
 								<div class="panel-heading custom-primary">
 									<h4 style="margin: 0; color: #fff;"><i class="fa fa-users"></i> All Users List</h4>
@@ -54,24 +54,26 @@
 										<thead>
 											<tr style="color: tomato;">
 												<th th:text="#{dashboard.table.no}">No.</th>
-												<th th:text="#{table.user.username}">User name</th>
-												<th th:text="#{table.user.email}">Email Address</th>
+												<th th:text="#{table.user.name}">Name</th>
+												<th th:text="#{table.user.email}">Email</th>
+												<th th:text="#{table.user.mobile}">Mobile</th>
+												<th th:text="#{table.user.role}">Role</th>
 												<th th:text="#{table.user.status}">Status</th>
-												<th th:text="#{table.user.registerDate}">Register Date</th>
 												<th data-nosort="Y" th:text="#{dashboard.table.action}">Action</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr th:each="row,num : ${users}">
 												<td th:text="${num.count}">1</td>
-												<td th:text="${row.username}"></td>
+												<td th:text="${row.name}"></td>
 												<td th:text="${row.email}"></td>
-												<td th:text="${row.status == true?'Active':'Inactive'}"></td>
-												<td th:text="${row.registerDate}"></td>
+												<td th:text="${row.mobile}"></td>
+												<td th:text="${row.role}"></td>
+												<td th:text="${row.enabled == true?'Active':'Inactive'}"></td>
 												<td style="text-align: center;">
 													<div class="btn-group">
-														<a th:if="${row.status}" th:href="@{/users/changeStatus/} + ${row.username}" data-toggle="tooltip" th:title="#{dashboard.table.suspendProfile}" class="btn btn-sm btn-danger"><i class="fa fa-arrow-down"></i></a>
-														<a th:unless="${row.status}" th:href="@{/users/changeStatus/} + ${row.username}" data-toggle="tooltip" th:title="#{dashboard.table.activeProfile}" class="btn btn-success btn-sm"><i class="fa fa-arrow-up"></i></a>
+														<a th:if="${row.enabled}" th:href="@{/users/changeStatus/} + ${row.username}" data-toggle="tooltip" th:title="#{dashboard.table.suspendProfile}" class="btn btn-sm btn-danger"><i class="fa fa-arrow-down"></i> Deactive</a>
+														<a th:unless="${row.enabled}" th:href="@{/users/changeStatus/} + ${row.username}" data-toggle="tooltip" th:title="#{dashboard.table.activeProfile}" class="btn btn-success btn-sm"><i class="fa fa-arrow-up"></i> Active</a>
 													</div>
 												</td>
 											</tr>
@@ -80,6 +82,41 @@
 								</div>
 							</div>
 						</div>
+						<!-- / end All users deatails -->
+
+						<!-- Archive Users Details -->
+						<div class="col-md-12">
+							<div class="panel panel-success">
+								<div class="panel-heading custom-success">
+									<h4 style="margin: 0; color: #fff;"><i class="fa fa-users"></i> Archive Users List</h4>
+								</div>
+								<div class="panel-body">
+									<table class="table table-bordered table-responsive table-hover" id="example" width="100%">
+										<thead>
+											<tr style="color: tomato;">
+												<th th:text="#{dashboard.table.no}">No.</th>
+												<th th:text="#{table.user.name}">Name</th>
+												<th th:text="#{table.user.email}">Email</th>
+												<th th:text="#{table.user.mobile}">Mobile</th>
+												<th th:text="#{table.user.role}">Role</th>
+												<th th:text="#{table.user.status}">Status</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="row,num : ${archivedUsers}">
+												<td th:text="${num.count}">1</td>
+												<td th:text="${row.name}"></td>
+												<td th:text="${row.email}"></td>
+												<td th:text="${row.mobile}"></td>
+												<td th:text="${row.role}"></td>
+												<td th:text="${row.enabled == true?'Active':'Inactive'}"></td>
+											</tr>
+										</tbody>
+									</table> 
+								</div>
+							</div>
+						</div>
+
 						<span th:substituteby="commons :: common-copyright"></span>
 					</div>
 				</div><!-- / end content section -->

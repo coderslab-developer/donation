@@ -1,11 +1,14 @@
 package com.sil.donation.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -48,13 +51,27 @@ public class Users implements java.io.Serializable {
 	@Column(name = "authority", nullable = false, length = 45)
 	private String authority;
 
-	@Column(name = "photo", length = 65535)
-	private String photo;
-
 	@Column(name = "enabled", columnDefinition = "BOOLEAN")
 	private boolean enabled;
 
 	@Column(name = "archive", columnDefinition = "BOOLEAN")
 	private boolean archive;
 
+	@Transient
+	private String name;
+
+	@Transient
+	private String mobile;
+
+	@Transient
+	private Date registerDate;
+
+	@Transient 
+	private String role;
+
+	@Transient
+	private String address;
+
+	@Transient
+	private String photo;
 }

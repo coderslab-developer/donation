@@ -19,7 +19,7 @@ public class DealerService {
 	@Autowired
 	private DealerRepository dealerRepository;
 
-	public boolean save(Dealer dealer) throws Exception {
+	public boolean save(Dealer dealer) throws SilException {
 		Dealer d = dealerRepository.save(dealer);
 		return d != null ? true : false;
 	}
@@ -46,5 +46,9 @@ public class DealerService {
 
 	public List<Dealer> findAllByAdminIdAndStatusAndArchive(Integer adminId, boolean status, boolean archive) throws SilException {
 		return dealerRepository.findAllByAdminIdAndStatusAndArchive(adminId, status, archive);
+	}
+
+	public Dealer findByUsername(String username) throws SilException{
+		return dealerRepository.findByUsername(username);
 	}
 }
