@@ -24,10 +24,7 @@ public class UsersService {
 
 	public boolean save(Users users) throws SilException {
 		Users u = usersRepository.save(users);
-		if (u != null) {
-			return true;
-		}
-		return false;
+		return u != null ? true : false;
 	}
 
 	public boolean createUsersFromDealer(Dealer dealer) throws SilException {

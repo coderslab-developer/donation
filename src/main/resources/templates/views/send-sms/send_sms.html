@@ -52,9 +52,39 @@
 										<button class="btn btn-success btn-sm pull-right"><i class="fa  fa-envelope-o"></i> <span th:text="${availableSMS}"></span></button>
 									</div>
 								</div>
-								<div class="panel-body" style="font-size: 60px;">
-									<h3>Available SMS <span th:text="${availableSMS}"></span></h3>
+								<div class="panel-body">
+									<h3>Available SMS <span th:text="${availableSMS}" class="text-success"></span></h3>
 									<hr/>
+									<ul class="nav nav-tabs">
+										<li class="active"><a data-toggle="tab" href="#home">Single SMS</a></li>
+										<li><a data-toggle="tab" href="#menu1">Bulk SMS</a></li>
+									</ul>
+									<div class="tab-content">
+										
+										<div id="home" class="tab-pane fade in active">
+											<div class="row">
+												<form>
+													<div class="col-md-12">
+														<div class="form-group col-md-6">
+															<label>Select Dealer</label>
+															<select name="username" class="selectpicker form-control" data-live-search="true">
+																<option value="none">Select dealer</option>
+																<option th:each="item : ${dealers}" th:value="${item.username}" th:text="${item.dealerName}">Dealer Name</option>
+															</select>
+														</div>
+														<div class="form-group col-md-6">
+															<label>Mobile Number</label>
+															<input type="text" class="form-control no-copy no-select" readonly="readonly"/>
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
+										<div id="menu1" class="tab-pane fade">
+											<h3>Menu 1</h3>
+											<p>Some content in menu 1.</p>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
