@@ -14,10 +14,12 @@ import org.springframework.stereotype.Component;
 
 import com.sil.donation.entity.Client;
 import com.sil.donation.entity.Donar;
+import com.sil.donation.entity.SMSNotifier;
 import com.sil.donation.entity.SMSTransaction;
 import com.sil.donation.exception.SilException;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DonarService;
+import com.sil.donation.service.SMSNotifierService;
 import com.sil.donation.service.SMSTransactionService;
 
 /**
@@ -29,15 +31,14 @@ public class SMSSchedular {
 
 	private static final Logger logger = LoggerFactory.getLogger(SMSSchedular.class);
 
-	@Autowired
-	private SMSTransactionService smsTransactionService;
-	@Autowired
-	private ClientService clientService;
-	@Autowired
-	private DonarService donarService;
+	@Autowired private SMSTransactionService smsTransactionService;
+	@Autowired private ClientService clientService;
+	@Autowired private DonarService donarService;
+	@Autowired private SMSNotifierService smsNotifierService;
 
 	// 8 o'clock of every day
-	@Scheduled(cron = "0 0 20 * * *") 
+	@Scheduled(cron = "0 0 20 * * *")
+	//@Scheduled(fixedDelay = 30000)
 	private void sendSMSSchedular()  {
 		List<Client> clients = new ArrayList<>();
 		List<Donar> donars = new ArrayList<>();
@@ -135,7 +136,35 @@ public class SMSSchedular {
 			if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 		}
 
-		return smsAmount < activeSmsServiceAvailableDonar ? false : true; 
+		if(smsAmount < activeSmsServiceAvailableDonar) {
+			SMSNotifier smsNotifier = new SMSNotifier();
+			smsNotifier.setUsername(client.getUsername());
+			smsNotifier.setAvailableSMS(smsAmount);
+			smsNotifier.setAvailableSMSClient(activeSmsServiceAvailableDonar);
+			smsNotifier.setStatus(true);
+			smsNotifier.setMessage("You have not enough SMS in your bucket to send Automated SMS to SMS Service Activated " + activeSmsServiceAvailableDonar + " donar");
+			smsNotifierService.save(smsNotifier);
+
+			logger.info("Create Notice for {} at {}", client.getClientName(), new Date());
+			return false;
+		}else {
+			List<SMSNotifier> notices = new ArrayList<>();
+			try {
+				notices = smsNotifierService.findAllByUsernameAndStatus(client.getUsername(), true);
+			} catch (SilException e) {
+				logger.error(e.getMessage(), e);
+			}
+
+			if(!notices.isEmpty()) {
+				for(SMSNotifier notifier : notices) {
+					notifier.setStatus(false);
+					smsNotifierService.save(notifier);
+				}
+			}
+
+			logger.info("Deactive {} sms notice for {} at {}", notices.size(), client.getClientName(), new Date());
+			return true;
+		}
 	}
 	
 }

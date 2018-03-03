@@ -74,7 +74,7 @@ $(document).ready(function(){
 	//prevent space character
 	//declare nospace="true" attribute
 	$('input[nospace="true"]').keypress(function( e ) {
-		if(!/[0-9a-zA-Z-]/.test(String.fromCharCode(e.which)))
+		if(!/[0-9a-zA-Z-._@]/.test(String.fromCharCode(e.which)))
 		return false;
 	});
 

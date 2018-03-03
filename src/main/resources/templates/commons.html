@@ -10,6 +10,27 @@
 			</ul>
 		</div>
 	</span>
+
+	<!-- Site logo and title -->
+	<span th:remove="tag" th:fragment="common-site-logo-title" xmlns:th="http://www.thymeleaf.org">
+		<span th:if="${session.siteConfig.enableLogo}">
+			<div th:unless="${session.siteConfig.logo}" class="col-md-12 header-main">
+				<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
+			</div>
+			<div th:if="${session.siteConfig.logo}" class="col-md-12 header-main">
+				<a th:href="@{/}"><img th:src="@{/resources/upload/site/logo/} + ${session.siteConfig.logo}"/></a>
+			</div>
+		</span>
+		<span th:unless="${session.siteConfig.enableLogo}">
+			<div th:if="${session.siteConfig.siteName == ''}" class="col-md-12 header-main">
+				<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
+			</div>
+			<div id="siteTitle" th:if="${session.siteConfig.siteName != ''}" class="col-md-12 header-main">
+				<a th:href="@{/}"><h1 th:text="${session.siteConfig.siteName}"></h1></a>
+			</div>
+		</span>
+	</span>
+
 	<!-- Main Menus -->
 	<span th:remove="tag" th:fragment="common-menu" xmlns:th="http://www.thymeleaf.org">
 		<div class="col-md-12 menu-area">
@@ -42,6 +63,7 @@
 			</nav>
 		</div>
 	</span>
+
 	<!-- css -->
 	<span th:remove="tag" th:fragment="common-css" xmlns:th="http://www.thymeleaf.org">
 		<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}" href="/css/bootstrap.css"/>
@@ -53,16 +75,19 @@
 		<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
 		<link rel="stylesheet" type="text/css" th:href="@{/css/password.css}" />
 	</span>
+
 	<!-- login-css -->
 	<span th:remove="tag" th:fragment="common-login-css" xmlns:th="http://www.thymeleaf.org">
 		<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
 		<link rel="stylesheet" type="text/css" th:href="@{/css/animate.css}"/>
 		<link rel="stylesheet" type="text/css" th:href="@{/css/animation.css}"/>
 	</span>
+
 	<!-- CopyRights -->
 	<span th:remove="tag" th:fragment="common-copyright" xmlns:th="http://www.thymeleaf.org">
 		<p style="text-align: center;">&copy; <a th:href="#{sil.company.website}" target="_blank">Software Industry Ltd</a></p>
 	</span>
+
 	<!-- JS -->
 	<span th:remove="tag" th:fragment="common-js" xmlns:th="http://www.thymeleaf.org"> 
 		<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script> 

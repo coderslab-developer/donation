@@ -17,9 +17,7 @@
 						<span th:substituteby="commons :: common-top-menu"></span>
 
 						<!-- header main -->
-						<div class="col-md-12 header-main">
-							<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
-						</div>
+						<span th:substituteby="commons :: common-site-logo-title"></span>
 
 					</div>
 				</div>
@@ -33,13 +31,17 @@
 
 						<!-- Success / Error Messages -->
 						<div class="col-md-12">
-							<div th:if="${success}" id="success-alert" class="alert alert-success alert-dismissable">
+							<div th:if="${sm}" id="success-alert" class="alert alert-success alert-dismissable">
 								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-								<strong>Success!</strong> <span th:text="${success}">Message</span> 
+								<strong>Success!</strong> <span th:text="${sm}">Message</span> 
 							</div>
-							<div th:if="${error}" id="error-alert" class="alert alert-success alert-dismissable">
+							<div th:if="${em}" id="error-alert" class="alert alert-danger alert-dismissable">
 								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-								<strong>Success!</strong> <span th:text="${error}">Message</span> 
+								<strong>Error!</strong> <span th:text="${em}">Message</span> 
+							</div>
+							<div th:if="${smsNotifier.message}" id="warning-alert" class="alert alert-warning">
+								<strong>Warning!</strong> <span th:text="${smsNotifier.message}">Message</span> 
+								<a th:href="@{/smsNotifier/close/} + ${smsNotifier.username}" class="pull-right" data-toggle="tooltip" title="Close for today"><i class="fa fa-times"></i></a>
 							</div>
 						</div>
 
@@ -108,8 +110,8 @@
 														<a th:href="@{/donar/view/} + ${row.donarId}" class="btn btn-sm btn-info" data-toggle="tooltip" title="View Profile"><i class="fa fa-eye"></i></a>
 														<a th:href="@{/donar/edit/} + ${row.donarId}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Edit"><i class="fa fa-edit"></i></a>
 														<a th:if="${row.status}" th:href="@{/donar/changeStatus/} + ${row.donarId}" data-toggle="tooltip" class="btn btn-warning btn-sm" title="Make inactive"><i class="fa fa-arrow-down"></i></a>
-														<a th:unless="${row.status}" th:href="@{/donar/changeStatus/} + ${row.donarId}" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Make active"><i class="fa fa-arrow-up"></i></a>
-														<a th:href="@{/donar/archive/} + ${row.donarId}" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a>
+														<a th:unless="${row.status}" th:href="@{/donar/changeStatus/} + ${row.donarId}" class="btn btn-success btn-sm" data-toggle="tooltip" title="Make active"><i class="fa fa-arrow-up"></i></a>
+														<a th:href="@{/donar/archive/} + ${row.donarId}" onclick="return confirm('Are you sure to delete this item?')" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a>
 													</div>
 												</td>
 											</tr>

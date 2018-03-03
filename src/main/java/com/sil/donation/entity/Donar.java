@@ -67,7 +67,7 @@ public class Donar implements Serializable {
 	@Column(name = "status", columnDefinition = "BOOLEAN")
 	private boolean status;
 
-	@Column(name = "smsService")
+	@Column(name = "smsService", columnDefinition = "BOOLEAN")
 	private boolean smsService;
 
 	@Temporal(TemporalType.DATE)

@@ -30,6 +30,7 @@ import com.sil.donation.service.ClientService;
 public class CategoryController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
+
 	private static final String PAGE_TITLE = "Add category";
 	private static final String REDIRECT = "redirect:/";
 	private static final String REDIRECT_TO = "category";

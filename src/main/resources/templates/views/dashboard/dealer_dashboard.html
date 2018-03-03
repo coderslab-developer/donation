@@ -17,9 +17,7 @@
 						<span th:substituteby="commons :: common-top-menu"></span>
 
 						<!-- header main -->
-						<div class="col-md-12 header-main">
-							<a th:href="@{/}"><img th:src="@{/img/site_logo.png}" alt="Software Industry Ltd" /></a>
-						</div>
+						<span th:substituteby="commons :: common-site-logo-title"></span>
 
 					</div>
 				</div>
@@ -107,9 +105,9 @@
 														<a th:href="@{/client/updateService/} + ${row.clientId}" data-toggle="tooltip" th:title="#{dashboard.table.updateService}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
 														<a th:href="@{/client/print/} + ${row.clientId}" data-toggle="tooltip" th:title="#{dashboard.table.printProfile}" class="btn btn-sm btn-success"><i class="fa fa-print"></i></a>
 														<a th:href="@{/client/edit/} + ${row.clientId}" data-toggle="tooltip" th:title="#{dashboard.table.editProfile}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-														<a th:href="@{/client/archive/} + ${row.clientId}" data-toggle="tooltip" th:title="#{dashboard.table.deleteProfile}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+														<a th:href="@{/client/archive/} + ${row.clientId}" onclick="return confirm('Are you sure to delete this item?')" data-toggle="tooltip" th:title="#{dashboard.table.deleteProfile}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
 														<a th:if="${row.status}" th:href="@{/client/changeStatus/} + ${row.clientId}" data-toggle="tooltip" th:title="#{dashboard.table.suspendProfile}" class="btn btn-sm btn-warning"><i class="fa fa-arrow-down"></i></a>
-														<a th:unless="${row.status}" th:href="@{/client/changeStatus/} + ${row.clientId}" data-toggle="tooltip" th:title="#{dashboard.table.activeProfile}" class="btn btn-warning btn-sm"><i class="fa fa-arrow-up"></i></a>
+														<a th:unless="${row.status}" th:href="@{/client/changeStatus/} + ${row.clientId}" data-toggle="tooltip" th:title="#{dashboard.table.activeProfile}" class="btn btn-success btn-sm"><i class="fa fa-arrow-up"></i></a>
 													</div>
 												</td>
 											</tr>

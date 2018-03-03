@@ -3,6 +3,8 @@
  */
 package com.sil.donation.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,24 +21,23 @@ import lombok.Data;
 @Entity
 @Table(name = "siteconfig", catalog = "dms")
 @Data
-public class SiteConfig {
+public class SiteConfig implements Serializable {
+
+	private static final long serialVersionUID = -2758895369807530338L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(name = "adminId")
-	private Integer adminId;
+	@Column(name = "username")
+	private String username;
 
-	@Column(name = "dealerId")
-	private Integer dealerId;
+	@Column(name = "siteName", length = 40)
+	private String siteName;
 
-	@Column(name = "clientId")
-	private Integer clientId;
+	@Column(name = "logo", length = 65535)
+	private String logo;
 
-	@Column(name = "siteCustomLogo")
-	private String siteCustomLogo;
-
-	@Column(name = "siteDefaultLogo")
-	private String siteDefaultLogo;
+	@Column(name = "enableLogo", columnDefinition = "BOOLEAN")
+	private boolean enableLogo;
 }
