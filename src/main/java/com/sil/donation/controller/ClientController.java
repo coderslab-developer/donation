@@ -172,11 +172,6 @@ public class ClientController {
 		if(!client.getClientName().isEmpty()) {
 			c.setClientName(client.getClientName());
 		}
-		if(!client.getUsername().isEmpty()) {
-			c.setUsername(client.getUsername());
-			users.setUsername(c.getUsername());
-			authorities.setUsername(c.getUsername());
-		}
 		if(!client.getEmail().isEmpty()) {
 			c.setEmail(client.getEmail());
 			users.setEmail(c.getEmail());
@@ -239,6 +234,8 @@ public class ClientController {
 		}
 		
 		//without image part
+		users.setUsername(c.getUsername());
+		authorities.setUsername(c.getUsername());
 		try {
 			clientService.save(c);
 			usersService.save(users);

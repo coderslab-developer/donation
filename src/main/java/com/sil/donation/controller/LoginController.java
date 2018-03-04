@@ -29,7 +29,7 @@ public class LoginController {
 	public String loadLoginPage(Model model, HttpSession session) {
 		model.addAttribute("pageTitle", PAGE_TITLE);
 		session.setAttribute("lastLogin", String.valueOf(new Date()));
-		logger.info("Login successfull");
+		logger.info("Login page called at {}", new Date());
 		return LOCATION + REDIRECT_TO;
 	}
 

@@ -40,7 +40,7 @@ public class Users implements java.io.Serializable {
 
 	@NotEmpty(message = "Please enter email address")
 	@Email(message = "Please enter valid email address")
-	@Column(name = "email", unique = true, nullable = false, length = 100)
+	@Column(name = "email", nullable = false, length = 100)
 	private String email;
 
 	@Size(min = 6, max = 20, message = "Password should be between 6 to 20 character")

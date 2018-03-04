@@ -58,7 +58,7 @@ public class Donar implements Serializable {
 	@Column(name = "payableAmount")
 	private double payableAmount;
 
-	@Column(name = "email", unique = true, nullable = false, length = 100)
+	@Column(name = "email", nullable = false, length = 100)
 	private String email;
 
 	@Column(name = "instituteName", nullable = false, length = 255)

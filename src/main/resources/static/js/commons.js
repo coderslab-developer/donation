@@ -96,7 +96,7 @@ $(document).ready(function(){
 		if(!$('.password').attr('required') &&  $('.password').val() != '' && score < 75){
 			$('button[type="submit"]').addClass('disabled');
 			$('button[type="submit"]').attr('disabled','disabled');
-		}else if(!$('.password').attr('required') &&  $('.password').val() === '' && score === -1){
+		}else if(!$('.password').attr('required') &&  $('.password').val() === '' && (score === -1 || score > 75)){
 			$('button[type="submit"]').removeClass('disabled');
 			$('button[type="submit"]').removeAttr('disabled','disabled');
 			checkAllRequiredFields();
@@ -177,6 +177,11 @@ $(document).ready(function(){
 	});
 	var checkAllRequiredFields = function(){
 		$(':input[required="required"]').each(function(index, item){
+			if($(this).attr('class') === 'select' && $(this).val() == ''){
+				$('button[type="submit"]').addClass('disabled');
+				$('button[type="submit"]').attr('disabled','disabled');
+				return false;
+			}
 			if($(this).attr('type') === 'password' && passwordStrength < 75){
 				$('button[type="submit"]').addClass('disabled');
 				$('button[type="submit"]').attr('disabled','disabled');

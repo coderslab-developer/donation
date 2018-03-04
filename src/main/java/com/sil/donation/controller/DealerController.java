@@ -168,11 +168,6 @@ public class DealerController {
 		if(!dealer.getDealerName().isEmpty()) {
 			d.setDealerName(dealer.getDealerName());
 		}
-		if(!dealer.getUsername().isEmpty()) {
-			d.setUsername(dealer.getUsername());
-			users.setUsername(d.getUsername());
-			authorities.setUsername(d.getUsername());
-		}
 		if(!dealer.getEmail().isEmpty()) {
 			d.setEmail(dealer.getEmail());
 			users.setEmail(d.getEmail());
@@ -237,6 +232,8 @@ public class DealerController {
 
 		//without image part
 		d.setUpdateDate(new Date());
+		users.setUsername(d.getUsername());
+		authorities.setUsername(d.getUsername());
 		try {
 			dealerService.save(d);
 			usersService.save(users);

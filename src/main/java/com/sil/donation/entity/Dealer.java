@@ -47,7 +47,7 @@ public class Dealer implements Serializable {
 
 	@NotEmpty(message = "Please enter email address")
 	@Email(message = "Please enter valid email address")
-	@Column(name = "email", unique = true, nullable = false, length = 100)
+	@Column(name = "email", nullable = false, length = 100)
 	private String email;
 
 	@NotEmpty(message = "Please enter username")
