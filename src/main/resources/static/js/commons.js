@@ -1,4 +1,58 @@
 $(document).ready(function(){
+	//email validating
+	var emailStatus = "invalid";
+	var validateEmail = function(elementValue) {
+		var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+		return emailPattern.test(elementValue);
+	}
+	var removeClass = function(element){
+		var dangerDiv = $(element).next('div[class="text-danger"]');
+		var successDiv = $(element).next('div[class="text-success"]');
+		if(successDiv){
+			successDiv.remove();
+		}
+		if(dangerDiv){
+			dangerDiv.remove();
+		}
+	}
+	//key press
+	$('input[type="email"]').keyup(function() {
+		var value = $(this).val();
+		var valid = validateEmail(value);
+		if (!valid) {
+			removeClass($(this));
+			$(this).after($("<div/>").addClass('text-danger').html("Invalid"));
+			emailStatus = "invalid"
+		}else {
+			removeClass($(this));
+			$(this).after($("<div/>").addClass('text-success').html("Valid"));
+			emailStatus = "valid";
+		}
+	});
+	//initial value
+	if($('input[type="email"][required="required"]').length > 0){
+		var value = $('input[type="email"][required="required"]').val();
+		var valid = validateEmail(value);
+		if (!valid) {
+			removeClass($('input[type="email"][required="required"]'));
+			$('input[type="email"][required="required"]').after($("<div/>").addClass('text-danger').html("Invalid"));
+			emailStatus = "invalid"
+		}else {
+			removeClass($('input[type="email"][required="required"]'));
+			$('input[type="email"][required="required"]').after($("<div/>").addClass('text-success').html("Valid"));
+			emailStatus = "valid";
+		}
+	};
+
+
+
+	var passwordStrength = 0;
+	var usernameUniqueness = false;
+	var mobileLength = 0;
+	if($('input[name="mobile"][required="required"]').length > 0){
+		mobileLength = $('input[name="mobile"][required="required"]').val().length;
+	};
+
 	//prevent submitting form by pressing enter key
 	//declare class name 'no-enter'
 	$('.no-enter').on('keyup keypress', function(e) {
@@ -29,14 +83,6 @@ $(document).ready(function(){
 	//declare class name 'numeric-only'
 	$('.numeric-only').on('keydown', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||(/65|67|86|88/.test(e.keyCode)&&(e.ctrlKey===true||e.metaKey===true))&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
 
-	//password strength checker
-	//declare class name 'password'
-	$(document).ready(function() {
-		$('.password').password().on('password.score', function (e, score) {
-			if (score > 75) {console.log(score)}
-		});
-	});
-
 	//max-length checker
 	//declare attribute 'maxlength=11'
 	$(':input[maxlength]').each(function(){
@@ -44,32 +90,13 @@ $(document).ready(function(){
 		 $(this).maxlength( {slider: true, maxCharacters: maxLength} );
 	})
 
-	//email validating
-	var validateEmail = function(elementValue) {
-		var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-		return emailPattern.test(elementValue);
-	}
-	var removeClass = function(element){
-		var dangerDiv = $(element).next('div[class="text-danger"]');
-		var successDiv = $(element).next('div[class="text-success"]');
-		if(successDiv){
-			successDiv.remove();
-		}
-		if(dangerDiv){
-			dangerDiv.remove();
-		}
-	}
-	$('input[type="email"]').keyup(function() {
-		var value = $(this).val();
-		var valid = validateEmail(value);
-		if (!valid) {
-			removeClass($(this));
-			$(this).after($("<div/>").addClass('text-danger').html("Invalid"));
-		}else {
-			removeClass($(this));
-			$(this).after($("<div/>").addClass('text-success').html("Valid"));
-		}
+	//password strength checker
+	//declare class name 'password'
+	$('.password').password().on('password.score', function (e, score) {
+		passwordStrength = score;
 	});
+
+	
 
 	//prevent space character
 	//declare nospace="true" attribute
@@ -80,24 +107,22 @@ $(document).ready(function(){
 
 	//Print button
 	//declare class name 'print'
-	$(document).ready(function(){
-		$('.print').on('click', function(){
-			console.log("hi");
-			$('#inside_element').print();
-		})
-	});
+	$('.print').on('click', function(){
+		$('#inside_element').print();
+	})
+	
 
-	//check username and email is already available in database table
-	$("#usersform").trigger("reset");
-	$("#username").focusout(function(){
+	//check username is already available in database table
+	//$("#usersform").trigger("reset");
+	$("#username").on('keyup change keypress blur', function(){
 		$.post($(this).attr("action"), {'username' : $(this).val()}, function(data){
 			if(data.status){
 				$("#usernameError").html("Username already taken. Please try another username");
+				usernameUniqueness = false;
 			}else{
 				$("#usernameError").html("");
+				usernameUniqueness = true;
 			}
-		}).error(function(data){
-			Window.alert("error");
 		});
 	});
 
@@ -132,4 +157,49 @@ $(document).ready(function(){
 			}]
 		});
 	});
+
+	//mobile length checker
+	$('input[name="mobile"][required="required"]').on('keyup change keypress blur', function(){
+		mobileLength = $('input[name="mobile"][required="required"]').val().length;
+	});
+
+	//form disable for required fields 
+	$(':input[required="required"]').each(function(){
+		$(this).on('keyup change keypress blur', function(){
+			checkAllRequiredFields();
+		});
+	});
+	var checkAllRequiredFields = function(){
+		$(':input[required="required"]').each(function(index, item){
+			if($(this).attr('type') === 'password' && passwordStrength < 75){
+				$('button[type="submit"]').addClass('disabled');
+				$('button[type="submit"]').attr('disabled','disabled');
+				return false;
+			}
+			if($(this).attr('type') === 'email' && emailStatus === "invalid"){
+				$('button[type="submit"]').addClass('disabled');
+				$('button[type="submit"]').attr('disabled','disabled');
+				return false;
+			}
+			if($(this).attr('name') === 'username' && usernameUniqueness === false){
+				$('button[type="submit"]').addClass('disabled');
+				$('button[type="submit"]').attr('disabled','disabled');
+				return false;
+			}
+			if($(this).attr('name') === 'mobile' &&  mobileLength < 11){
+				$('button[type="submit"]').addClass('disabled');
+				$('button[type="submit"]').attr('disabled','disabled');
+				return false;
+			}
+			if($(this).val() === ''){
+				$('button[type="submit"]').addClass('disabled');
+				$('button[type="submit"]').attr('disabled','disabled');
+				return false;
+			}else{
+				$('button[type="submit"]').removeClass('disabled');
+				$('button[type="submit"]').removeAttr('disabled');
+			}
+		});
+	};
+	checkAllRequiredFields();
 });

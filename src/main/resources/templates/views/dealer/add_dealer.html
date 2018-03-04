@@ -101,7 +101,7 @@
 												<div class="form-group">
 													<label>Address</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Error</span>
 													<div class="required-field-block">
-														<textarea th:field="*{address}" class="form-control"></textarea>
+														<textarea th:field="*{address}" class="form-control" required="required"></textarea>
 														<div class="required-icon">
 															<div class="text">*</div>
 														</div>
@@ -131,7 +131,7 @@
 											</div>
 										</div>
 										<div class="col-md-12" style="text-align: center;">
-											<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Submit</button>
+											<button disabled="disabled" type="submit" class="btn btn-success disabled"><i class="fa fa-save"></i> Submit</button>
 											<button type="reset" class="btn btn-danger"><i class="fa fa-refresh"></i> Reset</button>
 										</div>
 									</form>

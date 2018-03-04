@@ -45,7 +45,7 @@
 						<div class="col-md-12 add-deller-page">
 							<div class="panel panel-primary">
 								<div class="panel-heading custom-primary">
-									<h4 style="margin: 0;">Add Dealer</h4>
+									<h4 style="margin: 0;">Edit Dealer</h4>
 								</div>
 								<div class="panel-body">
 									<form id="usersform" th:action="@{/dealer/update}" method="post" th:object="${dealer}" autocomplete="off" enctype="multipart/form-data">
@@ -56,16 +56,6 @@
 													<div class="required-field-block">
 														<input type="text" th:field="*{dealerName}" class="form-control" required="required"/>
 														<input type="hidden" th:field="*{dealerId}" class="form-control"/>
-														<div class="required-icon">
-															<div class="text">*</div>
-														</div>
-													</div>
-												</div>
-												<div class="form-group">
-													<label>Dealer Username</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span>
-													<span id="usernameError" class="pull-right text-danger"></span>
-													<div class="required-field-block">
-														<input type="text" th:field="*{username}" class="form-control" th:attr="action=@{/users/checkusername}" required="required"/>
 														<div class="required-icon">
 															<div class="text">*</div>
 														</div>
@@ -83,17 +73,12 @@
 												</div>
 												<div class="form-group">
 													<label>Password</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</span>
-													<div class="required-field-block">
-														<input type="password" th:field="*{password}" class="form-control password"/>
-														<div class="required-icon">
-															<div class="text">*</div>
-														</div>
-													</div>
+													<input type="password" th:field="*{password}" class="form-control password"/>
 												</div>
 												<div class="form-group">
 													<label>Mobile</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}">Error</span>
 													<div class="required-field-block">
-														<input type="text" th:field="*{mobile}" maxlength="11" class="form-control" required="required"/>
+														<input type="text" th:field="*{mobile}" maxlength="11" class="form-control numeric-only" required="required"/>
 														<div class="required-icon">
 															<div class="text">*</div>
 														</div>
@@ -102,7 +87,7 @@
 												<div class="form-group">
 													<label>Address</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Error</span>
 													<div class="required-field-block">
-														<textarea th:field="*{address}" class="form-control"></textarea>
+														<textarea th:field="*{address}" class="form-control" required="required"></textarea>
 														<div class="required-icon">
 															<div class="text">*</div>
 														</div>
@@ -129,8 +114,7 @@
 											</div>
 										</div>
 										<div class="col-md-12" style="text-align: center;">
-											<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Submit</button>
-											<button type="reset" class="btn btn-danger"><i class="fa fa-refresh"></i> Reset</button>
+											<button type="submit" disabled="disabled" class="btn btn-success disabled"><i class="fa fa-save"></i> Submit</button>
 										</div>
 									</form>
 								</div>
