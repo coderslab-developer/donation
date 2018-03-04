@@ -44,8 +44,6 @@ $(document).ready(function(){
 		}
 	};
 
-
-
 	var passwordStrength = 0;
 	var usernameUniqueness = false;
 	var mobileLength = 0;
@@ -94,9 +92,16 @@ $(document).ready(function(){
 	//declare class name 'password'
 	$('.password').password().on('password.score', function (e, score) {
 		passwordStrength = score;
+		console.log(score);
+		if(!$('.password').attr('required') &&  $('.password').val() != '' && score < 75){
+			$('button[type="submit"]').addClass('disabled');
+			$('button[type="submit"]').attr('disabled','disabled');
+		}else if(!$('.password').attr('required') &&  $('.password').val() === '' && score === -1){
+			$('button[type="submit"]').removeClass('disabled');
+			$('button[type="submit"]').removeAttr('disabled','disabled');
+			checkAllRequiredFields();
+		}
 	});
-
-	
 
 	//prevent space character
 	//declare nospace="true" attribute
@@ -110,7 +115,6 @@ $(document).ready(function(){
 	$('.print').on('click', function(){
 		$('#inside_element').print();
 	})
-	
 
 	//check username is already available in database table
 	//$("#usersform").trigger("reset");
@@ -119,9 +123,11 @@ $(document).ready(function(){
 			if(data.status){
 				$("#usernameError").html("Username already taken. Please try another username");
 				usernameUniqueness = false;
+				checkAllRequiredFields();
 			}else{
 				$("#usernameError").html("");
 				usernameUniqueness = true;
+				checkAllRequiredFields();
 			}
 		});
 	});
