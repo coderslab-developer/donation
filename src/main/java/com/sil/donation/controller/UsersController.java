@@ -1,15 +1,20 @@
 package com.sil.donation.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -48,6 +53,13 @@ public class UsersController {
 	@Autowired private DealerService dealerService;
 	@Autowired private ClientService clientService;
 
+	@PostMapping
+	public String createAndSaveUser(Users users, RedirectAttributes redirect) {
+		logger.info("users {} ", users);
+		
+		return REDIRECT + REDIRECT_TO;
+	}
+
 	@GetMapping
 	public String loadAllUser(Model model) {
 		List<Users> allUsers = usersService.findAll();
@@ -63,19 +75,19 @@ public class UsersController {
 					users.setName(admin.getAdminName());
 					users.setMobile(admin.getMobile());
 					users.setRegisterDate(admin.getRegisterDate());
-					users.setRole("ADMIN");
+					users.setRole(UserAuthorities.ROLE_ADMIN.code());
 				}else if(users.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_DEALER.name())) {
 					Dealer dealer = dealerService.findByUsername(users.getUsername());
 					users.setName(dealer.getDealerName());
 					users.setMobile(dealer.getMobile());
 					users.setRegisterDate(dealer.getRegisterDate());
-					users.setRole("DEALER");
+					users.setRole(UserAuthorities.ROLE_DEALER.code());
 				}else if(users.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_CLIENT.name())) {
 					Client client = clientService.findByUsername(users.getUsername());
 					users.setName(client.getClientName());
 					users.setMobile(client.getMobile());
 					users.setRegisterDate(client.getRegisterDate());
-					users.setRole("CLIENT");
+					users.setRole(UserAuthorities.ROLE_CLIENT.code());
 				}
 			}
 		} catch (SilException e) {
@@ -91,6 +103,20 @@ public class UsersController {
 	@GetMapping("/create")
 	public String usersCreatePage(Model model) {
 		model.addAttribute("pageTitle", "Create User");
+		Map<String, String> roles = new HashMap<>();
+		roles.put(UserAuthorities.ROLE_ADMIN.code(), UserAuthorities.ROLE_ADMIN.name());
+		roles.put(UserAuthorities.ROLE_DEALER.code(), UserAuthorities.ROLE_DEALER.name());
+		roles.put(UserAuthorities.ROLE_CLIENT.code(), UserAuthorities.ROLE_CLIENT.name());
+		model.addAttribute("roles", roles);
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String username = authentication.getName();
+		try {
+			model.addAttribute("dealers", dealerService.findAllByAdminIdAndStatusAndArchive(adminService.findByUsernameAndArchive(username, false).getAdminId(), true, false));
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+
 		model.addAttribute("users", new Users());
 		return LOCATION + "create_user";
 	}

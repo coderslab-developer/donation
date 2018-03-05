@@ -92,7 +92,31 @@
 												<div class="form-group">
 													<label>Mobile</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}">Error</span>
 													<div class="required-field-block">
-														<input type="text" th:field="*{mobile}" class="form-control numeric-only" maxlength="11" required="required"/>
+														<input type="text" nospace="true" th:field="*{mobile}" class="form-control numeric-only" maxlength="11" required="required"/>
+														<div class="required-icon">
+															<div class="text">*</div>
+														</div>
+													</div>
+												</div>
+												<div class="form-group">
+													<label>Select Role</label>
+													<div class="required-field-block">
+														<select th:field="*{authority}" class="selectpicker form-control" data-live-search="true" required="required">
+															<option value="">-- Select Role --</option>
+															<option th:each="item : ${roles}" th:value="${item.value}" th:text="${item.key}">Role Name</option>
+														</select>
+														<div class="required-icon">
+															<div class="text">*</div>
+														</div>
+													</div>
+												</div>
+												<div th:if="${#strings.equalsIgnoreCase(authority, 'ROLE_CLIENT')}" class="form-group">
+													<label>Select Role</label>
+													<div class="required-field-block">
+														<select th:field="*{dealerId}" class="selectpicker form-control" data-live-search="true" required="required">
+															<option value="">-- Select Dealer --</option>
+															<option th:each="item : ${dealers}" th:value="${item.dealerId}" th:text="${item.dealerName}">Dealer Name</option>
+														</select>
 														<div class="required-icon">
 															<div class="text">*</div>
 														</div>
@@ -101,7 +125,7 @@
 												<div class="form-group">
 													<label>Address</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Error</span>
 													<div class="required-field-block">
-														<textarea th:field="*{address}" class="form-control"></textarea>
+														<textarea th:field="*{address}" class="form-control" required="required"></textarea>
 														<div class="required-icon">
 															<div class="text">*</div>
 														</div>

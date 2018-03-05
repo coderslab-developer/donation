@@ -73,5 +73,8 @@ public class Users implements java.io.Serializable {
 	private String address;
 
 	@Transient
+	private Integer dealerId;
+
+	@Transient
 	private String photo;
 }

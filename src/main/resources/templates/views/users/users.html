@@ -69,7 +69,7 @@
 												<td th:text="${row.role}"></td>
 												<td th:text="${row.enabled == true?'Active':'Inactive'}"></td>
 												<td style="text-align: center;">
-													<div class="btn-group">
+													<div th:unless="${#authentication.getPrincipal().getUsername() eq row.username}" class="btn-group">
 														<a th:if="${row.enabled}" th:href="@{/users/changeStatus/} + ${row.username}" data-toggle="tooltip" th:title="#{dashboard.table.suspendProfile}" class="btn btn-sm btn-danger"><i class="fa fa-arrow-down"></i> Deactive</a>
 														<a th:unless="${row.enabled}" th:href="@{/users/changeStatus/} + ${row.username}" data-toggle="tooltip" th:title="#{dashboard.table.activeProfile}" class="btn btn-success btn-sm"><i class="fa fa-arrow-up"></i> Active</a>
 													</div>
