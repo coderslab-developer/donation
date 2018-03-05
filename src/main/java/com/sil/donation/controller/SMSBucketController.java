@@ -19,7 +19,7 @@ import com.sil.donation.entity.Dealer;
 import com.sil.donation.entity.SMSTransaction;
 import com.sil.donation.entity.Users;
 import com.sil.donation.exception.SilException;
-import com.sil.donation.model.UserRole;
+import com.sil.donation.model.UserAuthorities;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DealerService;
 import com.sil.donation.service.SMSTransactionService;
@@ -66,10 +66,10 @@ public class SMSBucketController {
 		List<Client> clients = null;
 		try {
 			list = smsTransactionService.findByUsernameOrderByIdDesc(username);
-			if(user.getAuthority().equalsIgnoreCase(UserRole.ROLE_ADMIN.name())) {
+			if(user.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_ADMIN.name())) {
 				dealers = dealerService.findAllByStatusAndArchive(true, false);
 				model.addAttribute("dealers", dealers);
-			}else if(user.getAuthority().equalsIgnoreCase(UserRole.ROLE_DEALER.name())) {
+			}else if(user.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_DEALER.name())) {
 				Dealer dealer = dealerService.findByUsernameAndArchive(username, false);
 				clients = clientService.findAllByDealerIdAndStatusAndSmsServiceAndArchive(dealer.getDealerId(), true, true, false);
 				model.addAttribute("clients", clients);

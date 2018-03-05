@@ -9,7 +9,7 @@ import com.sil.donation.entity.Client;
 import com.sil.donation.entity.Dealer;
 import com.sil.donation.entity.Users;
 import com.sil.donation.exception.SilException;
-import com.sil.donation.model.UserRole;
+import com.sil.donation.model.UserAuthorities;
 import com.sil.donation.repository.UsersRepository;
 
 /**
@@ -29,7 +29,7 @@ public class UsersService {
 
 	public boolean createUsersFromDealer(Dealer dealer) throws SilException {
 		Users users = new Users();
-		users.setAuthority(UserRole.ROLE_DEALER.name());
+		users.setAuthority(UserAuthorities.ROLE_DEALER.name());
 		users.setEmail(dealer.getEmail());
 		users.setEnabled(dealer.isStatus());
 		users.setPassword(dealer.getPassword());
@@ -39,7 +39,7 @@ public class UsersService {
 
 	public boolean createUsersFromClient(Client client) throws SilException {
 		Users users = new Users();
-		users.setAuthority(UserRole.ROLE_CLIENT.name());
+		users.setAuthority(UserAuthorities.ROLE_CLIENT.name());
 		users.setEmail(client.getEmail());
 		users.setEnabled(client.isStatus());
 		users.setPassword(client.getPassword());

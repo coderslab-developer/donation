@@ -21,7 +21,7 @@ import com.sil.donation.entity.Donar;
 import com.sil.donation.entity.SMSTransaction;
 import com.sil.donation.entity.Users;
 import com.sil.donation.exception.SilException;
-import com.sil.donation.model.UserRole;
+import com.sil.donation.model.UserAuthorities;
 import com.sil.donation.service.AdminService;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DealerService;
@@ -82,15 +82,15 @@ public class SendSMSController {
 
 		if(authority != null) {
 			try {
-				if(authority.equalsIgnoreCase(UserRole.ROLE_ADMIN.name())) {
+				if(authority.equalsIgnoreCase(UserAuthorities.ROLE_ADMIN.name())) {
 					Admin admin = adminService.findByUsernameAndArchive(username, false);
 					List<Dealer> dealers = dealerService.findAllByAdminIdAndStatusAndArchive(admin.getAdminId(), true, false);
 					model.addAttribute("dealers", dealers);
-				}else if(authority.equalsIgnoreCase(UserRole.ROLE_DEALER.name())) {
+				}else if(authority.equalsIgnoreCase(UserAuthorities.ROLE_DEALER.name())) {
 					Dealer dealer = dealerService.findByUsernameAndArchive(username, false);
 					List<Client> clients = clientService.findByDealerIdAndStatusAndArchive(dealer.getDealerId(), true, false);
 					model.addAttribute("clients", clients);
-				}else if(authority.equalsIgnoreCase(UserRole.ROLE_CLIENT.name())) {
+				}else if(authority.equalsIgnoreCase(UserAuthorities.ROLE_CLIENT.name())) {
 					Client client = clientService.findByUsernameAndArchive(username, false);
 					List<Donar> donars = donarService.findAllByClientIdAndStatusAndArchive(client.getClientId(), true, false);
 					model.addAttribute("donars", donars);

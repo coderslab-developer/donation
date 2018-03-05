@@ -29,7 +29,7 @@ import com.sil.donation.exception.SilException;
 import com.sil.donation.model.AdminDashboard;
 import com.sil.donation.model.ClientDashboard;
 import com.sil.donation.model.DealerDashboard;
-import com.sil.donation.model.UserRole;
+import com.sil.donation.model.UserAuthorities;
 import com.sil.donation.service.CategoryService;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DealerService;
@@ -90,7 +90,7 @@ public class DashboardController {
 		session.setAttribute("siteConfig", siteConfig);
 
 		//logic for view page
-		if(role.equalsIgnoreCase(UserRole.ROLE_ADMIN.name())) {
+		if(role.equalsIgnoreCase(UserAuthorities.ROLE_ADMIN.name())) {
 			Map<String, Object> map = getAllDealerAndClientInfo();
 			try {
 				model.addAttribute("adminDashboard", getAdminDashBoardInfo());
@@ -100,7 +100,7 @@ public class DashboardController {
 			model.addAttribute("clients", map.get("clients"));
 			model.addAttribute("dealers", map.get("dealers"));
 			return LOCATION + REDIRECT_TO_ADMIN;
-		}else if(role.equalsIgnoreCase(UserRole.ROLE_DEALER.name())) {
+		}else if(role.equalsIgnoreCase(UserAuthorities.ROLE_DEALER.name())) {
 			Map<String, Object> map = getAllDealersInfo(authentication.getName());
 			model.addAttribute("clients", map.get("clients"));
 			try {
@@ -109,7 +109,7 @@ public class DashboardController {
 				logger.error(e.getMessage(), e);
 			}
 			return LOCATION + REDIRECT_TO_DEALER;
-		}else if(role.equalsIgnoreCase(UserRole.ROLE_CLIENT.name())){
+		}else if(role.equalsIgnoreCase(UserAuthorities.ROLE_CLIENT.name())){
 			try {
 				model.addAttribute("clientDashboard", getClientDashboardInfo(authentication.getName()));
 				model.addAttribute("donars", getAllDonarsInfo(authentication.getName()).get("donars"));

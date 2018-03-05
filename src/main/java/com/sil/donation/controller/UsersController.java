@@ -21,7 +21,7 @@ import com.sil.donation.entity.Dealer;
 import com.sil.donation.entity.Users;
 import com.sil.donation.exception.SilException;
 import com.sil.donation.model.ResponseMessage;
-import com.sil.donation.model.UserRole;
+import com.sil.donation.model.UserAuthorities;
 import com.sil.donation.service.AdminService;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DealerService;
@@ -58,19 +58,19 @@ public class UsersController {
 
 		try {
 			for(Users users : allUsers) {
-				if(users.getAuthority().equalsIgnoreCase(UserRole.ROLE_ADMIN.name())) {
+				if(users.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_ADMIN.name())) {
 					Admin admin = adminService.findByUsername(users.getUsername());
 					users.setName(admin.getAdminName());
 					users.setMobile(admin.getMobile());
 					users.setRegisterDate(admin.getRegisterDate());
 					users.setRole("ADMIN");
-				}else if(users.getAuthority().equalsIgnoreCase(UserRole.ROLE_DEALER.name())) {
+				}else if(users.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_DEALER.name())) {
 					Dealer dealer = dealerService.findByUsername(users.getUsername());
 					users.setName(dealer.getDealerName());
 					users.setMobile(dealer.getMobile());
 					users.setRegisterDate(dealer.getRegisterDate());
 					users.setRole("DEALER");
-				}else if(users.getAuthority().equalsIgnoreCase(UserRole.ROLE_CLIENT.name())) {
+				}else if(users.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_CLIENT.name())) {
 					Client client = clientService.findByUsername(users.getUsername());
 					users.setName(client.getClientName());
 					users.setMobile(client.getMobile());
@@ -110,15 +110,15 @@ public class UsersController {
 
 			users.setEnabled(!users.isEnabled());
 
-			if(users.getAuthority().equalsIgnoreCase(UserRole.ROLE_ADMIN.name())) {
+			if(users.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_ADMIN.name())) {
 				admin = adminService.findByUsername(users.getUsername());
 				admin.setStatus(users.isEnabled());
 				adminService.save(admin);
-			}else if(users.getAuthority().equalsIgnoreCase(UserRole.ROLE_DEALER.name())) {
+			}else if(users.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_DEALER.name())) {
 				dealer = dealerService.findByUsername(users.getUsername());
 				dealer.setStatus(users.isEnabled());
 				dealerService.save(dealer);
-			}else if(users.getAuthority().equalsIgnoreCase(UserRole.ROLE_CLIENT.name())) {
+			}else if(users.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_CLIENT.name())) {
 				client = clientService.findByUsername(users.getUsername());
 				client.setStatus(users.isEnabled());
 				clientService.save(client);
