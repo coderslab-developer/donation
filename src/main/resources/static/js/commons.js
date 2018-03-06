@@ -213,4 +213,12 @@ $(document).ready(function(){
 		});
 	};
 	checkAllRequiredFields();
+
+	//only for create user page
+	if($('#dealer-selector').length > 0){
+		$(this).on('keyup change keypress blur', function(){
+			checkAllRequiredFields();
+		});
+	}
+
 });

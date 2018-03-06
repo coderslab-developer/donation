@@ -48,9 +48,9 @@
 									<h4 style="margin: 0;">Add Dealer</h4>
 								</div>
 								<div class="panel-body">
-									<form th:action="@{/users}" method="post" th:object="${users}" autocomplete="off" enctype="multipart/form-data">
+									<form th:action="@{/users}" method="post" th:object="${users}" autocomplete="off">
 										<div class="row">
-											<div class="col-md-8">
+											<div class="col-md-12">
 												<div class="form-group">
 													<label>Name</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</span>
 													<div class="required-field-block">
@@ -101,7 +101,7 @@
 												<div class="form-group">
 													<label>Select Role</label>
 													<div class="required-field-block">
-														<select th:field="*{authority}" class="selectpicker form-control" data-live-search="true" required="required">
+														<select id="role-selector" th:field="*{authority}" class="selectpicker form-control select" data-live-search="true" required="required">
 															<option value="">-- Select Role --</option>
 															<option th:each="item : ${roles}" th:value="${item.value}" th:text="${item.key}">Role Name</option>
 														</select>
@@ -110,11 +110,12 @@
 														</div>
 													</div>
 												</div>
-												<div th:if="${#strings.equalsIgnoreCase(authority, 'ROLE_CLIENT')}" class="form-group">
-													<label>Select Role</label>
+												<div id="delaer-selector-area" class="form-group no-display">
+													<label>Select Dealer for Client</label>
 													<div class="required-field-block">
-														<select th:field="*{dealerId}" class="selectpicker form-control" data-live-search="true" required="required">
+														<select id="dealer-selector" th:field="*{dealerId}" class="selectpicker form-control select" data-live-search="true">
 															<option value="">-- Select Dealer --</option>
+															<option value="1">Zubayer</option>
 															<option th:each="item : ${dealers}" th:value="${item.dealerId}" th:text="${item.dealerName}">Dealer Name</option>
 														</select>
 														<div class="required-icon">
@@ -135,24 +136,6 @@
 													<label class="checkbox-inline"><input type="checkbox" th:field="*{enabled}"/> Active</label>
 												</div>
 											</div>
-											<div class="col-md-4">
-												<div class="form-group">
-													<label class="control-label">Upload Photo:</label>
-													<span class="pull-right text-success">Max Size: 5MB, (200 x 220)px</span>
-													<div class="input-group">
-														<label class="input-group-btn">
-															<span class="btn btn-primary">
-																Brows &hellip; <input accept=".jpg, .jpeg, .png" type="file" name="file" id="file" style="display: none;">
-															</span>
-														</label>
-														<input type="text" class="form-control" readonly="readonly" placeholder="Please select a jpg, png, jpeg image. Max(5MB)">
-													</div>
-												</div>
-												<div id="uploadPreview">
-													<img th:unless="${#strings.isEmpty(users.photo)}" th:src="@{/resources/upload/users/} + ${users.photo}"/>
-													<img th:if="${#strings.isEmpty(users.photo)}" th:src="@{/img/dummy_photo.png}"/>
-												</div>
-											</div>
 										</div>
 										<div class="col-md-12" style="text-align: center;">
 											<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Submit</button>
@@ -170,6 +153,23 @@
 		</div><!-- / end conatiner -->
 
 		<span th:substituteby="commons :: common-js"></span>
-		<script type="text/javascript" th:src="@{/js/dealer/dealer.js}"></script> 
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('#role-selector').on('change',function(){
+					var selectedOption = $('#role-selector').val();
+					if(selectedOption === 'ROLE_CLIENT'){
+						$('#delaer-selector-area').removeClass('no-display');
+						$('#dealer-selector').attr('required','required');
+						if($('#dealer-selector').val() === ''){
+							$('button[type="submit"]').addClass('disabled');
+							$('button[type="submit"]').attr('disabled','disabled');
+						}
+					}else{
+						$('#delaer-selector-area').addClass('no-display');
+						$('#dealer-selector').removeAttr('required');
+					}
+				});
+			});
+		</script>
 	</body>
 </html>

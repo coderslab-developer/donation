@@ -419,5 +419,7 @@ table ul {
 	margin-left: 5px;
 }
 
-
+.no-display{
+	display : none;
+}
 
