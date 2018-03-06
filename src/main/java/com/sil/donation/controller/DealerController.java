@@ -231,7 +231,6 @@ public class DealerController {
 		}
 
 		//without image part
-		d.setUpdateDate(new Date());
 		users.setUsername(d.getUsername());
 		authorities.setUsername(d.getUsername());
 		try {

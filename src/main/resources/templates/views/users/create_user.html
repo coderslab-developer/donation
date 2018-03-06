@@ -51,6 +51,7 @@
 									<form th:action="@{/users}" method="post" th:object="${users}" autocomplete="off">
 										<div class="row">
 											<div class="col-md-12">
+												<input type="hidden" name="adminId" id="adminId" th:value="${adminId}" class="form-control"/>
 												<div class="form-group">
 													<label>Name</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</span>
 													<div class="required-field-block">
@@ -115,7 +116,6 @@
 													<div class="required-field-block">
 														<select id="dealer-selector" th:field="*{dealerId}" class="selectpicker form-control select" data-live-search="true">
 															<option value="">-- Select Dealer --</option>
-															<option value="1">Zubayer</option>
 															<option th:each="item : ${dealers}" th:value="${item.dealerId}" th:text="${item.dealerName}">Dealer Name</option>
 														</select>
 														<div class="required-icon">
@@ -131,6 +131,9 @@
 															<div class="text">*</div>
 														</div>
 													</div>
+												</div>
+												<div id="smsService-area" class="form-group no-display">
+													<label class="checkbox-inline"><input type="checkbox" th:field="*{smsService}"/> SMS Service</label>
 												</div>
 												<div class="form-group">
 													<label class="checkbox-inline"><input type="checkbox" th:field="*{enabled}"/> Active</label>
@@ -158,6 +161,7 @@
 				$('#role-selector').on('change',function(){
 					var selectedOption = $('#role-selector').val();
 					if(selectedOption === 'ROLE_CLIENT'){
+						$('#smsService-area').removeClass('no-display');
 						$('#delaer-selector-area').removeClass('no-display');
 						$('#dealer-selector').attr('required','required');
 						if($('#dealer-selector').val() === ''){
@@ -165,6 +169,7 @@
 							$('button[type="submit"]').attr('disabled','disabled');
 						}
 					}else{
+						$('#smsService-area').addClass('no-display');
 						$('#delaer-selector-area').addClass('no-display');
 						$('#dealer-selector').removeAttr('required');
 					}

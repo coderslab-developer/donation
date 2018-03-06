@@ -15,6 +15,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import lombok.Data;
 
 /**
@@ -36,7 +38,7 @@ public class Admin implements Serializable {
 	@Column(name = "adminName", nullable = false, length = 100)
 	private String adminName;
 
-	@Column(name = "email", unique = true, nullable = false, length = 100)
+	@Column(name = "email", nullable = false, length = 100)
 	private String email;
 
 	@Column(name = "username", unique = true, nullable = false, length = 40)
@@ -48,6 +50,10 @@ public class Admin implements Serializable {
 	@Size(min = 11, max = 11, message = "Mobile number must be 11 character")
 	@Column(name = "mobile", nullable = false, length = 11)
 	private String mobile;
+
+	@NotEmpty(message = "Please enter address")
+	@Column(name = "address", nullable = false, length = 65535)
+	private String address;
 
 	@Column(name = "status", columnDefinition = "BOOLEAN")
 	private boolean status;

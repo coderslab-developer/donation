@@ -1,9 +1,14 @@
 package com.sil.donation.controller;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +17,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,10 +61,138 @@ public class UsersController {
 	@Autowired private ClientService clientService;
 
 	@PostMapping
-	public String createAndSaveUser(Users users, RedirectAttributes redirect) {
-		logger.info("users {} ", users);
-		
-		return REDIRECT + REDIRECT_TO;
+	public String createAndSaveUser(@ModelAttribute("users") @Valid Users users, BindingResult result, RedirectAttributes redirect, Model model) {
+	
+		if(result.hasErrors()) {
+			model.addAttribute("pageTitle", "Create User");
+			Map<String, String> roles = new HashMap<>();
+			roles.put(UserAuthorities.ROLE_ADMIN.code(), UserAuthorities.ROLE_ADMIN.name());
+			roles.put(UserAuthorities.ROLE_DEALER.code(), UserAuthorities.ROLE_DEALER.name());
+			roles.put(UserAuthorities.ROLE_CLIENT.code(), UserAuthorities.ROLE_CLIENT.name());
+			model.addAttribute("roles", roles);
+
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String username = authentication.getName();
+			try {
+				model.addAttribute("dealers", dealerService.findAllByAdminIdAndStatusAndArchive(adminService.findByUsernameAndArchive(username, false).getAdminId(), true, false));
+				model.addAttribute("adminId", adminService.findByUsernameAndArchive(username, false).getAdminId());
+			} catch (SilException e) {
+				logger.error(e.getMessage(), e);
+			}
+			model.addAttribute("users", users);
+			return LOCATION + "create_user";
+		}
+
+		String em = "User not created";
+		String sm = "User created successfully";
+		users.setRegisterDate(new Date());
+
+		Admin admin = null;
+		Dealer dealer = null;
+		Client client = null;
+
+		if(users.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_ADMIN.name())) {
+			admin = setAdminInofFromUserAndSaveBoth(users);
+			if(admin == null) { 
+				redirect.addFlashAttribute("em", em);
+			}
+			redirect.addFlashAttribute("sm", sm);
+		}else if(users.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_DEALER.name())) {
+			dealer = setDealerInfoFromUserAndSaveBoth(users);
+			if(dealer == null) { 
+				redirect.addFlashAttribute("em", em);
+			}
+			redirect.addFlashAttribute("sm", sm);
+		}else if(users.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_CLIENT.name())) {
+			client = setClientInfoFromUserAndSaveBoth(users);
+			if(client == null) { 
+				redirect.addFlashAttribute("em", em);
+			}
+			redirect.addFlashAttribute("sm", sm);
+		}
+
+		return REDIRECT + REDIRECT_TO + "/create";
+	}
+
+	@Transactional
+	private Admin setAdminInofFromUserAndSaveBoth(Users users) {
+		Admin admin = new Admin();
+		admin.setAdminName(users.getName());
+		admin.setUsername(users.getUsername());
+		admin.setEmail(users.getEmail());
+		admin.setPassword(users.getPassword());
+		admin.setMobile(users.getMobile());
+		admin.setStatus(users.isEnabled());
+		admin.setArchive(users.isArchive());
+		admin.setRegisterDate(users.getRegisterDate());
+		admin.setAddress(users.getAddress());
+
+		//save both
+		try {
+			usersService.save(users);
+			adminService.save(admin);
+			return admin;
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+
+		return null;
+	}
+
+	@Transactional
+	private Client setClientInfoFromUserAndSaveBoth(Users users) {
+		Client client = new Client();
+		client.setClientName(users.getName());
+		client.setEmail(users.getEmail());
+		client.setMobile(users.getMobile());
+		client.setRegisterDate(users.getRegisterDate());
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, 1);
+		Date nextYear = calendar.getTime();
+		client.setExpireDate(nextYear);
+		client.setAddress(users.getAddress());
+		client.setStatus(users.isEnabled());
+		client.setDealerId(users.getDealerId());
+		client.setUsername(users.getUsername());
+		client.setPassword(users.getPassword());
+		client.setArchive(users.isArchive());
+		client.setSmsService(users.isSmsService());
+
+		try {
+			usersService.save(users);
+			clientService.save(client);
+			return client;
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}		
+
+		return null;
+	}
+
+	@Transactional
+	private Dealer setDealerInfoFromUserAndSaveBoth(Users users) {
+		Dealer dealer = new Dealer();
+		dealer.setAdminId(users.getAdminId());
+		dealer.setDealerName(users.getName());
+		dealer.setEmail(users.getEmail());
+		dealer.setUsername(users.getUsername());
+		dealer.setPassword(users.getPassword());
+		dealer.setAddress(users.getAddress());
+		dealer.setMobile(users.getMobile());
+		dealer.setRegisterDate(dealer.getRegisterDate());
+		dealer.setStatus(users.isEnabled());
+		dealer.setArchive(users.isArchive());
+		dealer.setRegisterDate(users.getRegisterDate());
+
+		try {
+			usersService.save(users);
+			dealerService.save(dealer);
+			return dealer;
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+
+		return null;
 	}
 
 	@GetMapping
@@ -113,6 +248,7 @@ public class UsersController {
 		String username = authentication.getName();
 		try {
 			model.addAttribute("dealers", dealerService.findAllByAdminIdAndStatusAndArchive(adminService.findByUsernameAndArchive(username, false).getAdminId(), true, false));
+			model.addAttribute("adminId", adminService.findByUsernameAndArchive(username, false).getAdminId());
 		} catch (SilException e) {
 			logger.error(e.getMessage(), e);
 		}

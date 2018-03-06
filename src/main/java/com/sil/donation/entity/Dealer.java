@@ -69,10 +69,6 @@ public class Dealer implements Serializable {
 	@Column(name = "registerDate", nullable = false, length = 10)
 	private Date registerDate;
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "updateDate", length = 10)
-	private Date updateDate;
-
 	@Column(name = "status", columnDefinition = "BOOLEAN")
 	private boolean status;
 

@@ -76,5 +76,8 @@ public class Users implements java.io.Serializable {
 	private Integer dealerId;
 
 	@Transient
-	private String photo;
+	private Integer adminId;
+
+	@Transient
+	private boolean smsService;
 }
