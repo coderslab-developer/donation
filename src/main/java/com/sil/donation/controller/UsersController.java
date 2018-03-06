@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sil.donation.entity.Admin;
+import com.sil.donation.entity.Authorities;
 import com.sil.donation.entity.Client;
 import com.sil.donation.entity.Dealer;
 import com.sil.donation.entity.Users;
@@ -35,6 +35,7 @@ import com.sil.donation.exception.SilException;
 import com.sil.donation.model.ResponseMessage;
 import com.sil.donation.model.UserAuthorities;
 import com.sil.donation.service.AdminService;
+import com.sil.donation.service.AuthoritiesService;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DealerService;
 import com.sil.donation.service.UsersService;
@@ -59,6 +60,7 @@ public class UsersController {
 	@Autowired private AdminService adminService;
 	@Autowired private DealerService dealerService;
 	@Autowired private ClientService clientService;
+	@Autowired private AuthoritiesService authoritiesService;
 
 	@PostMapping
 	public String createAndSaveUser(@ModelAttribute("users") @Valid Users users, BindingResult result, RedirectAttributes redirect, Model model) {
@@ -114,7 +116,6 @@ public class UsersController {
 		return REDIRECT + REDIRECT_TO + "/create";
 	}
 
-	@Transactional
 	private Admin setAdminInofFromUserAndSaveBoth(Users users) {
 		Admin admin = new Admin();
 		admin.setAdminName(users.getName());
@@ -131,6 +132,7 @@ public class UsersController {
 		try {
 			usersService.save(users);
 			adminService.save(admin);
+			setAuthoritiesFromUsersAndSave(users);
 			return admin;
 		} catch (SilException e) {
 			logger.error(e.getMessage(), e);
@@ -139,7 +141,6 @@ public class UsersController {
 		return null;
 	}
 
-	@Transactional
 	private Client setClientInfoFromUserAndSaveBoth(Users users) {
 		Client client = new Client();
 		client.setClientName(users.getName());
@@ -161,6 +162,7 @@ public class UsersController {
 		try {
 			usersService.save(users);
 			clientService.save(client);
+			setAuthoritiesFromUsersAndSave(users);
 			return client;
 		} catch (SilException e) {
 			logger.error(e.getMessage(), e);
@@ -169,7 +171,6 @@ public class UsersController {
 		return null;
 	}
 
-	@Transactional
 	private Dealer setDealerInfoFromUserAndSaveBoth(Users users) {
 		Dealer dealer = new Dealer();
 		dealer.setAdminId(users.getAdminId());
@@ -187,11 +188,26 @@ public class UsersController {
 		try {
 			usersService.save(users);
 			dealerService.save(dealer);
+			setAuthoritiesFromUsersAndSave(users);
 			return dealer;
 		} catch (SilException e) {
 			logger.error(e.getMessage(), e);
 		}
 
+		return null;
+	}
+
+	private Authorities setAuthoritiesFromUsersAndSave(Users users) {
+		Authorities authorities = new Authorities();
+		authorities.setUsername(users.getUsername());
+		authorities.setAuthority(users.getAuthority());
+		authorities.setArchive(users.isArchive());
+		try {
+			authoritiesService.save(authorities);
+			return authorities;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
 		return null;
 	}
 

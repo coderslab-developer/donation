@@ -21,7 +21,7 @@ import lombok.Data;
  *
  */
 @Entity
-@Table(name = "smsnotifier")
+@Table(name = "smsnotifier", catalog = "dms")
 @Data
 public class SMSNotifier implements Serializable {
 

@@ -35,8 +35,8 @@ public class Donation implements Serializable {
 
 	@Column(name = "donarId", nullable = false)
 	private Integer donarId;
-	@Min(value = 1, message = "Please enter positive amount")
 
+	@Min(value = 1, message = "Please enter positive amount")
 	@Column(name = "payableAmount", nullable = false)
 	private double payableAmount;
 

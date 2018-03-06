@@ -42,7 +42,7 @@
 						<li sec:authorize="${hasRole('ROLE_DEALER')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add client')}?active"><a th:href="@{/client}">Add Client</a></li>
 						<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add category')}?active"><a th:href="@{/category}">Add Category</a></li>
 						<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add donar')}?active"><a th:href="@{/donar}">Add Donar</a></li>
-						<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add donation')}?active"><a th:href="@{/donation}">Add Donation</a></li>
+						<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add donation')}?active"><a th:href="@{/donation}">Take Donation</a></li>
 						<li th:if="${#authentication.name != 'anonymousUser'}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Report')}?active"><a th:href="@{/report}">Report</a></li>
 						<!-- site settings -->
 						<li class="dropdown">
@@ -51,8 +51,8 @@
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
-								<li><a th:href="@{/users}">All Users</a></li>
-								<li><a th:href="@{/users/create}">Create User</a></li>
+								<li><a sec:authorize="${hasRole('ROLE_ADMIN')}" th:href="@{/users}">All Users</a></li>
+								<li><a sec:authorize="${hasRole('ROLE_ADMIN')}" th:href="@{/users/create}">Create User</a></li>
 								<li><a th:href="@{/sendSms/} + ${#authentication.getPrincipal().getUsername()}">Send SMS</a></li>
 								<li><a th:href="@{/smsBucket/} + ${#authentication.getPrincipal().getUsername()}">SMS Bucket</a></li>
 								<li><a th:href="@{/siteConfig/} + ${#authentication.getPrincipal().getUsername()}">Site Config</a></li>

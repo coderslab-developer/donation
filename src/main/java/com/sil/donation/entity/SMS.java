@@ -23,7 +23,7 @@ import lombok.Data;
  *
  */
 @Entity
-@Table(name = "sms")
+@Table(name = "sms", catalog = "dms")
 @Data
 public class SMS {
 

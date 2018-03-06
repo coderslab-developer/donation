@@ -45,25 +45,36 @@
 						<div class="col-md-12 add-deller-page">
 							<div class="panel panel-primary">
 								<div class="panel-heading custom-primary">
-									<h4 style="margin: 0;">Add Client</h4>
+									<h4 style="margin: 0;">Take Donation</h4>
 								</div>
 								<div class="panel-body">
 									<form method="POST" th:action="@{/donation}" th:object="${donation}">
 										<div class="col-md-12">
 											<div class="form-group">
 												<label>Select Donar</label>
-												<select th:field="*{donarId}" class="form-control" required="required">
-													<option value="0"> --- Select Donar --- </option>
-													<option th:each="item : ${donation.donars}" th:value="${item.donarId}" th:text="${item.donarName}"></option>
-												</select>
+												<div class="required-field-block">
+													<select th:field="*{donarId}" class="selectpicker form-control select" data-live-search="true" required="required">
+														<option value="">-- Select Donar --</option>
+														<option th:each="item : ${donation.donars}" th:value="${item.donarId}" th:text="${item.donarName}">Donar Name</option>
+													</select>
+													<div class="required-icon">
+														<div class="text">*</div>
+													</div>
+												</div>
 											</div>
+											
 											<div class="form-group">
 												<label>Enter amount</label><span class="pull-right text-danger" th:if="${#fields.hasErrors('paid')}" th:errors="*{paid}">Please enter positive amount</span>
-												<input type="number" th:field="*{paid}" class="form-control" min="1"/>
+												<div class="required-field-block">
+													<input type="number" th:field="*{paid}" class="form-control numeric-only" required="required" min="1"/>
+													<div class="required-icon">
+														<div class="text">*</div>
+													</div>
+												</div>
 											</div>
 										</div>
 										<div class="col-md-12" style="text-align: center;">
-											<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
+											<button disabled="disabled" type="submit" class="btn btn-success disabled"><i class="fa fa-save"></i> Save</button>
 										</div>
 									</form>
 								</div>
