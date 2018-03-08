@@ -164,6 +164,12 @@ $(document).ready(function(){
 		});
 	});
 
+	//datepicker - bootstrap
+	//add class 'datepicker'
+	$('.datepicker').each(function(){
+		$(this).datepicker();
+	});
+
 	//mobile length checker
 	$('input[name="mobile"][required="required"]').on('keyup change keypress blur', function(){
 		mobileLength = $('input[name="mobile"][required="required"]').val().length;
