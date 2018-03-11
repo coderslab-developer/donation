@@ -32,12 +32,12 @@
 						<!-- Success / Error Messages -->
 						<div class="col-md-12">
 							<div th:if="${sm}" id="success-alert" class="alert alert-success alert-dismissable">
-							  	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-							  	<strong>Success!</strong> <span th:text="${sm}">Message</span> 
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Success!</strong> <span th:text="${sm}">Message</span> 
 							</div>
 							<div th:if="${em}" id="error-alert" class="alert alert-danger alert-dismissable">
-							  	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-							  	<strong>Alert! </strong> <span th:text="${em}">Message</span> 
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Alert! </strong> <span th:text="${em}">Message</span> 
 							</div>
 						</div>
 
@@ -50,6 +50,7 @@
 								<div class="panel-body">
 									<form method="POST" th:action="@{/donation}" th:object="${donation}">
 										<div class="col-md-12">
+											<input type="hidden" th:field="*{clientId}"/>
 											<div class="form-group">
 												<label>Select Donar</label>
 												<div class="required-field-block">

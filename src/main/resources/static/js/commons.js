@@ -147,27 +147,79 @@ $(document).ready(function(){
 	//Customize bootstrap data-table
 	$('table#example').each(function (tindex, table) {
 		var noSortColumns = [];
-		$(table).find('th').each(function (thindex, column) {
+		var scrollY = "";
+		var scrollCollapse = false;
+		var paging = true;
+		var searching = true;
+
+		$(table).find('th').each(function (i, column) {
 			if ($(this).attr('data-nosort')) {
 				var value = $(this).attr('data-nosort');
 				if(value == 'Y'){
-					noSortColumns.push(thindex);
+					noSortColumns.push(i);
 				}
 			}
 		});
+
+		//calculate
+		var sumOfRows = 0;
+		var columnIndex = $('.calculate').index();
+		$(table).find('tr').each(function(i, tr){
+			$(this).find('td').each(function(j, td){
+				if(j === columnIndex){
+					sumOfRows += Number($(this).html());
+				}
+			});
+		});
+		if(columnIndex !== -1){
+			$('.result').html(sumOfRows);
+		}
+
+		//add attribute text-align="center" or text-align="left" or text-align="right"
+		$(table).find('thead, tfoot, tbody').each(function (i, item) {
+			if ($(item).attr('text-align')) {
+				$(item).find('th, td').each(function (j, column) {
+					$(column).css('text-align', $(item).attr('text-align'));
+				});
+			}
+		});
+
+		//add attribute scroll-y="200px"
+		if($(table).attr('scroll-y')){
+			scrollY = $(table).attr('scroll-y');
+			scrollCollapse = true;
+			paging = false;
+		}
+
+		//add attribute searching="false"
+		if($(table).attr('searching')){
+			if($(table).attr('searching') === 'false'){
+				searching = false;
+			}
+		}
+
 		$(table).DataTable({
 			"responsive" : true,
 			"columnDefs": [{
 				"targets": noSortColumns,
 				"orderable": false
-			}]
+			}],
+			"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+			"scrollY" : scrollY,
+			"scrollCollapse": scrollCollapse,
+			"paging": paging,
+			"searching": searching
 		});
 	});
 
 	//datepicker - bootstrap
 	//add class 'datepicker'
 	$('.datepicker').each(function(){
-		$(this).datepicker();
+		$(this).datepicker({
+			"todayBtn" : true,
+			"format" : 'dd-mm-yyyy',
+			"defaultViewDate" : 'today'
+		});
 	});
 
 	//mobile length checker

@@ -50,7 +50,13 @@ public class Donation implements Serializable {
 	@Column(name = "payDate", nullable = false, length = 10)
 	private Date payDate;
 
+	@Column(name = "clientId", nullable = false)
+	private Integer clientId;
+
 	@Transient
 	private List<Donar> donars;
+
+	@Transient
+	private String donarName;
 
 }

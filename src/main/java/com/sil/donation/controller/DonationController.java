@@ -46,6 +46,7 @@ public class DonationController {
 		model.addAttribute("pageTitle", PAGE_TITLE);
 		Donation donation = new Donation();
 		try {
+			donation.setClientId(clientService.findByUsernameAndArchive(username, false).getClientId());
 			donation.setDonars(donarService.findAllByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false));
 		} catch (SilException e) {
 			logger.error(e.getMessage());

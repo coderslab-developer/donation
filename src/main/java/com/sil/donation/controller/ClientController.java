@@ -287,13 +287,13 @@ public class ClientController {
 		try {
 			Client client = clientService.findByClientIdAndArchive(clientId, false);
 			client.setStatus(!client.isStatus());
-			
+
 			Users users = usersService.findByUsernameAndArchive(client.getUsername(), false);
 			users.setEnabled(!users.isEnabled());
-			
+
 			clientService.save(client);
 			usersService.save(users);
-			
+
 			redirect.addFlashAttribute("sm", "Client status chage successfully");
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -306,14 +306,14 @@ public class ClientController {
 		try {
 			Client client = clientService.findByClientIdAndArchive(clientId, false);
 			client.setArchive(true);
-			
+
 			Users users = usersService.findByUsernameAndArchive(client.getUsername(), false);
 			users.setArchive(true);
 			users.setEnabled(false);
 
 			Authorities authorities = authoritiesService.findByUsernameAndArchive(client.getUsername(), false);
 			authorities.setArchive(true);
-			
+
 			List<Donar> donars = donarService.findAllByClientId(client.getClientId());
 			for(Donar d : donars) {
 				d.setArchive(true);
@@ -322,7 +322,7 @@ public class ClientController {
 			clientService.save(client);
 			usersService.save(users);
 			authoritiesService.save(authorities);
-			
+
 			redirect.addFlashAttribute("sm", "Client deleted successfully");
 		} catch (Exception e) {
 			logger.info(e.getMessage());

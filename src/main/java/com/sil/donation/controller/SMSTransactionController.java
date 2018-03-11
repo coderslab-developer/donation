@@ -36,7 +36,12 @@ public class SMSTransactionController {
 	@Autowired private SMSKeyGeneratorService smsKeyGeneratorService;
 
 	@RequestMapping(value = "/updateSMS", method = RequestMethod.POST)
-	public String updateAdminSMS(String username, String smsAmount, RedirectAttributes redirect) {
+	public String updateAdminSMS(String username, int smsAmount, RedirectAttributes redirect) {
+		if(smsAmount <= 0) {
+			redirect.addFlashAttribute("em", "Please enter sms quantity greatter then 0");
+			return "redirect:/smsBucket/" + username;
+		}
+		
 		SMSTransaction smsTransaction = new SMSTransaction();
 		smsTransaction.setUsername(username);
 		smsTransaction.setActionPerform(SMSActionPerform.BUY.name());
@@ -59,10 +64,10 @@ public class SMSTransactionController {
 		}
 
 		if(st == null) {
-			smsTransaction.setAvailableSMS(Integer.valueOf(smsAmount));
+			smsTransaction.setAvailableSMS(smsAmount);
 			smsTransaction.setUsedSMS(0);
 		}else {
-			int newSMSAmount = Integer.valueOf(smsAmount) + st.getAvailableSMS();
+			int newSMSAmount = smsAmount + st.getAvailableSMS();
 			smsTransaction.setAvailableSMS(newSMSAmount);
 			smsTransaction.setUsedSMS(st.getUsedSMS());
 		}

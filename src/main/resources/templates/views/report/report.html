@@ -30,14 +30,14 @@
 					<div class="row">
 
 						<!-- Success / Error Messages -->
-						<div class="col-md-4 col-md-offset-4">
-							<div th:if="${param.error}" id="success-alert" class="alert alert-success alert-dismissable">
-								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> 
-								<strong>Invalid username or password</strong>
-							</div>
-							<div th:if="${param.logout}" id="error-alert" class="alert alert-success alert-dismissable">
+						<div class="col-md-12">
+							<div th:if="${sm}" id="success-alert" class="alert alert-success alert-dismissable">
 								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-								<strong>You have been logged out</strong>
+								<strong>Success!</strong> <span th:text="${sm}">Message</span> 
+							</div>
+							<div th:if="${em}" id="error-alert" class="alert alert-danger alert-dismissable">
+								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>Error!</strong> <span th:text="${em}">Message</span> 
 							</div>
 						</div>
 
@@ -47,8 +47,71 @@
 								<div class="panel-heading custom-primary">
 									<h4 style="margin: 0;">Report</h4>
 								</div>
-								<div class="panel-body" style="font-size: 60px; text-align:center;">
-									
+								<div class="panel-body">
+									<form id="report-form" th:action="@{/report/search}" method="post">
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<label>Select Donar</label>
+													<select sec:authorize="${hasRole('ROLE_CLIENT')}" id="donar" name="donarId" class="selectpicker form-control select" data-live-search="true">
+														<option value="">-- Select Donar --</option>
+														<option th:each="item : ${donars}" th:value="${item.donarId}" th:text="${item.donarName} + ' --- ' + ${item.instituteName}"></option>
+													</select>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label>Select Date Range</label>
+													<div class="row">
+														<div class="col-md-12">
+															<div class="input-group date input-daterange">
+																<span class="input-group-addon">
+																	<i class="glyphicon glyphicon-calendar"></i>
+																</span>
+																<input class="form-control datepicker" type="text" name="startDate" id="start-date" placeholder="Previous Date"/>
+																<span class="input-group-addon">
+																	To
+																</span>
+																<input class="form-control datepicker" type="text" name="endDate" id="end-date" placeholder="Last Date"/>
+																<span class="input-group-addon">
+																	<i class="glyphicon glyphicon-calendar"></i>
+																</span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<button id="submit" type="submit" class="btn btn-success">Submit</button>
+									</form>
+								</div>
+								<div class="panel-footer">
+									<table id="example" class="table table-bordered table-striped table-hover">
+										<thead text-align="center">
+											<tr>
+												<th>SN.</th>
+												<th>Donar Name</th>
+												<th>Pay Date</th>
+												<th class="calculate">Paid</th>
+											</tr>
+										</thead>
+										<tbody text-align="center">
+											<tr th:if="${donations}" th:each="row, no : ${donations}">
+												<td th:text="${no.count}"></td>
+												<td th:text="${row.donarName}"></td>
+												<td th:text="${row.payDate}"></td>
+												<td th:text="${row.paid}"></td>
+											</tr>
+										</tbody>
+										<tfoot>
+											<tr>
+												<th colspan="3" style="text-align:right">
+													Total
+												</th>
+												<th class="result"></th>
+											</tr>
+										</tfoot>
+									</table>
 								</div>
 							</div>
 						</div>
@@ -64,5 +127,30 @@
 		<!-- / end conatiner -->
 
 		<span th:substituteby="commons :: common-js"></span>
+		<!-- <script type="text/javascript">
+			$(document).ready(function(){
+				var i = 1;
+
+				$("#report-form").submit(function(e){
+					e.preventDefault();
+
+					var formData = {
+						'donarId' : $('#donar').val(),
+						'startDate' : $('#start-date').val(),
+						'endDate' : $('#end-date').val()
+					}
+					$.post($("#report-form").attr("action"), formData)
+					.done(function(data){
+						/* $('table#example').row.add([
+							i++,
+							data.donarId,
+							data.paid,
+							data.payDate
+						]).draw(false); */
+						
+					})
+				});
+			});
+		</script> -->
 	</body>
 </html>
