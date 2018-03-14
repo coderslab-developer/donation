@@ -26,7 +26,7 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.MySQL5Dialect
         id:
           new_generator_mappings: false
   jackson:
@@ -45,3 +45,6 @@ logging:
     org:
       springframework:
         web: ERROR
+    hibernate: 
+      SQL: DEBUG
+      type: TRACE 
