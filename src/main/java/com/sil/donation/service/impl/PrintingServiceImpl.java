@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.sil.donation.service.impl;
 
 import java.io.ByteArrayOutputStream;
@@ -11,8 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -32,16 +28,25 @@ import org.apache.fop.apps.MimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
+import com.sil.donation.entity.Admin;
 import com.sil.donation.entity.Client;
 import com.sil.donation.entity.Dealer;
+import com.sil.donation.entity.Donar;
+import com.sil.donation.entity.SiteConfig;
 import com.sil.donation.exception.SilException;
+import com.sil.donation.service.CategoryService;
 import com.sil.donation.service.ClientService;
+import com.sil.donation.service.DealerService;
+import com.sil.donation.service.DonarService;
 import com.sil.donation.service.PrintingService;
+import com.sil.donation.service.SiteConfigService;
+import com.sil.donation.util.ClientDocumentGenerator;
+import com.sil.donation.util.DealerDocumentGenerator;
 
 /**
  * @author Zubayer Ahamed
@@ -52,11 +57,16 @@ public class PrintingServiceImpl implements PrintingService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PrintingServiceImpl.class);
 
-	@Autowired
-	private ClientService clientService;
+	@Autowired private ClientService clientService;
+	@Autowired private DealerDocumentGenerator dealerDocumentGenerator; 
+	@Autowired private ClientDocumentGenerator clientDocumentGenerator;
+	@Autowired private SiteConfigService siteConfigService;
+	@Autowired private DonarService donarService;
+	@Autowired private CategoryService categoryService;
+	@Autowired private DealerService dealerService;
 
 	@Override
-	public ByteArrayOutputStream transfromToPDFBytes(Document doc, String template)
+	public ByteArrayOutputStream transfromToPDFBytes(Document doc, String template, HttpServletRequest request)
 			throws TransformerFactoryConfigurationError, TransformerException, FOPException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		File file = new File(template);
@@ -67,7 +77,10 @@ public class PrintingServiceImpl implements PrintingService {
 			throw new TransformerException("File not found: " + template);
 		}
 
-		FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
+		//for image path setting
+		String serverPath = request.getSession().getServletContext().getRealPath("/");
+
+		FopFactory fopFactory = FopFactory.newInstance(new File(serverPath).toURI());
 		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
 		Result res = new SAXResult(fop.getDefaultHandler());
@@ -81,14 +94,13 @@ public class PrintingServiceImpl implements PrintingService {
 		try {
 			clients = clientService.findAllByDealerId(dealer.getDealerId());
 		} catch (SilException e) {
-			if(logger.isErrorEnabled())
-				logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		if(clients != null) {
 			dealer.setActiveClients(clients.stream().filter(c -> Boolean.TRUE == c.isStatus() && Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
 			dealer.setInactiveClients(clients.stream().filter(c -> Boolean.FALSE == c.isStatus() && Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
 			dealer.setTotalSellOfSoftware(clients.size());
-			dealer.setClients(clients);
+			dealer.setClients(clients.stream().filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()));
 			List<Client> renewalClients = new ArrayList<>();
 			Calendar cal1 = Calendar.getInstance();
 			Calendar cal2 = Calendar.getInstance();
@@ -102,48 +114,69 @@ public class PrintingServiceImpl implements PrintingService {
 			dealer.setServiceRenewOnThisMonth(renewalClients.size());
 		}
 
-		//Generate XML
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		Document doc = documentBuilder.newDocument();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String username = authentication.getName();
+		SiteConfig siteConfig = null;
+		try {
+			siteConfig = siteConfigService.findByUsername(username);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		
+		return dealerDocumentGenerator.dealerProfileDocument(dealer, siteConfig);
+	}
 
-		//root element
-		Element rootElement = doc.createElement("dealer");
-		doc.appendChild(rootElement);
-
-		rootElement.appendChild(getChildElement(doc, "dealerName", dealer.getDealerName()));
-		rootElement.appendChild(getChildElement(doc, "photo", dealer.getPhoto() == null? "" : dealer.getPhoto()));
-		rootElement.appendChild(getChildElement(doc, "mobile", dealer.getMobile()));
-		rootElement.appendChild(getChildElement(doc, "email", dealer.getEmail()));
-		rootElement.appendChild(getChildElement(doc, "address", dealer.getAddress()));
-		rootElement.appendChild(getChildElement(doc, "status", dealer.isStatus() == Boolean.TRUE ? "Active" : "Inactive"));
-		rootElement.appendChild(getChildElement(doc, "registerDate", String.valueOf(dealer.getRegisterDate())));
-		rootElement.appendChild(getChildElement(doc, "totalSellOfSoftware", String.valueOf(dealer.getTotalSellOfSoftware())));
-		rootElement.appendChild(getChildElement(doc, "activeClients", String.valueOf(dealer.getActiveClients())));
-		rootElement.appendChild(getChildElement(doc, "inactiveClients", String.valueOf(dealer.getInactiveClients())));
-		rootElement.appendChild(getChildElement(doc, "serviceRenewOnThisMonth", String.valueOf(dealer.getServiceRenewOnThisMonth())));
-
-		for(Client client : clients.stream().filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList())) {
-			rootElement.appendChild(getClient(doc, client));
+	@Override
+	public Document generateClientProfileDocument(Client client) throws ParserConfigurationException {
+		try {
+			client.setDealerName(dealerService.findByDealerIdAndArchive(client.getDealerId(), false).getDealerName());
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
 		}
 
-		return doc;
-	}
-	
-	public Node getClient(Document doc, Client client) {
-		Element clientElement = doc.createElement("client");
-		clientElement.appendChild(getChildElement(doc, "clientName", client.getClientName()));
-		clientElement.appendChild(getChildElement(doc, "mobile", client.getMobile()));
-		clientElement.appendChild(getChildElement(doc, "status", client.isStatus() == Boolean.TRUE ? "Active" : "Inactive"));
-		clientElement.appendChild(getChildElement(doc, "expireDate", String.valueOf(client.getExpireDate())));
-		return clientElement;
+		//get donars
+		List<Donar> donars = null;
+		try {
+			donars = donarService.findAllByClientId(client.getClientId());
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		if(donars != null) {
+			donars.stream().forEach(d -> {
+				try {
+					d.setCategoryName(categoryService.findByCategoryIdAndArchive(d.getCategoryId(), false).getName());
+				} catch (SilException e) {
+					logger.error(e.getMessage(), e);
+				}
+			});
+			client.setDonars(donars.stream().filter(d -> Boolean.FALSE == d.isArchive()).collect(Collectors.toList()));
+			client.setActiveDonar(donars.stream().filter(d -> Boolean.TRUE == d.isStatus() && Boolean.FALSE == d.isArchive()).collect(Collectors.toList()).size());
+			client.setInactiveDonar(donars.stream().filter(d -> Boolean.FALSE == d.isStatus() && Boolean.FALSE == d.isArchive()).collect(Collectors.toList()).size());
+			client.setNumberOfPayeeDonarInThisMonth(0);
+		}
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String username = authentication.getName();
+		SiteConfig siteConfig = null;
+		try {
+			siteConfig = siteConfigService.findByUsername(username);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+
+		return clientDocumentGenerator.clientProfileDocument(client, siteConfig);
 	}
 
-	// Create Element and set its value
-	public Node getChildElement(Document doc, String name, String value) {
-		Element element = doc.createElement(name);
-		element.appendChild(doc.createTextNode(value));
-		return element;
+	@Override
+	public Document generateDonarProfileDocument(Donar donar) throws ParserConfigurationException {
+		
+		return null;
+	}
+
+	@Override
+	public Document generateAdminProfileDocument(Admin admin) throws ParserConfigurationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -46,7 +46,6 @@ public class ReportController {
 	private static final String REDIRECT_TO = "report";
 	private static final DateFormat DATE_FORMATTER = new SimpleDateFormat("dd-MM-yyyy");
 
-
 	@Autowired private DonationService donationService;
 	@Autowired private DonarService donarService;
 	@Autowired private ClientService clientService;
@@ -119,6 +118,7 @@ public class ReportController {
 			logger.error(e.getMessage(), e);
 		}
 
+		
 		redirect.addFlashAttribute("donations", donations);
 		return REDIRECT + REDIRECT_TO;
 	}

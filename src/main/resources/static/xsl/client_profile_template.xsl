@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
 <!--!                                                              !-->
-<!--!    File Name    : dealer_profile_template.xsl                !-->
-<!--!    Description  : Dealer Profile template (customized)       !-->
+<!--!    File Name    : client_profile_template.xsl                !-->
+<!--!    Description  : Client Profile template (customized)       !-->
 <!--!    Author       : Zubayer Ahamed                             !-->
 <!--!    Date         : 25-Feb-2018                                !-->
 <!--!    Copyright    : Copyright (c) coderslab.bd.com             !-->
@@ -11,7 +11,7 @@
 <xsl:stylesheet version="1.1"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format"
 	exclude-result-prefixes="fo">
-	<xsl:template match="dealer">
+	<xsl:template match="client">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
 
 			<!-- page setup -->
@@ -76,12 +76,12 @@
 									<fo:table-row>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block font-weight="bold">
-												Dealer name
+												Client name
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block>
-												<xsl:value-of select="dealerName"/>
+												<xsl:value-of select="clientName"/>
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
@@ -112,6 +112,30 @@
 									<fo:table-row>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block font-weight="bold">
+												Fax
+											</fo:block>
+										</fo:table-cell>
+										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
+											<fo:block>
+												<xsl:value-of select="fax"/>
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+									<fo:table-row>
+										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
+											<fo:block font-weight="bold">
+												Website
+											</fo:block>
+										</fo:table-cell>
+										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
+											<fo:block>
+												<xsl:value-of select="website"/>
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+									<fo:table-row>
+										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
+											<fo:block font-weight="bold">
 												Address
 											</fo:block>
 										</fo:table-cell>
@@ -136,6 +160,18 @@
 									<fo:table-row>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block font-weight="bold">
+												SMS Service
+											</fo:block>
+										</fo:table-cell>
+										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
+											<fo:block>
+												<xsl:value-of select="smsService"/>
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+									<fo:table-row>
+										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
+											<fo:block font-weight="bold">
 												Register Date
 											</fo:block>
 										</fo:table-cell>
@@ -148,48 +184,48 @@
 									<fo:table-row>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block font-weight="bold">
-												Total sell of software
+												Expire Date
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block>
-												<xsl:value-of select="totalSellOfSoftware"/>
+												<xsl:value-of select="expireDate"/>
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
 									<fo:table-row>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block font-weight="bold">
-												Active Clients
+												Total Donars
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block>
-												<xsl:value-of select="activeClients"/>
+												<xsl:value-of select="totalDonars"/>
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
 									<fo:table-row>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block font-weight="bold">
-												Inactive Clients
+												Active Donars
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block>
-												<xsl:value-of select="inactiveClients"/>
+												<xsl:value-of select="activeDonars"/>
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
 									<fo:table-row>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block font-weight="bold">
-												Service renew on this month
+												Inactive Donars
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block>
-												<xsl:value-of select="serviceRenewOnThisMonth"/>
+												<xsl:value-of select="inactiveDonars"/>
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
@@ -200,23 +236,23 @@
 					<!-- dealer photo -->
 					<fo:block-container width="30%" right="0mm" position="absolute">
 						<fo:block text-align="right">
-							<xsl:if test="dealerPhoto != ''">
-								<xsl:variable name="imagePath" select="dealerPhoto"/>
-								<fo:external-graphic padding="0" margin="0" border="1px solid #000000" space-start="0" space-end="0" pause-before="0" pause-after="0" content-height="110px" content-width="100px" scaling="non-uniform" src="url('resources/upload/dealer/{$imagePath}')"/>
+							<xsl:if test="photo != ''">
+								<xsl:variable name="imagePath" select="photo"/>
+								<fo:external-graphic padding="0" margin="0" border="1px solid #000000" space-start="0" space-end="0" pause-before="0" pause-after="0" content-height="110px" content-width="100px" scaling="non-uniform" src="url('resources/upload/client/{$imagePath}')"/>
 							</xsl:if>
 						</fo:block>
 					</fo:block-container>
 
 					<fo:block-container width="100%" margin-top="20px" right="0mm">
 						<fo:block>
-							<xsl:if test="clients/client != ''">
+							<xsl:if test="donars/donar != ''">
 								<fo:table table-layout="fixed" width="100%" border-collapse="collapse">
 									<fo:table-column column-width="100%" />
 									<fo:table-header xsl:use-attribute-sets="table.font.size">
 										<fo:table-row>
-											<fo:table-cell xsl:use-attribute-sets="client.table.th">
+											<fo:table-cell xsl:use-attribute-sets="donar.table.th">
 												<fo:block text-align="center">
-													Clients List
+													Donarss List
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
@@ -230,52 +266,58 @@
 									</fo:table-body>
 								</fo:table>
 							</xsl:if>
-							<xsl:if test="clients/client != ''">
+							<xsl:if test="donars/donar != ''">
 								<fo:table table-layout="fixed" width="100%" border-collapse="collapse">
 									<fo:table-column column-width="5%" />
-									<fo:table-column column-width="20%" />
-									<fo:table-column column-width="20%" />
-									<fo:table-column column-width="15%" />
-									<fo:table-column column-width="20%" />
-									<fo:table-column column-width="20%" />
+									<fo:table-column column-width="16.66%" />
+									<fo:table-column column-width="16.66%" />
+									<fo:table-column column-width="16.66%" />
+									<fo:table-column column-width="11.66%" />
+									<fo:table-column column-width="16.66%" />
+									<fo:table-column column-width="16.66%" />
 	
 									<!-- client table header -->
 									<fo:table-header xsl:use-attribute-sets="table.font.size">
 										<fo:table-row>
-											<fo:table-cell xsl:use-attribute-sets="client.table.th">
+											<fo:table-cell xsl:use-attribute-sets="donar.table.th">
 												<fo:block>
 													No
 												</fo:block>
 											</fo:table-cell>
-											<fo:table-cell xsl:use-attribute-sets="client.table.th">
+											<fo:table-cell xsl:use-attribute-sets="donar.table.th">
 												<fo:block>
-													Client name
+													Donar name
 												</fo:block>
 											</fo:table-cell>
-											<fo:table-cell xsl:use-attribute-sets="client.table.th">
+											<fo:table-cell xsl:use-attribute-sets="donar.table.th">
+												<fo:block>
+													Category
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell xsl:use-attribute-sets="donar.table.th">
 												<fo:block>
 													Mobile
 												</fo:block>
 											</fo:table-cell>
-											<fo:table-cell xsl:use-attribute-sets="client.table.th">
+											<fo:table-cell xsl:use-attribute-sets="donar.table.th">
+												<fo:block>
+													Payable Amount
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell xsl:use-attribute-sets="donar.table.th">
 												<fo:block>
 													Status
 												</fo:block>
 											</fo:table-cell>
-											<fo:table-cell xsl:use-attribute-sets="client.table.th">
+											<fo:table-cell xsl:use-attribute-sets="donar.table.th">
 												<fo:block>
-													Register Date
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell xsl:use-attribute-sets="client.table.th">
-												<fo:block>
-													Expire Date
+													SMS Service
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
 									</fo:table-header>
 									<fo:table-body>
-										<xsl:apply-templates select="clients/client"/>
+										<xsl:apply-templates select="donars/donar"/>
 									</fo:table-body>
 								</fo:table>
 							</xsl:if>
@@ -288,36 +330,41 @@
 	</xsl:template>
 
 	<!-- get Client -->
-	<xsl:template match="clients/client">
+	<xsl:template match="donars/donar">
 		<fo:table-row>
-			<fo:table-cell xsl:use-attribute-sets="client.table.td">
+			<fo:table-cell xsl:use-attribute-sets="donar.table.td">
 				<fo:block>
 					<xsl:value-of select="no"/>
 				</fo:block>
 			</fo:table-cell>
-			<fo:table-cell xsl:use-attribute-sets="client.table.td">
+			<fo:table-cell xsl:use-attribute-sets="donar.table.td">
 				<fo:block>
-					<xsl:value-of select="clientName"/>
+					<xsl:value-of select="donarName"/>
 				</fo:block>
 			</fo:table-cell>
-			<fo:table-cell xsl:use-attribute-sets="client.table.td">
+			<fo:table-cell xsl:use-attribute-sets="donar.table.td">
+				<fo:block>
+					<xsl:value-of select="categoryName"/>
+				</fo:block>
+			</fo:table-cell>
+			<fo:table-cell xsl:use-attribute-sets="donar.table.td">
 				<fo:block>
 					<xsl:value-of select="mobile"/>
 				</fo:block>
 			</fo:table-cell>
-			<fo:table-cell xsl:use-attribute-sets="client.table.td">
+			<fo:table-cell xsl:use-attribute-sets="donar.table.td">
+				<fo:block>
+					<xsl:value-of select="payableAmount"/>
+				</fo:block>
+			</fo:table-cell>
+			<fo:table-cell xsl:use-attribute-sets="donar.table.td">
 				<fo:block>
 					<xsl:value-of select="status"/>
 				</fo:block>
 			</fo:table-cell>
-			<fo:table-cell xsl:use-attribute-sets="client.table.td">
+			<fo:table-cell xsl:use-attribute-sets="donar.table.td">
 				<fo:block>
-					<xsl:value-of select="registerDate"/>
-				</fo:block>
-			</fo:table-cell>
-			<fo:table-cell xsl:use-attribute-sets="client.table.td">
-				<fo:block>
-					<xsl:value-of select="expireDate"/>
+					<xsl:value-of select="smsService"/>
 				</fo:block>
 			</fo:table-cell>
 		</fo:table-row>
@@ -334,14 +381,14 @@
 		<xsl:attribute name="padding-top">2px</xsl:attribute>
 		<xsl:attribute name="padding-bottom">2px</xsl:attribute>
 	</xsl:attribute-set>
-	<xsl:attribute-set name="client.table.th">
+	<xsl:attribute-set name="donar.table.th">
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:attribute name="font-size">8pt</xsl:attribute>
 		<xsl:attribute name="padding">2px</xsl:attribute>
 		<xsl:attribute name="background-color">#DDDDDD</xsl:attribute>
 		<xsl:attribute name="border">1pt solid #000000</xsl:attribute>
 	</xsl:attribute-set>
-	<xsl:attribute-set name="client.table.td">
+	<xsl:attribute-set name="donar.table.td">
 		<xsl:attribute name="font-size">7pt</xsl:attribute>
 		<xsl:attribute name="padding">2px</xsl:attribute>
 		<xsl:attribute name="border">1pt solid #000000</xsl:attribute>
