@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,7 +45,6 @@ import com.sil.donation.service.AuthoritiesService;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DealerService;
 import com.sil.donation.service.DonarService;
-import com.sil.donation.service.PrintingService;
 import com.sil.donation.service.UsersService;
 import com.sil.donation.util.ImageResizer;
 
@@ -72,7 +72,6 @@ public class DealerController {
 	@Autowired private ClientService clientService;
 	@Autowired private DonarService donarService;
 	@Autowired private Environment environment;
-	@Autowired private PrintingService printingService;
 	@Autowired private AdminService adminService;
 
 	@RequestMapping
@@ -330,6 +329,39 @@ public class DealerController {
 			logger.error(e.getMessage());
 		}
 		return REDIRECT;
+	}
+
+	@GetMapping("/photoRemove/{dealerId}")
+	public String removeDealerPhoto(@PathVariable("dealerId") Integer dealerId, RedirectAttributes redirect, HttpServletRequest request) {
+		Dealer dealer = null;
+		try {
+			dealer = dealerService.findByDealerIdAndArchive(dealerId, false);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		if(dealer == null) {
+			redirect.addFlashAttribute("em", "No dealer found for remove photo");
+			return REDIRECT + REDIRECT_TO + "/view/" + dealerId;
+		}
+
+		//Remove previous image
+		String imageName = dealer.getPhoto();
+		String uploadPath = request.getServletContext().getRealPath(DEALER_PHOTO_DIR);
+		File image = new File(uploadPath +  imageName);
+		if(image.exists()) {
+			if(!image.delete()) {
+				image.delete();
+			}
+		}
+
+		dealer.setPhoto("");
+		try {
+			dealerService.save(dealer);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		redirect.addFlashAttribute("sm", "Photo remove successfully");
+		return REDIRECT + REDIRECT_TO + "/view/" + dealerId;
 	}
 
 	public Dealer getDealerFullInfo(int dealerId) {

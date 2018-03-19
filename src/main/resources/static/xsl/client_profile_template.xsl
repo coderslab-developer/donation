@@ -252,7 +252,7 @@
 										<fo:table-row>
 											<fo:table-cell xsl:use-attribute-sets="donar.table.th">
 												<fo:block text-align="center">
-													Donarss List
+													Donars List
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>

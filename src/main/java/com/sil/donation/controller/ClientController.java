@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -422,4 +423,34 @@ public class ClientController {
 		return REDIRECT + "client/updateService/" + clientId;
 	}
 
+	@GetMapping("/photoRemove/{clientId}")
+	public String removeClientPhoto(@PathVariable("clientId") Integer clientId, HttpServletRequest request, RedirectAttributes redirect) {
+		Client client = null;
+		try {
+			client = clientService.findByClientIdAndArchive(clientId, false);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		if(client == null) {
+			redirect.addFlashAttribute("em", "No client found for delete photo");
+			return REDIRECT + REDIRECT_TO + "/view/" + clientId;
+		}
+
+		//remove photo from directory
+		String imageName = client.getPhoto();
+		String uploadPath = request.getServletContext().getRealPath(CLIENT_PHOTO_DIR);
+		File image = new File(uploadPath +  imageName);
+		if(!image.delete()) {
+			image.delete();
+		}
+
+		client.setPhoto("");
+		try {
+			clientService.save(client);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		redirect.addFlashAttribute("sm", "Photo delete successfully");
+		return REDIRECT + REDIRECT_TO + "/view/" + clientId;
+	}
 }

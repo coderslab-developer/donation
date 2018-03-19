@@ -31,13 +31,13 @@
 
 						<!-- Success / Error Messages -->
 						<div class="col-md-12">
-							<div th:if="${success}" id="success-alert" class="alert alert-success alert-dismissable">
+							<div th:if="${sm}" id="success-alert" class="alert alert-success alert-dismissable">
 								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-								<strong>Success!</strong> <span th:text="${success}">Message</span>
+								<strong>Success!</strong> <span th:text="${sm}">Message</span>
 							</div>
-							<div th:if="${error}" id="error-alert" class="alert alert-success alert-dismissable">
+							<div th:if="${em}" id="error-alert" class="alert alert-danger alert-dismissable">
 								<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-								<strong>Success!</strong> <span th:text="${error}">Message</span>
+								<strong>Alert!</strong> <span th:text="${em}">Message</span>
 							</div>
 						</div>
 
@@ -99,10 +99,11 @@
 													<div class="col-md-8 profileView-div" th:text="${dealerDashboard.serviceRenewOnThisMonth}"></div>
 												</div>
 											</div>
-											<div class="col-md-2 pull-right">
-												<div class="profile-photo pull-right" th:unless="${#strings.isEmpty(dealer.photo)}">
+											<div class="col-md-2 pull-right" th:unless="${#strings.isEmpty(dealer.photo)}">
+												<div class="profile-photo pull-right">
 													<img th:src="@{/resources/upload/dealer/} + ${dealer.photo}" />
 												</div>
+												<a th:href="@{/dealer/photoRemove/} + ${dealer.dealerId}" class="btn btn-danger" style="margin-top:10px;"><i class="fa fa-trash"></i> Delete Photo</a>
 											</div>
 										</div>
 									</div>
