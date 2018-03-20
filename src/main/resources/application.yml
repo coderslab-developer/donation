@@ -10,7 +10,7 @@ spring:
     mode: LEGACYHTML5
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/dms?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&tinyInt1isBit=false
+    url: jdbc:mysql://192.168.0.102/dms?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&tinyInt1isBit=false
     username: root
     password: 1234
     tomcat: 
@@ -26,7 +26,7 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
         id:
           new_generator_mappings: false
   jackson:

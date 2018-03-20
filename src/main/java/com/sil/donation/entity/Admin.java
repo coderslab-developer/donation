@@ -15,8 +15,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import lombok.Data;
 
 /**
@@ -51,7 +49,6 @@ public class Admin implements Serializable {
 	@Column(name = "mobile", nullable = false, length = 11)
 	private String mobile;
 
-	@NotEmpty(message = "Please enter address")
 	@Column(name = "address", nullable = false, length = 65535)
 	private String address;
 
@@ -59,13 +56,12 @@ public class Admin implements Serializable {
 	private boolean status;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "registerDate", nullable = false, length = 10)
+	@Column(name = "registerDate", length = 10)
 	private Date registerDate;
-
-	@Transient
-	private List<Dealer> dealers;
 
 	@Column(name = "archive", columnDefinition = "BOOLEAN")
 	private boolean archive;
 
+	@Transient
+	private List<Dealer> dealers;
 }

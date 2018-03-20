@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS `admin` (
   `registerDate` date NOT NULL,
   `status` tinyint(1) DEFAULT NULL,
   `username` varchar(40) NOT NULL,
+  `address` longtext NOT NULL,
+  `mobile` varchar(11) NOT NULL,
   PRIMARY KEY (`adminId`),
   UNIQUE KEY `UK_c0r9atamxvbhjjvy5j8da1kam` (`email`),
   UNIQUE KEY `UK_gfn44sntic2k93auag97juyij` (`username`)
