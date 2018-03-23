@@ -10,7 +10,7 @@ spring:
     mode: LEGACYHTML5
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.0.103/dms?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&tinyInt1isBit=false
+    url: jdbc:mysql://localhost:3306/dms?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&tinyInt1isBit=false
     username: root
     password: 1234
     tomcat: 
