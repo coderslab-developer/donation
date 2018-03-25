@@ -25,10 +25,7 @@ public class DonationService {
 
 	public boolean save(Donation donation) {
 		Donation d = donationRepository.save(donation);
-		if(d == null) {
-			return false;
-		}
-		return true;
+		return d == null ? false : true;
 	}
 
 	@SuppressWarnings("unchecked")

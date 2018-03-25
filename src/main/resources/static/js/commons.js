@@ -144,7 +144,20 @@ $(document).ready(function(){
 		title: 'Required field'
 	});
 
-	//Customize bootstrap data-table
+	//Customize bootstrap data-table api
+	var dataTable;
+	var calculateColumn = function(table, columnIndex, sumOfRows, columnId){
+		$(table).find('tr').each(function(i, tr){
+			$(this).find('td').each(function(j, td){
+				if(j === columnIndex){
+					sumOfRows += Number($(this).html());
+				}
+			});
+		});
+		if(columnIndex !== -1){
+			$('.' + columnId + 'Result').html(sumOfRows);
+		}
+	};
 	$('table#example').each(function (tindex, table) {
 		var noSortColumns = [];
 		var scrollY = "";
@@ -164,16 +177,8 @@ $(document).ready(function(){
 		//calculate
 		var sumOfRows = 0;
 		var columnIndex = $('.calculate').index();
-		$(table).find('tr').each(function(i, tr){
-			$(this).find('td').each(function(j, td){
-				if(j === columnIndex){
-					sumOfRows += Number($(this).html());
-				}
-			});
-		});
-		if(columnIndex !== -1){
-			$('.result').html(sumOfRows);
-		}
+		var columnId = $(this).attr('id');
+		calculateColumn($('#example'), columnIndex, sumOfRows, columnId);
 
 		//add attribute text-align="center" or text-align="left" or text-align="right"
 		$(table).find('thead, tfoot, tbody').each(function (i, item) {
@@ -198,7 +203,7 @@ $(document).ready(function(){
 			}
 		}
 
-		$(table).DataTable({
+		dataTable = $(table).DataTable({
 			"responsive" : true,
 			"columnDefs": [{
 				"targets": noSortColumns,
@@ -278,5 +283,44 @@ $(document).ready(function(){
 			checkAllRequiredFields();
 		});
 	}
+
+	//report form
+	$("#report-form").submit(function(e){
+		e.preventDefault();
+		dataTable.clear().draw();	//clear the datatable
+		$('.result').html('');		//clear the result field
+		if($('#start-date').val() == '' || $('#end-date').val() == ''){
+			alert("Please select date correctly");
+			return;
+		}
+		var formData = {
+			'donarId' : $('#donar').val(),
+			'startDate' : $('#start-date').val(),
+			'endDate' : $('#end-date').val()
+		}
+		$.post($("#report-form").attr("action"), formData)
+		.done(function(data){
+			if(data.length > 0){
+				$.each(data, function(i, item) {
+					dataTable.row.add([
+						++i,
+						item.donarName,
+						item.payDate,
+						item.payableAmount,
+						item.paid,
+						item.due
+					]).draw(false);
+				});
+				//$('.result').html(result);
+				$('.calculate').each(function(){
+					var sumOfRows = 0;
+					var columnIndex = $(this).index();
+					var columnId = $(this).attr('id');
+					calculateColumn($('#example'), columnIndex, sumOfRows, columnId);
+				});
+			}
+		}); 
+	});
+
 
 });

@@ -72,4 +72,12 @@ public interface PrintingService {
 	 */
 	public Document generateAdminProfileDocument(Admin admin) throws ParserConfigurationException;
 
+	/**
+	 * Generate Document object of Donars Transaction report for a client
+	 * @param client
+	 * @return Document
+	 * @throws ParserConfigurationException
+	 */
+	public Document generateDonarsDonationTransactionsReport(Client client) throws ParserConfigurationException;
+
 }

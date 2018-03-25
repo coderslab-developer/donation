@@ -43,18 +43,7 @@
 						<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add category')}?active"><a th:href="@{/category}">Add Category</a></li>
 						<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add donar')}?active"><a th:href="@{/donar}">Add Donar</a></li>
 						<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Add donation')}?active"><a th:href="@{/donation}">Take Donation</a></li>
-						<!-- report -->
-						<li class="dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-								Report
-								<span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li sec:authorize="${hasRole('ROLE_CLIENT')}"><a th:href="@{/report}">Donar Info</a></li>
-								<li sec:authorize="${hasRole('ROLE_DEALER')}"><a th:href="@{/report}">Client Info</a></li>
-								<li sec:authorize="${hasRole('ROLE_CLIENT')}"><a th:href="@{/report}">Transactions</a></li>
-							</ul>
-						</li>
+						<li sec:authorize="${hasRole('ROLE_CLIENT')}" th:classappend="${#strings.equalsIgnoreCase(pageTitle, 'Report')}?active"><a th:href="@{/report}">Report</a></li>
 						<!-- site settings -->
 						<li class="dropdown">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#">

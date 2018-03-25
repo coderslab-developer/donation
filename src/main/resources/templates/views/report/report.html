@@ -48,7 +48,7 @@
 									<h4 style="margin: 0;">Report</h4>
 								</div>
 								<div class="panel-body">
-									<form id="report-form" th:action="@{/report/search}" method="post">
+									<form id="report-form" th:action="@{/report/transactionInfo}" method="post">
 										<div class="row">
 											<div class="col-md-6">
 												<div class="form-group">
@@ -83,6 +83,7 @@
 											</div>
 										</div>
 										<button id="submit" type="submit" class="btn btn-success">Submit</button>
+										<a id="printReport" th:href="@{/print/donarTransactionReport}" target="_blank" class="btn btn-warning pull-right"><i class="fa fa-print"></i> Print</a>
 									</form>
 								</div>
 								<div class="panel-footer">
@@ -92,29 +93,32 @@
 												<th>SN.</th>
 												<th>Donar Name</th>
 												<th>Pay Date</th>
-												<th class="calculate">Paid</th>
+												<th class="calculate" id="payableAmount">Payable Amount</th>
+												<th class="calculate" id="paid">Paid</th>
+												<th class="calculate" id="due">Due</th>
 											</tr>
 										</thead>
-										<tbody text-align="center">
-											<tr th:if="${donations}" th:each="row, no : ${donations}">
-												<td th:text="${no.count}"></td>
-												<td th:text="${row.donarName}"></td>
-												<td th:text="${row.payDate}"></td>
-												<td th:text="${row.paid}"></td>
-											</tr>
-										</tbody>
 										<tfoot>
 											<tr>
 												<th colspan="3" style="text-align:right">
 													Total
 												</th>
-												<th class="result"></th>
+												<th>
+													<span class="payableAmountResult"></span>
+												</th>
+												<th>
+													<span class="paidResult"></span>
+												</th>
+												<th>
+													<span class="dueResult"></span>
+												</th>
 											</tr>
 										</tfoot>
 									</table>
 								</div>
 							</div>
 						</div>
+						<a th:href="@{/}" class="hidden" id="basepath">Base path</a>
 						<!-- /end Report Form -->
 						<span th:substituteby="commons :: common-copyright"></span>
 					</div>
@@ -127,30 +131,23 @@
 		<!-- / end conatiner -->
 
 		<span th:substituteby="commons :: common-js"></span>
-		<!-- <script type="text/javascript">
+		<script type="text/javascript">
 			$(document).ready(function(){
-				var i = 1;
-
-				$("#report-form").submit(function(e){
+				$('#printReport').on('click', function(e){
 					e.preventDefault();
-
-					var formData = {
-						'donarId' : $('#donar').val(),
-						'startDate' : $('#start-date').val(),
-						'endDate' : $('#end-date').val()
+					var donarId = $('#donar').val();
+					if(donarId == ''){
+						donarId = "-1";
 					}
-					$.post($("#report-form").attr("action"), formData)
-					.done(function(data){
-						/* $('table#example').row.add([
-							i++,
-							data.donarId,
-							data.paid,
-							data.payDate
-						]).draw(false); */
-						
-					})
+					var startDate = $('#start-date').val();
+					var endDate = $('#end-date').val();
+					if(startDate == '' || endDate == ''){
+						alert("Please enter date for both date field");
+						return;
+					}
+					window.open($(this).attr("href") + "/" + donarId + "/" + startDate + "/" + endDate);
 				});
-			});
-		</script> -->
+			})
+		</script>
 	</body>
 </html>

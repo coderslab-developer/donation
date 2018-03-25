@@ -3,6 +3,7 @@ package com.sil.donation.controller;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sil.donation.entity.Client;
@@ -85,11 +87,10 @@ public class ReportController {
 		return LOCATION + LOCATION_TO;
 	}
 
-	@PostMapping("/search")
-	public String searchReport(Integer donarId, String startDate, String endDate, Model model, RedirectAttributes redirect) throws ParseException {
+	@PostMapping("/transactionInfo")
+	public @ResponseBody List<Donation> getDonarTransactionInfo(Integer donarId, String startDate, String endDate) throws ParseException {
 		if(startDate == "" || endDate == "") {
-			redirect.addFlashAttribute("em", "Please enter date into date range");
-			return REDIRECT + REDIRECT_TO;
+			return new ArrayList<>();
 		}
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -104,9 +105,9 @@ public class ReportController {
 		Date firstDate = DATE_FORMATTER.parse(startDate);
 		Date lastDate = DATE_FORMATTER.parse(endDate);
 
-		if(firstDate.compareTo(lastDate) > 0 || firstDate.compareTo(new Date()) > 0) {
-			redirect.addFlashAttribute("em", "Previous date must be the past");
-			return REDIRECT + REDIRECT_TO;
+		if(firstDate.compareTo(lastDate) > 0) {
+			firstDate = DATE_FORMATTER.parse(endDate);
+			lastDate = DATE_FORMATTER.parse(startDate);
 		}
 
 		List<Donation> donations = donationService.findAllDonationByClientIdAndPayDateBetweenStartDateToEndDate(clientId, donarId, firstDate, lastDate);
@@ -118,8 +119,6 @@ public class ReportController {
 			logger.error(e.getMessage(), e);
 		}
 
-		
-		redirect.addFlashAttribute("donations", donations);
-		return REDIRECT + REDIRECT_TO;
+		return donations.isEmpty() ? new ArrayList<>() : donations;
 	}
 }

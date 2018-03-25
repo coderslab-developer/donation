@@ -47,6 +47,7 @@ import com.sil.donation.service.PrintingService;
 import com.sil.donation.service.SiteConfigService;
 import com.sil.donation.util.ClientDocumentGenerator;
 import com.sil.donation.util.DealerDocumentGenerator;
+import com.sil.donation.util.DonarsTransactionDocumentGenerator;
 
 /**
  * @author Zubayer Ahamed
@@ -64,6 +65,7 @@ public class PrintingServiceImpl implements PrintingService {
 	@Autowired private DonarService donarService;
 	@Autowired private CategoryService categoryService;
 	@Autowired private DealerService dealerService;
+	@Autowired private DonarsTransactionDocumentGenerator donarsTransactionDocumentGenerator;
 
 	@Override
 	public ByteArrayOutputStream transfromToPDFBytes(Document doc, String template, HttpServletRequest request)
@@ -177,6 +179,20 @@ public class PrintingServiceImpl implements PrintingService {
 	public Document generateAdminProfileDocument(Admin admin) throws ParserConfigurationException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Document generateDonarsDonationTransactionsReport(Client client) throws ParserConfigurationException {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String username = authentication.getName();
+		SiteConfig siteConfig = null;
+		try {
+			siteConfig = siteConfigService.findByUsername(username);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+
+		return donarsTransactionDocumentGenerator.generateDonarsTransactionReport(client, siteConfig);
 	}
 
 }
