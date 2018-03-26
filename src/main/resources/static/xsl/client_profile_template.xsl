@@ -247,27 +247,6 @@
 						<fo:block>
 							<xsl:if test="donars/donar != ''">
 								<fo:table table-layout="fixed" width="100%" border-collapse="collapse">
-									<fo:table-column column-width="100%" />
-									<fo:table-header xsl:use-attribute-sets="table.font.size">
-										<fo:table-row>
-											<fo:table-cell xsl:use-attribute-sets="donar.table.th">
-												<fo:block text-align="center">
-													Donars List
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-header>
-									<fo:table-body>
-										<fo:table-row>
-											<fo:table-cell>
-												<fo:block></fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
-							</xsl:if>
-							<xsl:if test="donars/donar != ''">
-								<fo:table table-layout="fixed" width="100%" border-collapse="collapse">
 									<fo:table-column column-width="5%" />
 									<fo:table-column column-width="16.66%" />
 									<fo:table-column column-width="16.66%" />
@@ -278,6 +257,13 @@
 	
 									<!-- client table header -->
 									<fo:table-header xsl:use-attribute-sets="table.font.size">
+										<fo:table-row>
+											<fo:table-cell number-columns-spanned="7" xsl:use-attribute-sets="donar.table.th">
+												<fo:block text-align="center">
+													Donars List
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
 										<fo:table-row>
 											<fo:table-cell xsl:use-attribute-sets="donar.table.th">
 												<fo:block>

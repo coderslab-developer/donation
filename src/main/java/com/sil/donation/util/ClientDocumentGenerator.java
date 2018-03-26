@@ -32,11 +32,11 @@ public class ClientDocumentGenerator {
 		Element rootElement = doc.createElement("client");
 		doc.appendChild(rootElement);
 
-		if(siteConfig != null && siteConfig.isEnableLogo() && (!siteConfig.getLogo().isEmpty() || siteConfig.getLogo() != null)) {
-			rootElement.appendChild(getChildElement(doc, "siteLogo", siteConfig.getLogo() == null ? "site_logo.png" : siteConfig.getLogo()));
-		}else {
+//		if(siteConfig != null && siteConfig.isEnableLogo() && (!siteConfig.getLogo().isEmpty() || siteConfig.getLogo() != null)) {
+//			rootElement.appendChild(getChildElement(doc, "siteLogo", siteConfig.getLogo() == null ? "site_logo.png" : siteConfig.getLogo()));
+//		}else {
 			rootElement.appendChild(getChildElement(doc, "siteLogo", "site_logo.png"));
-		}
+//		}
 
 		rootElement.appendChild(getChildElement(doc, "clientName", client.getClientName() == null ? "" : client.getClientName()));
 		rootElement.appendChild(getChildElement(doc, "email", client.getEmail() == null ? "" : client.getEmail()));

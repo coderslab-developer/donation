@@ -27,7 +27,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.w3c.dom.Document;
 
 import com.sil.donation.entity.Client;
@@ -67,7 +66,7 @@ public class PrintingController {
 
 	@RequestMapping(value = "/dealer/{dealerId}")
 	public ResponseEntity<byte[]> printDealer(@PathVariable("dealerId") Integer dealerId, HttpServletRequest request) {
-		String message = "";
+		String message = "Something went wrong";
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(new MediaType("text", "html"));
 		headers.add("X-Content-Type-Options", "nosniff");

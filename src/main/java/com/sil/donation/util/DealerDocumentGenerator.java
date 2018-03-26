@@ -6,6 +6,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.assertj.core.util.Strings;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,11 +33,12 @@ public class DealerDocumentGenerator {
 		Element rootElement = doc.createElement("dealer");
 		doc.appendChild(rootElement);
 
-		if(siteConfig != null && siteConfig.isEnableLogo() && (!siteConfig.getLogo().isEmpty() || siteConfig.getLogo() != null)) {
-			rootElement.appendChild(getChildElement(doc, "siteLogo", siteConfig.getLogo() == null ? "site_logo.png" : siteConfig.getLogo()));
-		}else {
+//		if(siteConfig != null && siteConfig.isEnableLogo() && Strings.isNullOrEmpty(siteConfig.getLogo())) {
+//			rootElement.appendChild(getChildElement(doc, "siteLogo", siteConfig.getLogo() == "" ? "site_logo.png" : siteConfig.getLogo()));
+//		}else {
 			rootElement.appendChild(getChildElement(doc, "siteLogo", "site_logo.png"));
-		}
+//		}
+
 		rootElement.appendChild(getChildElement(doc, "dealerName", dealer.getDealerName() == null ? "" : dealer.getDealerName()));
 		rootElement.appendChild(getChildElement(doc, "dealerPhoto", dealer.getPhoto() == null ? "" : dealer.getPhoto()));
 		rootElement.appendChild(getChildElement(doc, "mobile", dealer.getMobile() == null ? "" : dealer.getMobile()));
@@ -44,10 +46,11 @@ public class DealerDocumentGenerator {
 		rootElement.appendChild(getChildElement(doc, "address", dealer.getAddress() == null ? "" : dealer.getAddress()));
 		rootElement.appendChild(getChildElement(doc, "status", dealer.isStatus() == Boolean.TRUE ? "Active" : "Inactive"));
 		rootElement.appendChild(getChildElement(doc, "registerDate", dealer.getRegisterDate() == null ? "" : String.valueOf(dealer.getRegisterDate())));
-		rootElement.appendChild(getChildElement(doc, "totalSellOfSoftware", String.valueOf(dealer.getTotalSellOfSoftware())));
-		rootElement.appendChild(getChildElement(doc, "activeClients", String.valueOf(dealer.getActiveClients())));
-		rootElement.appendChild(getChildElement(doc, "inactiveClients", String.valueOf(dealer.getInactiveClients())));
-		rootElement.appendChild(getChildElement(doc, "serviceRenewOnThisMonth", String.valueOf(dealer.getServiceRenewOnThisMonth())));
+		rootElement.appendChild(getChildElement(doc, "totalSellOfSoftware", String.valueOf(dealer.getTotalSellOfSoftware()) == null ? "0" : String.valueOf(dealer.getTotalSellOfSoftware())));
+		rootElement.appendChild(getChildElement(doc, "activeClients", String.valueOf(dealer.getActiveClients())==null? "0" : String.valueOf(dealer.getActiveClients())));
+		rootElement.appendChild(getChildElement(doc, "inactiveClients", String.valueOf(dealer.getInactiveClients()) == null ? "0" : String.valueOf(dealer.getInactiveClients())));
+		rootElement.appendChild(getChildElement(doc, "serviceRenewOnThisMonth", String.valueOf(dealer.getServiceRenewOnThisMonth()) == null ? "0" : String.valueOf(dealer.getServiceRenewOnThisMonth())));
+
 		rootElement.appendChild(getClients(doc, dealer.getClients()));
 
 		return doc;

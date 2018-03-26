@@ -92,13 +92,13 @@ public class PrintingServiceImpl implements PrintingService {
 
 	@Override
 	public Document generateDealerProfileDocument(Dealer dealer) throws ParserConfigurationException {
-		List<Client> clients = null;
+		List<Client> clients = new ArrayList<>();
 		try {
 			clients = clientService.findAllByDealerId(dealer.getDealerId());
 		} catch (SilException e) {
 			logger.error(e.getMessage(), e);
 		}
-		if(clients != null) {
+		if(!clients.isEmpty()) {
 			dealer.setActiveClients(clients.stream().filter(c -> Boolean.TRUE == c.isStatus() && Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
 			dealer.setInactiveClients(clients.stream().filter(c -> Boolean.FALSE == c.isStatus() && Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
 			dealer.setTotalSellOfSoftware(clients.size());
@@ -124,7 +124,7 @@ public class PrintingServiceImpl implements PrintingService {
 		} catch (SilException e) {
 			logger.error(e.getMessage(), e);
 		}
-		
+
 		return dealerDocumentGenerator.dealerProfileDocument(dealer, siteConfig);
 	}
 

@@ -211,27 +211,6 @@
 						<fo:block>
 							<xsl:if test="clients/client != ''">
 								<fo:table table-layout="fixed" width="100%" border-collapse="collapse">
-									<fo:table-column column-width="100%" />
-									<fo:table-header xsl:use-attribute-sets="table.font.size">
-										<fo:table-row>
-											<fo:table-cell xsl:use-attribute-sets="client.table.th">
-												<fo:block text-align="center">
-													Clients List
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-header>
-									<fo:table-body>
-										<fo:table-row>
-											<fo:table-cell>
-												<fo:block></fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
-							</xsl:if>
-							<xsl:if test="clients/client != ''">
-								<fo:table table-layout="fixed" width="100%" border-collapse="collapse">
 									<fo:table-column column-width="5%" />
 									<fo:table-column column-width="20%" />
 									<fo:table-column column-width="20%" />
@@ -241,6 +220,13 @@
 	
 									<!-- client table header -->
 									<fo:table-header xsl:use-attribute-sets="table.font.size">
+										<fo:table-row>
+											<fo:table-cell number-columns-spanned="6" xsl:use-attribute-sets="client.table.th">
+												<fo:block text-align="center">
+													Clients List
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
 										<fo:table-row>
 											<fo:table-cell xsl:use-attribute-sets="client.table.th">
 												<fo:block>
