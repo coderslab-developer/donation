@@ -14,9 +14,17 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import com.sil.donation.util.DateAdapter;
 
 import lombok.Data;
 
@@ -28,6 +36,8 @@ import lombok.Data;
 @Entity
 @Table(name = "client", catalog = "dms")
 @Data
+@XmlRootElement(name = "client")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Client implements Serializable {
 
 	private static final long serialVersionUID = 2688296504512493855L;
@@ -58,10 +68,12 @@ public class Client implements Serializable {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "registerDate", nullable = false, length = 10)
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date registerDate;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "expireDate", nullable = false, length = 10)
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date expireDate;
 
 	@NotEmpty(message = "Please enter client address")
@@ -93,9 +105,13 @@ public class Client implements Serializable {
 	private String dealerName;
 
 	@Transient
+	@XmlElementWrapper(name = "donars")
+	@XmlElement(name = "donar")
 	private List<Donar> donars;
 
 	@Transient
+	@XmlElementWrapper(name = "donations")
+	@XmlElement(name = "donation")
 	private List<Donation> donations;
 
 	@Transient

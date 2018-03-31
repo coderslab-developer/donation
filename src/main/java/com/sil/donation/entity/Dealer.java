@@ -15,6 +15,11 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -29,6 +34,8 @@ import lombok.Data;
 @Table(name = "dealer", catalog = "dms", uniqueConstraints = { @UniqueConstraint(columnNames = "email"),
 		@UniqueConstraint(columnNames = "username") })
 @Data
+@XmlRootElement(name = "dealer")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Dealer implements Serializable {
 
 	private static final long serialVersionUID = 7619514728719338221L;
@@ -79,6 +86,8 @@ public class Dealer implements Serializable {
 	private boolean archive;
 
 	@Transient
+	@XmlElementWrapper(name = "clients")
+	@XmlElement(name = "client")
 	private List<Client> clients;
 
 	@Transient
@@ -93,4 +102,9 @@ public class Dealer implements Serializable {
 	@Transient
 	private Integer serviceRenewOnThisMonth;
 
+	@Transient
+	private String siteLogo;
+
+	@Transient
+	private String reportName;
 }

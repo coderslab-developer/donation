@@ -1,4 +1,15 @@
 $(document).ready(function(){
+	$('.container').css({
+		'min-height' : $(window).height()
+	});
+	var containerWidth = $('.container').width();
+	var copyRightWidth = Math.ceil($('#copyRight').width());
+	$('#copyRight').css({
+		'left': containerWidth/2 - copyRightWidth/2,
+		'bottom' : 0
+	});
+
+	
 	//email validating
 	var emailStatus = "invalid";
 	var validateEmail = function(elementValue) {

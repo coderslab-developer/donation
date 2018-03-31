@@ -14,6 +14,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Data;
 
@@ -24,6 +29,8 @@ import lombok.Data;
 @Entity
 @Table(name = "admin", catalog = "dms")
 @Data
+@XmlRootElement(name = "admin")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Admin implements Serializable {
 
 	private static final long serialVersionUID = -8327881487089084713L;
@@ -63,5 +70,7 @@ public class Admin implements Serializable {
 	private boolean archive;
 
 	@Transient
+	@XmlElementWrapper(name = "dealers")
+	@XmlElement(name = "dealer")
 	private List<Dealer> dealers;
 }

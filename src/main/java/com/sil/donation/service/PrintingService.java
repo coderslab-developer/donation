@@ -4,6 +4,7 @@
 package com.sil.donation.service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,11 +14,9 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.apache.fop.apps.FOPException;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
-import com.sil.donation.entity.Admin;
 import com.sil.donation.entity.Client;
-import com.sil.donation.entity.Dealer;
-import com.sil.donation.entity.Donar;
 
 /**
  * @author Zubayer Ahamed
@@ -27,7 +26,7 @@ import com.sil.donation.entity.Donar;
 public interface PrintingService {
 
 	/**
-	 * Transform any document object to Byte Array output Stream for print
+	 * Transform Document Object and XSL file to ByteArrayOutputStream for print
 	 * @param doc
 	 * @param template
 	 * @param request
@@ -36,17 +35,26 @@ public interface PrintingService {
 	 * @throws TransformerException
 	 * @throws FOPException
 	 */
-	public ByteArrayOutputStream transfromToPDFBytes(Document doc, String template,  HttpServletRequest request)
-			throws TransformerFactoryConfigurationError, TransformerException, FOPException;
+	public ByteArrayOutputStream transfromToPDFBytes(Document doc, String template,  HttpServletRequest request) throws TransformerFactoryConfigurationError, TransformerException, FOPException;
 
 	/**
-	 * Generate Dealer Profile XML Document object
-	 * @param dealer
-	 * @param request
+	 * Transform Document Object and XSL file to ByteArrayOutputStream for print
+	 * @param document
+	 * @param template
+	 * @return ByteArrayOutputStream
+	 * @throws TransformerException
+	 */
+	public ByteArrayOutputStream transfromToThermalBytes(Document document, String template) throws TransformerException;
+
+	/**
+	 * Generate Document Object from XML
+	 * @param xml
 	 * @return Document
 	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
 	 */
-	public Document generateDealerProfileDocument(Dealer dealer) throws ParserConfigurationException;
+	public Document getDomSourceForXML(String xml) throws ParserConfigurationException, SAXException, IOException;
 
 	/**
 	 * Generate Client Profile XML Document object
@@ -55,22 +63,6 @@ public interface PrintingService {
 	 * @throws ParserConfigurationException
 	 */
 	public Document generateClientProfileDocument(Client client) throws ParserConfigurationException;
-
-	/**
-	 * Generate Donar Profile XML Document object
-	 * @param donar
-	 * @return Document
-	 * @throws ParserConfigurationException
-	 */
-	public Document generateDonarProfileDocument(Donar donar) throws ParserConfigurationException;
-
-	/**
-	 * Generate Admin Profile XML document object
-	 * @param admin
-	 * @return Document
-	 * @throws ParserConfigurationException
-	 */
-	public Document generateAdminProfileDocument(Admin admin) throws ParserConfigurationException;
 
 	/**
 	 * Generate Document object of Donars Transaction report for a client

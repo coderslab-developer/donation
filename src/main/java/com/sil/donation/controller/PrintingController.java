@@ -2,14 +2,22 @@ package com.sil.donation.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -28,17 +36,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import com.sil.donation.entity.Client;
 import com.sil.donation.entity.Dealer;
 import com.sil.donation.entity.Donation;
+import com.sil.donation.entity.SiteConfig;
 import com.sil.donation.exception.SilException;
-import com.sil.donation.service.AdminService;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DealerService;
 import com.sil.donation.service.DonarService;
 import com.sil.donation.service.DonationService;
 import com.sil.donation.service.PrintingService;
+import com.sil.donation.service.SiteConfigService;
 
 /**
  * @author Zubayer Ahamed
@@ -61,8 +71,8 @@ public class PrintingController {
 	@Autowired private PrintingService printingService;
 	@Autowired private ClientService clientService;
 	@Autowired private DonarService donarService;
-	@Autowired private AdminService adminService;
 	@Autowired private DonationService donationService;
+	@Autowired private SiteConfigService siteConfigService;
 
 	@RequestMapping(value = "/dealer/{dealerId}")
 	public ResponseEntity<byte[]> printDealer(@PathVariable("dealerId") Integer dealerId, HttpServletRequest request) {
@@ -96,27 +106,54 @@ public class PrintingController {
 			message = "No Dealer available";
 			return new ResponseEntity<>(message.getBytes(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		//get Client list
+		List<Client> clients = new ArrayList<>();
+		try {
+			clients = clientService.findAllByDealerId(dealer.getDealerId());
+		} catch (SilException e2) {
+			logger.error(e2.getMessage(), e2);
+		}
+		if(!clients.isEmpty()) {
+			dealer.setActiveClients(clients.stream().filter(c -> Boolean.TRUE == c.isStatus() && Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
+			dealer.setInactiveClients(clients.stream().filter(c -> Boolean.FALSE == c.isStatus() && Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
+			dealer.setTotalSellOfSoftware(clients.size());
+			dealer.setClients(clients.stream().filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()));
+			List<Client> renewalClients = new ArrayList<>();
+			Calendar cal1 = Calendar.getInstance();
+			Calendar cal2 = Calendar.getInstance();
+			for(Client c : clients.stream().filter(c -> Boolean.TRUE == c.isStatus() && Boolean.FALSE == c.isArchive()).collect(Collectors.toList())) {
+				cal1.setTime(c.getExpireDate());
+				cal2.setTime(new Date());
+				if((cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)) && (cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH))) {
+					renewalClients.add(c);
+				}
+			}
+			dealer.setServiceRenewOnThisMonth(renewalClients.size());
+		}
+
+		dealer.setSiteLogo("site_logo.png");
+		dealer.setReportName("Deaaler Profile Info");
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String username = authentication.getName();
+		SiteConfig siteConfig = null;
+		try {
+			siteConfig = siteConfigService.findByUsername(username);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		if(siteConfig != null && siteConfig.getLogo() != null && Boolean.TRUE == siteConfig.isEnableLogo()) {
+			dealer.setSiteLogo(siteConfig.getLogo());
+		}
 
 		byte[] byt = null;
 		ByteArrayOutputStream out = null;
-
 		Document doc = null;
 		try {
-			doc = printingService.generateDealerProfileDocument(dealer);
-		} catch (ParserConfigurationException e) {
-			logger.error(e.getMessage(), e);
-		}
-		if (doc == null) {
-			message = "Can't generate XML file for document";
-			return new ResponseEntity<>(message.getBytes(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		try {
+			String xml = parseXMLString(dealer);
+			doc = printingService.getDomSourceForXML(xml);
 			out = printingService.transfromToPDFBytes(doc, template.toString(), request);
-		} catch (FOPException | TransformerFactoryConfigurationError | TransformerException e) {
-			logger.error(e.getMessage(), e);
-			message = "Can't Transform XML file to PDF";
-			return new ResponseEntity<>(message.getBytes(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (JAXBException | ParserConfigurationException | SAXException | IOException | TransformerFactoryConfigurationError | TransformerException e1) {
+			logger.error(e1.getMessage(), e1);
 		}
 
 		// final work
@@ -197,8 +234,7 @@ public class PrintingController {
 	}
 
 	@RequestMapping(value = "/donarTransactionReport/{donarId}/{startDate}/{endDate}")
-	public ResponseEntity<byte[]> printDonarReport(@PathVariable("donarId") Integer donarId, 
-			@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate, HttpServletRequest request) throws ParseException {
+	public ResponseEntity<byte[]> printDonarReport(@PathVariable("donarId") Integer donarId, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate, HttpServletRequest request) throws ParseException {
 		logger.info("{}", request.getContextPath());
 		String message = "Something went wrong";
 		byte[] byt = message.getBytes();
@@ -305,5 +341,15 @@ public class PrintingController {
 			headers.setContentType(new MediaType("application", "pdf"));
 		}
 		return new ResponseEntity<>(byt, headers, HttpStatus.OK);
+	}
+
+	private String parseXMLString(Dealer dealer) throws JAXBException {
+		JAXBContext jaxbContext = JAXBContext.newInstance(Dealer.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		// output pretty printed
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		StringWriter result = new StringWriter();
+		jaxbMarshaller.marshal(dealer, result);
+		return result.toString();
 	}
 }
