@@ -201,7 +201,7 @@
 										</fo:table-cell>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block>
-												<xsl:value-of select="totalDonars"/>
+												<xsl:value-of select="totalDonar"/>
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
@@ -213,7 +213,7 @@
 										</fo:table-cell>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block>
-												<xsl:value-of select="activeDonars"/>
+												<xsl:value-of select="activeDonar"/>
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
@@ -225,7 +225,7 @@
 										</fo:table-cell>
 										<fo:table-cell xsl:use-attribute-sets="dealer.table.td">
 											<fo:block>
-												<xsl:value-of select="inactiveDonars"/>
+												<xsl:value-of select="inactiveDonar"/>
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>

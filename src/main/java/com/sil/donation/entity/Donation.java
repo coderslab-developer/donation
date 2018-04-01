@@ -14,6 +14,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.Min;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import com.sil.donation.util.DateAdapter;
 
 import lombok.Data;
 
@@ -24,6 +30,8 @@ import lombok.Data;
 @Entity
 @Table(name = "donation", catalog = "dms")
 @Data
+@XmlRootElement(name = "donation")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Donation implements Serializable {
 
 	private static final long serialVersionUID = -7098338410742262751L;
@@ -48,6 +56,7 @@ public class Donation implements Serializable {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "payDate", nullable = false, length = 10)
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date payDate;
 
 	@Column(name = "clientId", nullable = false)

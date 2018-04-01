@@ -129,4 +129,18 @@ public class Client implements Serializable {
 	@Transient
 	private Integer numberOfPayeeDonarInThisMonth;
 
+	@Transient
+	private String siteLogo;
+
+	@Transient
+	private String reportName;
+
+	@Transient
+	private double totalPayableAmount;
+
+	@Transient
+	private double totalPaid;
+
+	@Transient
+	private double totalDue;
 }

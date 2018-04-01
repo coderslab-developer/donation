@@ -45,7 +45,6 @@ public class ReportController {
 	private static final String LOCATION = "views/report/";
 	private static final String LOCATION_TO = "report";
 	private static final String REDIRECT = "redirect:/";
-	private static final String REDIRECT_TO = "report";
 	private static final DateFormat DATE_FORMATTER = new SimpleDateFormat("dd-MM-yyyy");
 
 	@Autowired private DonationService donationService;

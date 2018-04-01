@@ -16,8 +16,14 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.validator.constraints.NotEmpty;
+
+import com.sil.donation.util.DateAdapter;
 
 import lombok.Data;
 
@@ -28,6 +34,8 @@ import lombok.Data;
 @Entity
 @Table(name = "donar", catalog = "dms", uniqueConstraints = { @UniqueConstraint(columnNames = "email") })
 @Data
+@XmlRootElement(name = "donar")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Donar implements Serializable {
 
 	private static final long serialVersionUID = 7898141064460416531L;
@@ -72,10 +80,12 @@ public class Donar implements Serializable {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "registerDate", nullable = false, length = 10)
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date registerDate;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "smsDate", length = 10)
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date smsDate;
 
 	@Column(name = "photo", length = 225)

@@ -40,8 +40,6 @@ public class SendSMSController {
 	private static final Logger logger = LoggerFactory.getLogger(SendSMSController.class);
 
 	private static final String PAGE_TITLE = "Send SMS";
-	private static final String REDIRECT = "redirect:/";
-	private static final String REDIRECT_TO = "sendSms";
 	private static final String LOCATION_TO = "send_sms";
 	private static final String LOCATION = "views/send-sms/";
 

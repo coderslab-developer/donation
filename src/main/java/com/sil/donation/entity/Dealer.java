@@ -20,9 +20,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import com.sil.donation.util.DateAdapter;
 
 import lombok.Data;
 
@@ -74,6 +77,7 @@ public class Dealer implements Serializable {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "registerDate", nullable = false, length = 10)
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date registerDate;
 
 	@Column(name = "status", columnDefinition = "BOOLEAN")

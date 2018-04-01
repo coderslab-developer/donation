@@ -22,7 +22,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
-import org.apache.fop.apps.FOPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +39,11 @@ import org.xml.sax.SAXException;
 
 import com.sil.donation.entity.Client;
 import com.sil.donation.entity.Dealer;
+import com.sil.donation.entity.Donar;
 import com.sil.donation.entity.Donation;
 import com.sil.donation.entity.SiteConfig;
 import com.sil.donation.exception.SilException;
+import com.sil.donation.service.CategoryService;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DealerService;
 import com.sil.donation.service.DonarService;
@@ -60,10 +61,8 @@ public class PrintingController {
 
 	private static final Logger logger = LoggerFactory.getLogger(PrintingController.class);
 
-	private static final String ADMIN_PROFILE_TEMPALTE = "admin_profile_template.xsl";
 	private static final String DEALER_PROFILE_TEMPALTE = "dealer_profile_template.xsl";
 	private static final String CLIENT_PROFILE_TEMPALTE = "client_profile_template.xsl";
-	private static final String DONAR_PROFILE_TEMPALTE = "donar_profile_template.xsl";
 	private static final String DONAR_TRANSACTION_REPORT_TEMPLATE = "donar_transaction_report_template.xsl";
 	private static final DateFormat DATE_FORMATTER = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -73,6 +72,7 @@ public class PrintingController {
 	@Autowired private DonarService donarService;
 	@Autowired private DonationService donationService;
 	@Autowired private SiteConfigService siteConfigService;
+	@Autowired private CategoryService categoryService;
 
 	@RequestMapping(value = "/dealer/{dealerId}")
 	public ResponseEntity<byte[]> printDealer(@PathVariable("dealerId") Integer dealerId, HttpServletRequest request) {
@@ -200,26 +200,52 @@ public class PrintingController {
 			return new ResponseEntity<>(message.getBytes(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
+		//get donars
+		List<Donar> donars = null;
+		try {
+			client.setDealerName(dealerService.findByDealerIdAndArchive(client.getDealerId(), false).getDealerName());
+			donars = donarService.findAllByClientId(client.getClientId());
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		if(donars != null) {
+			donars.stream().forEach(d -> {
+				try {
+					d.setCategoryName(categoryService.findByCategoryIdAndArchive(d.getCategoryId(), false).getName());
+				} catch (SilException e) {
+					logger.error(e.getMessage(), e);
+				}
+			});
+			client.setDonars(donars.stream().filter(d -> Boolean.FALSE == d.isArchive()).collect(Collectors.toList()));
+			client.setTotalDonar(donars.stream().filter(d -> Boolean.FALSE == d.isArchive()).collect(Collectors.toList()).size());
+			client.setActiveDonar(donars.stream().filter(d -> Boolean.TRUE == d.isStatus() && Boolean.FALSE == d.isArchive()).collect(Collectors.toList()).size());
+			client.setInactiveDonar(donars.stream().filter(d -> Boolean.FALSE == d.isStatus() && Boolean.FALSE == d.isArchive()).collect(Collectors.toList()).size());
+			client.setNumberOfPayeeDonarInThisMonth(0);
+		}
+
+		client.setSiteLogo("site_logo.png");
+		client.setReportName("Deaaler Profile Info");
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String username = authentication.getName();
+		SiteConfig siteConfig = null;
+		try {
+			siteConfig = siteConfigService.findByUsername(username);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		if(siteConfig != null && siteConfig.getLogo() != null && Boolean.TRUE == siteConfig.isEnableLogo()) {
+			client.setSiteLogo(siteConfig.getLogo());
+		}
+
 		byte[] byt = null;
 		ByteArrayOutputStream out = null;
-
 		Document doc = null;
 		try {
-			doc = printingService.generateClientProfileDocument(client);
-		} catch (ParserConfigurationException e) {
-			logger.error(e.getMessage(), e);
-		}
-		if (doc == null) {
-			message = "Can't generate XML file for document";
-			return new ResponseEntity<>(message.getBytes(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		try {
+			String xml = parseXMLString(client);
+			doc = printingService.getDomSourceForXML(xml);
 			out = printingService.transfromToPDFBytes(doc, template.toString(), request);
-		} catch (FOPException | TransformerFactoryConfigurationError | TransformerException e) {
-			logger.error(e.getMessage(), e);
-			message = "Can't Transform XML file to PDF";
-			return new ResponseEntity<>(message.getBytes(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (JAXBException | ParserConfigurationException | SAXException | IOException | TransformerFactoryConfigurationError | TransformerException e1) {
+			logger.error(e1.getMessage(), e1);
 		}
 
 		// final work
@@ -235,10 +261,7 @@ public class PrintingController {
 
 	@RequestMapping(value = "/donarTransactionReport/{donarId}/{startDate}/{endDate}")
 	public ResponseEntity<byte[]> printDonarReport(@PathVariable("donarId") Integer donarId, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate, HttpServletRequest request) throws ParseException {
-		logger.info("{}", request.getContextPath());
-		String message = "Something went wrong";
-		byte[] byt = message.getBytes();
-
+		String message;
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(new MediaType("text", "html"));
 		headers.add("X-Content-Type-Options", "nosniff");
@@ -254,15 +277,13 @@ public class PrintingController {
 		}
 		if (template == null) {
 			message = "No Template found";
-			byt = message.getBytes();
-			return new ResponseEntity<>(byt, headers, HttpStatus.OK);
+			return new ResponseEntity<>(message.getBytes(), headers, HttpStatus.OK);
 		}
 
 		//check date was not empty
 		if(startDate == "" || endDate == "") {
 			message = "Please check date filed. Something is missing in date input field";
-			byt = message.getBytes();
-			return new ResponseEntity<>(byt, headers, HttpStatus.OK);
+			return new ResponseEntity<>(message.getBytes(), headers, HttpStatus.OK);
 		}
 
 		//get authenticate username
@@ -276,8 +297,7 @@ public class PrintingController {
 		}
 		if(client == null) {
 			message = "You are invalid client";
-			byt = message.getBytes();
-			return new ResponseEntity<>(byt, headers, HttpStatus.OK);
+			return new ResponseEntity<>(message.getBytes(), headers, HttpStatus.OK);
 		}
 
 		Date firstDate = DATE_FORMATTER.parse(startDate);
@@ -287,13 +307,11 @@ public class PrintingController {
 			firstDate = DATE_FORMATTER.parse(endDate);
 			lastDate = DATE_FORMATTER.parse(startDate);
 		}
-		logger.info(" hi there {}, {}", startDate, endDate);
 
 		List<Donation> donations = donationService.findAllDonationByClientIdAndPayDateBetweenStartDateToEndDate(client.getClientId(), donarId == -1 ? null : donarId, firstDate, lastDate);
 		if(donations.isEmpty()) {
 			message = "No data found to print";
-			byt = message.getBytes();
-			return new ResponseEntity<>(byt, headers, HttpStatus.OK);
+			return new ResponseEntity<>(message.getBytes(), headers, HttpStatus.OK);
 		}
 		try {
 			for(Donation d : donations) {
@@ -305,31 +323,39 @@ public class PrintingController {
 
 		//set donations list into this client
 		client.setDonations(donations);
-		logger.info("total donations {}", client.getDonations().size());
+		double totalPayableAmount = 0;
+		double totalPaid = 0;
+		double totalDue = 0;
+		for(Donation donation : donations) {
+			totalPayableAmount = totalPayableAmount + donation.getPayableAmount();
+			totalPaid = totalPaid + donation.getPaid();
+			totalDue = totalDue + donation.getDue();
+		}
+		client.setTotalPayableAmount(totalPayableAmount);
+		client.setTotalPaid(totalPaid);
+		client.setTotalDue(totalDue);
+		client.setSiteLogo("site_logo.png");
+		client.setReportName("Donars Transactions Info");
 
-		logger.info("last {}, {}, {}", donarId, startDate, endDate);
+		SiteConfig siteConfig = null;
+		try {
+			siteConfig = siteConfigService.findByUsername(username);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		if(siteConfig != null && siteConfig.getLogo() != null && Boolean.TRUE == siteConfig.isEnableLogo()) {
+			client.setSiteLogo(siteConfig.getLogo());
+		}
 
+		byte[] byt = null;
 		ByteArrayOutputStream out = null;
-
 		Document doc = null;
 		try {
-			doc = printingService.generateDonarsDonationTransactionsReport(client);
-		} catch (ParserConfigurationException e) {
-			logger.error(e.getMessage(), e);
-		}
-		if (doc == null) {
-			message = "Can't generate XML file for document";
-			byt = message.getBytes();
-			return new ResponseEntity<>(byt, headers, HttpStatus.OK);
-		}
-
-		try {
+			String xml = parseXMLString(client);
+			doc = printingService.getDomSourceForXML(xml);
 			out = printingService.transfromToPDFBytes(doc, template.toString(), request);
-		} catch (FOPException | TransformerFactoryConfigurationError | TransformerException e) {
-			logger.error(e.getMessage(), e);
-			message = "Can't Transform XML file to PDF";
-			byt = message.getBytes();
-			return new ResponseEntity<>(byt, headers, HttpStatus.OK);
+		} catch (JAXBException | ParserConfigurationException | SAXException | IOException | TransformerFactoryConfigurationError | TransformerException e1) {
+			logger.error(e1.getMessage(), e1);
 		}
 
 		// final work
@@ -350,6 +376,16 @@ public class PrintingController {
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		StringWriter result = new StringWriter();
 		jaxbMarshaller.marshal(dealer, result);
+		return result.toString();
+	}
+
+	private String parseXMLString(Client client) throws JAXBException {
+		JAXBContext jaxbContext = JAXBContext.newInstance(Client.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		// output pretty printed
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		StringWriter result = new StringWriter();
+		jaxbMarshaller.marshal(client, result);
 		return result.toString();
 	}
 }

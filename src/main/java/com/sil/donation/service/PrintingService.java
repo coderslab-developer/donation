@@ -16,8 +16,6 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.sil.donation.entity.Client;
-
 /**
  * @author Zubayer Ahamed
  *
@@ -55,21 +53,4 @@ public interface PrintingService {
 	 * @throws IOException
 	 */
 	public Document getDomSourceForXML(String xml) throws ParserConfigurationException, SAXException, IOException;
-
-	/**
-	 * Generate Client Profile XML Document object
-	 * @param client
-	 * @return Document
-	 * @throws ParserConfigurationException
-	 */
-	public Document generateClientProfileDocument(Client client) throws ParserConfigurationException;
-
-	/**
-	 * Generate Document object of Donars Transaction report for a client
-	 * @param client
-	 * @return Document
-	 * @throws ParserConfigurationException
-	 */
-	public Document generateDonarsDonationTransactionsReport(Client client) throws ParserConfigurationException;
-
 }

@@ -200,8 +200,8 @@
 					<!-- dealer photo -->
 					<fo:block-container width="30%" right="0mm" position="absolute">
 						<fo:block text-align="right">
-							<xsl:if test="dealerPhoto != ''">
-								<xsl:variable name="imagePath" select="dealerPhoto"/>
+							<xsl:if test="photo != ''">
+								<xsl:variable name="imagePath" select="photo"/>
 								<fo:external-graphic padding="0" margin="0" border="1px solid #000000" space-start="0" space-end="0" pause-before="0" pause-after="0" content-height="110px" content-width="100px" scaling="non-uniform" src="url('resources/upload/dealer/{$imagePath}')"/>
 							</xsl:if>
 						</fo:block>

@@ -35,8 +35,6 @@ public class SMSBucketController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SMSBucketController.class);
 	private static final String PAGE_TITLE = "SMS Bucket";
-	private static final String REDIRECT = "redirect:/";
-	private static final String REDIRECT_TO = "smsBucket";
 	private static final String LOCATION_TO = "sms_bucket";
 	private static final String LOCATION = "views/sms-bucket/";
 
