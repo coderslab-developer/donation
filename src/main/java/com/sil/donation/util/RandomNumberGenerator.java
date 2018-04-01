@@ -19,8 +19,6 @@ public class RandomNumberGenerator {
 	public String generateKey() {
 		String firstDigit = String.valueOf(Math.abs(new Random().nextLong()));
 		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyHHmmss");
-		String key = firstDigit + sdf.format(new Date()) + Math.abs(new Random().nextInt(100));
-
-		return key;
+		return firstDigit + sdf.format(new Date()) + Math.abs(new Random().nextInt(100));
 	}
 }

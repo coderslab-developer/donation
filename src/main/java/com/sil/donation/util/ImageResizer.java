@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 
 /**
@@ -11,8 +12,7 @@ import javax.imageio.ImageIO;
  *
  */
 public class ImageResizer {
-	public static void resize(String inputImagePath, String outputImagePath, int scaledWidth, int scaledHeight)
-			throws IOException {
+	public static void resize(String inputImagePath, String outputImagePath, int scaledWidth, int scaledHeight) throws IOException {
 		// read input image
 		File inputFile = new File(inputImagePath);
 		BufferedImage inputImage = ImageIO.read(inputFile);

@@ -1,24 +1,14 @@
 package com.sil.donation.model;
 
+import lombok.Data;
+
 /**
  * @author Zubayer Ahamed
  *
  */
+@Data
 public class ResponseMessage {
 
 	public boolean status;
-
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	@Override
-	public String toString() {
-		return "ResponseMessage [status=" + status + "]";
-	}
 
 }

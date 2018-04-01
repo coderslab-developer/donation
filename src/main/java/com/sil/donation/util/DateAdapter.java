@@ -14,16 +14,16 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  */
 public class DateAdapter extends XmlAdapter<String, Date> {
 
-	private static final SimpleDateFormat SDF = new SimpleDateFormat("dd-MM-yyyy");
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
 	@Override
 	public String marshal(Date v) throws Exception {
-		return SDF.format(v);
+		return sdf.format(v);
 	}
 
 	@Override
 	public Date unmarshal(String v) throws Exception {
-		return SDF.parse(v);
+		return sdf.parse(v);
 	}
 
 }
