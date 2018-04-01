@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -18,10 +19,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-	@Autowired
-	private DataSource dataSource;
-	@Autowired
-	private LoggingAccessDeniedHandler accessDeniedHandler;
+	@Autowired private DataSource dataSource;
+	@Autowired private LoggingAccessDeniedHandler accessDeniedHandler;
+	@Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -43,7 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.anyRequest().authenticated()
 			.and()
 				.formLogin()
-				.loginPage("/login").failureUrl("/login?error")
+				.loginPage("/login")
+				.failureUrl("/login?error")
 				.usernameParameter("username").passwordParameter("password")
 				.permitAll()
 			.and()
@@ -57,7 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.exceptionHandling()
 				.accessDeniedHandler(accessDeniedHandler)
 			.and()
-				.csrf().disable();
+				.csrf()
+				.disable();
 	}
 
 	@Override
@@ -68,7 +70,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 //			.withUser("admin").password("admin").roles("ADMIN");
 		auth.jdbcAuthentication().dataSource(dataSource)
 			.usersByUsernameQuery("select username, password, enabled from users where username = ?")
-			.authoritiesByUsernameQuery("select username, authority from authorities where username = ?");
+			.authoritiesByUsernameQuery("select username, authority from authorities where username = ?")
+			.passwordEncoder(bCryptPasswordEncoder);
 	}
 
 }
