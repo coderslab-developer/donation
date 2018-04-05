@@ -21,6 +21,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -73,6 +74,7 @@ public class DealerController {
 	@Autowired private DonarService donarService;
 	@Autowired private Environment environment;
 	@Autowired private AdminService adminService;
+	@Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@RequestMapping
 	public String loadDealerPage(Model model) {
@@ -134,6 +136,7 @@ public class DealerController {
 		} catch (SilException e) {
 			logger.error(e.getMessage());
 		}
+		dealer.setPassword(bCryptPasswordEncoder.encode(dealer.getPassword()));
 		try {
 			dealerService.save(dealer);
 			usersService.createUsersFromDealer(dealer);

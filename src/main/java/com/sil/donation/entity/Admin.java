@@ -49,7 +49,7 @@ public class Admin implements Serializable {
 	@Column(name = "username", unique = true, nullable = false, length = 40)
 	private String username;
 
-	@Column(name = "password", nullable = false, length = 20)
+	@Column(name = "password", nullable = false, length = 65535)
 	private String password;
 
 	@Size(min = 11, max = 11, message = "Mobile number must be 11 character")

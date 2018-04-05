@@ -64,7 +64,7 @@ public class Dealer implements Serializable {
 	@Column(name = "username", unique = true, nullable = false, length = 40)
 	private String username;
 
-	@Column(name = "password", nullable = false, length = 20)
+	@Column(name = "password", nullable = false, length = 65535)
 	private String password;
 
 	@NotEmpty(message = "Please enter address")

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -61,6 +62,7 @@ public class UsersController {
 	@Autowired private DealerService dealerService;
 	@Autowired private ClientService clientService;
 	@Autowired private AuthoritiesService authoritiesService;
+	@Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@PostMapping
 	public String createAndSaveUser(@ModelAttribute("users") @Valid Users users, BindingResult result, RedirectAttributes redirect, Model model) {

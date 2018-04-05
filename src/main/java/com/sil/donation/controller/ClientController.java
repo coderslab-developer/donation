@@ -12,6 +12,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -74,6 +76,7 @@ public class ClientController {
 	@Autowired private CategoryService categoryService;
 	@Autowired private Environment environment;
 	@Autowired private ClientServiceUpdateInfoService clientServiceUpdateInfoService;
+	@Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@RequestMapping
 	public String loadClientPage(Model model) {
@@ -140,16 +143,22 @@ public class ClientController {
 			logger.error(e.getMessage(), e);
 		}
 
+		client.setPassword(bCryptPasswordEncoder.encode(client.getPassword()));
 		try {
-			clientService.save(client);
-			usersService.createUsersFromClient(client);
-			authoritiesService.createAuthorityForClient(client);
+			doMultipleSave(client);
 			redirect.addFlashAttribute("sm", "You are successfully add client info into your system");
 		} catch (Exception e) {
 			redirect.addFlashAttribute("em", "Client info not saved successfully");
 			logger.error(e.getMessage(), e);
 		}
 		return REDIRECT + REDIRECT_TO;
+	}
+
+	@Transactional
+	public void doMultipleSave(Client client) throws Exception {
+		clientService.save(client);
+		usersService.createUsersFromClient(client);
+		authoritiesService.createAuthorityForClient(client);
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
