@@ -8,7 +8,6 @@ pipelines:
       - mvn -B verify
       image: node:6.9.4
 
-pipelines:
   branches:
     master:
       - step:
