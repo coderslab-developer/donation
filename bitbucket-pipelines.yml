@@ -24,4 +24,4 @@ definitions:
     mysql:
       image: mysql
       environment:
-        MYSQL_ROOT_PASSWORD: 1234
+        MYSQL_ROOT_PASSWORD: "1234"
