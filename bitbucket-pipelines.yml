@@ -8,19 +8,21 @@ pipelines:
       - mvn -B verify
       image: node:6.9.4
 
-pipelines: 
-  default: 
-    - step: 
-        script: 
-          - npm install 
-          - npm test 
-        services: 
-          - mysql 
-
-definitions: 
-  services: 
-    mysql: 
-      image: mysql 
-      environment: 
-        MYSQL_DATABASE: 'dms' 
-        MYSQL_ROOT_PASSWORD: '1234'
+pipelines:
+  branches:
+    master:
+      - step:
+          image: redis
+          script:
+            - redis-cli -h localhost ping
+          services:
+            - redis
+            - mysql
+definitions:
+  services:
+    redis:
+      image: redis
+    mysql:
+      image: mysql
+      environment:
+        MYSQL_ROOT_PASSWORD: 1234
