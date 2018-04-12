@@ -119,6 +119,8 @@ public class UsersController {
 	}
 
 	private Admin setAdminInofFromUserAndSaveBoth(Users users) {
+		users.setPassword(bCryptPasswordEncoder.encode(users.getPassword()));
+
 		Admin admin = new Admin();
 		admin.setAdminName(users.getName());
 		admin.setUsername(users.getUsername());
@@ -144,6 +146,8 @@ public class UsersController {
 	}
 
 	private Client setClientInfoFromUserAndSaveBoth(Users users) {
+		users.setPassword(bCryptPasswordEncoder.encode(users.getPassword()));
+
 		Client client = new Client();
 		client.setClientName(users.getName());
 		client.setEmail(users.getEmail());
@@ -174,6 +178,8 @@ public class UsersController {
 	}
 
 	private Dealer setDealerInfoFromUserAndSaveBoth(Users users) {
+		users.setPassword(bCryptPasswordEncoder.encode(users.getPassword()));
+
 		Dealer dealer = new Dealer();
 		dealer.setAdminId(users.getAdminId());
 		dealer.setDealerName(users.getName());
