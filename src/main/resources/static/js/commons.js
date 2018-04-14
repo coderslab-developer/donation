@@ -9,7 +9,6 @@ $(document).ready(function(){
 		'bottom' : 0
 	});
 
-	
 	//email validating
 	var emailStatus = "invalid";
 	var validateEmail = function(elementValue) {
@@ -332,6 +331,5 @@ $(document).ready(function(){
 			}
 		}); 
 	});
-
 
 });

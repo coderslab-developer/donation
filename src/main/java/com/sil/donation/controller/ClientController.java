@@ -3,6 +3,7 @@ package com.sil.donation.controller;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -187,7 +188,7 @@ public class ClientController {
 			users.setEmail(c.getEmail());
 		}
 		if(!client.getPassword().isEmpty()) {
-			c.setPassword(client.getPassword());
+			c.setPassword(bCryptPasswordEncoder.encode(client.getPassword()));
 			users.setPassword(c.getPassword());
 		}
 		if(!client.getMobile().isEmpty()) {
@@ -203,8 +204,11 @@ public class ClientController {
 			String imageName = c.getPhoto();
 			String uploadPath = request.getServletContext().getRealPath(CLIENT_PHOTO_DIR);
 			File image = new File(uploadPath +  imageName);
-			if(!image.delete()) {
-				image.delete();
+			Path path = Paths.get(image.getAbsolutePath());
+			try {
+				Files.deleteIfExists(path);
+			} catch (IOException e) {
+				logger.error("File not delete: " + e.getMessage(), e);
 			}
 		}
 
@@ -449,8 +453,11 @@ public class ClientController {
 		String imageName = client.getPhoto();
 		String uploadPath = request.getServletContext().getRealPath(CLIENT_PHOTO_DIR);
 		File image = new File(uploadPath +  imageName);
-		if(!image.delete()) {
-			image.delete();
+		Path path = Paths.get(image.getAbsolutePath());
+		try {
+			Files.deleteIfExists(path);
+		} catch (IOException e) {
+			logger.error("File not delete: " + e.getMessage(), e);
 		}
 
 		client.setPhoto("");

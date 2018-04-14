@@ -3,6 +3,7 @@ package com.sil.donation.controller;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -181,7 +182,7 @@ public class DealerController {
 			d.setAddress(dealer.getAddress());
 		}
 		if(!dealer.getPassword().isEmpty()) {
-			d.setPassword(dealer.getPassword());
+			d.setPassword(bCryptPasswordEncoder.encode(dealer.getPassword()));
 			users.setPassword(d.getPassword());
 		}
 
@@ -190,10 +191,11 @@ public class DealerController {
 			String imageName = d.getPhoto();
 			String uploadPath = request.getServletContext().getRealPath(DEALER_PHOTO_DIR);
 			File image = new File(uploadPath +  imageName);
-			if(image.exists()) {
-				if(!image.delete()) {
-					image.delete();
-				}
+			Path path = Paths.get(image.getAbsolutePath());
+			try {
+				Files.deleteIfExists(path);
+			} catch (IOException e) {
+				logger.error("File not delete: " + e.getMessage(), e);
 			}
 		}
 
@@ -247,7 +249,7 @@ public class DealerController {
 
 		return REDIRECT + "dealer/edit/" + dealer.getDealerId();
 	}
-	
+
 	@RequestMapping(value = "/edit/{dealerId}")
 	public String editDealer(@PathVariable("dealerId") Integer dealerId, Model model) {
 		try {
@@ -277,13 +279,13 @@ public class DealerController {
 		try {
 			dealer = dealerService.findByDealerIdAndArchive(dealerId, false);
 			dealer.setStatus(!dealer.isStatus());
-			
+
 			users = usersService.findByUsernameAndArchive(dealer.getUsername(), false);
 			users.setEnabled(!users.isEnabled());
-			
+
 			dealerService.save(dealer);
 			usersService.save(users);
-			
+
 			redirect.addFlashAttribute("sm", "Dealer status change successfully");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -351,10 +353,11 @@ public class DealerController {
 		String imageName = dealer.getPhoto();
 		String uploadPath = request.getServletContext().getRealPath(DEALER_PHOTO_DIR);
 		File image = new File(uploadPath +  imageName);
-		if(image.exists()) {
-			if(!image.delete()) {
-				image.delete();
-			}
+		Path path = Paths.get(image.getAbsolutePath());
+		try {
+			Files.deleteIfExists(path);
+		} catch (IOException e) {
+			logger.error("File not delete: " + e.getMessage(), e);
 		}
 
 		dealer.setPhoto("");
