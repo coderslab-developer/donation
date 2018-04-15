@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sil.donation.entity.Client;
@@ -25,6 +26,7 @@ import com.sil.donation.entity.Dealer;
 import com.sil.donation.entity.Donar;
 import com.sil.donation.entity.SMSNotifier;
 import com.sil.donation.entity.SiteConfig;
+import com.sil.donation.entity.Users;
 import com.sil.donation.exception.SilException;
 import com.sil.donation.model.AdminDashboard;
 import com.sil.donation.model.ClientDashboard;
@@ -44,7 +46,7 @@ import com.sil.donation.service.SiteConfigService;
 @Controller
 @RequestMapping({"/", "/home"})
 public class DashboardController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
 	private static final String PAGE_TITLE = "Dashboard";
 	private static final String REDIRECT = "redirect:/";
@@ -59,6 +61,26 @@ public class DashboardController {
 	@Autowired private CategoryService categoryService;
 	@Autowired private SMSNotifierService smsNotifierService;
 	@Autowired private SiteConfigService siteConfigService;
+
+	public Users sessionUser() {
+		Users users = new Users();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Set<String> roles = authentication.getAuthorities().stream().map(r -> r.getAuthority()).collect(Collectors.toSet());
+		users.setUsername(authentication.getName());
+		for(String role : roles) {
+			users.setAuthority(role);
+		}
+		
+		return users;
+	}
+	
+	public List<Dealer> getAllDealers(){
+		List<Dealer> dealers = new ArrayList<>();
+		
+		return dealers;
+	}
+
+	
 
 	@RequestMapping
 	public String loadHomePage(Model model, HttpSession session) throws IllegalAccessException {

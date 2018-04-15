@@ -73,4 +73,19 @@ public class Admin implements Serializable {
 	@XmlElementWrapper(name = "dealers")
 	@XmlElement(name = "dealer")
 	private List<Dealer> dealers;
+
+	@Transient
+	private Integer totalSellOfSoftware;
+
+	@Transient
+	private Integer totalDealerOfSoftware;
+
+	@Transient
+	private Integer activeClient;
+
+	@Transient
+	private Integer serviceRenewCurrentMotnh;
+
+	@Transient
+	private Integer inactiveClients;
 }
