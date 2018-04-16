@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -21,8 +20,7 @@ import lombok.Data;
  *
  */
 @Entity
-@Table(name = "users", catalog = "dms", uniqueConstraints = { @UniqueConstraint(columnNames = "email"),
-		@UniqueConstraint(columnNames = "username") })
+@Table(name = "users", catalog = "dms")
 @Data
 public class Users implements java.io.Serializable {
 

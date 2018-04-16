@@ -37,9 +37,8 @@ security:
   basic:
     enabled: false
 
-spring:
-    banner:
-        location: sil.txt
+banner:
+    location: sil.txt
 
 logging:
   level:
