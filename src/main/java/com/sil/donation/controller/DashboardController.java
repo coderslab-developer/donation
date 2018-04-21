@@ -27,8 +27,6 @@ import com.sil.donation.entity.Donar;
 import com.sil.donation.entity.SMSNotifier;
 import com.sil.donation.entity.SiteConfig;
 import com.sil.donation.exception.SilException;
-import com.sil.donation.model.ClientDashboard;
-import com.sil.donation.model.DealerDashboard;
 import com.sil.donation.model.UserAuthorities;
 import com.sil.donation.service.CategoryService;
 import com.sil.donation.service.ClientService;
@@ -46,7 +44,6 @@ import com.sil.donation.service.SiteConfigService;
 public class DashboardController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
-	private static final String PAGE_TITLE = "Dashboard";
 	private static final String REDIRECT = "redirect:/";
 	private static final String REDIRECT_TO_ADMIN = "admin_dashboard";
 	private static final String REDIRECT_TO_DEALER = "dealer_dashboard";
@@ -62,7 +59,6 @@ public class DashboardController {
 
 	@RequestMapping
 	public String loadHomePage(Model model, HttpSession session) throws IllegalAccessException {
-		model.addAttribute("pageTitle", PAGE_TITLE);
 
 		//get Authentication info
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -91,40 +87,31 @@ public class DashboardController {
 
 		//logic for view page
 		if(role.equalsIgnoreCase(UserAuthorities.ROLE_ADMIN.name())) {
-			Map<String, Object> map = new HashMap<>();
-			try {
-				map = getAdminDashboardAndDealerAndClientInfo();
-			} catch (SilException e) {
-				logger.error(e.getMessage(), e);
-			}
+			Map<String, Object> map = getAdminDashboardInfo();
 			model.addAttribute("adminDashboard", map.get("admin"));
 			model.addAttribute("clients", map.get("clients"));
 			model.addAttribute("dealers", map.get("dealers"));
 			return LOCATION + REDIRECT_TO_ADMIN;
 		}else if(role.equalsIgnoreCase(UserAuthorities.ROLE_DEALER.name())) {
-			Map<String, Object> map = getAllDealersInfo(authentication.getName());
-			model.addAttribute("clients", map.get("clients"));
-			try {
-				model.addAttribute("dealerDashboard", getDealerDashboardInfo(authentication.getName()));
-			} catch (SilException e) {
-				logger.error(e.getMessage(), e);
-			}
+			Map<String, Object> map = getDealerDashboardInfo(authentication.getName());
+			model.addAttribute("dealer", map.get("dealer"));
+			model.addAttribute("dealerDashboard", map.get("dealer"));
 			return LOCATION + REDIRECT_TO_DEALER;
 		}else if(role.equalsIgnoreCase(UserAuthorities.ROLE_CLIENT.name())){
-			try {
-				model.addAttribute("clientDashboard", getClientDashboardInfo(authentication.getName()));
-				model.addAttribute("donars", getAllDonarsInfo(authentication.getName()).get("donars"));
-				model.addAttribute("smsNotifier", getSMSNotification(authentication.getName()));
-			} catch (SilException e) {
-				logger.error(e.getMessage(), e);
-			}
+			Client client = getClientDashboardInfo(authentication.getName());
+			model.addAttribute("clientDashboard", client);
+			model.addAttribute("client", client);
+			model.addAttribute("smsNotifier", getSMSNotification(authentication.getName()));
 			return LOCATION + REDIRECT_TO_CLIENT;
 		}else {
 			return REDIRECT + "login";
 		}
 	}
 
-	public Map<String, Object> getAdminDashboardAndDealerAndClientInfo() throws SilException {
+	/*
+	 * Admin Dashboard info
+	 */
+	public Map<String, Object> getAdminDashboardInfo() {
 		Map<String, Object> map = new HashMap<>();
 
 		List<Dealer> dealers = new ArrayList<>();
@@ -136,49 +123,41 @@ public class DashboardController {
 			logger.error(e.getMessage(), e);
 		}
 
-		dealers.stream().forEach(d -> {
-			try {
-				d.setClients(clientService.findByDealerIdAndArchive(d.getDealerId(), false));
-			} catch (SilException e) {
-				logger.error(e.getMessage(), e);
-			}
-		});
-		dealers.stream().forEach(d -> {
-			try {
-				d.setActiveClients(clientService.findByDealerIdAndStatusAndArchive(d.getDealerId(), true, false).size());
-			} catch (SilException e) {
-				logger.error(e.getMessage(), e);
-			}
-		});
-		dealers.stream().forEach(d -> {
-			try {
-				d.setInactiveClients(clientService.findByDealerIdAndStatusAndArchive(d.getDealerId(), false, false).size());
-			} catch (SilException e) {
-				logger.error(e.getMessage(), e);
-			}
-		});
-		map.put("dealers", !dealers.isEmpty() ? dealers : null);
+		/*
+		 * Set clients into dealer object by dealerId
+		 */
+		for(Dealer d : dealers) {
+			d.setClients(clients.stream().filter(c -> c.getDealerId() == d.getDealerId()).collect(Collectors.toList()));
+			d.setActiveClients(clients.stream().filter(c -> c.getDealerId() == d.getDealerId()).filter(c -> Boolean.TRUE == c.isStatus()).filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
+			d.setInactiveClients(clients.stream().filter(c -> c.getDealerId() == d.getDealerId()).filter(c -> Boolean.FALSE == c.isStatus()).filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
+		}
+		map.put("dealers", dealers);
 
-		clients.stream().forEach(c -> {
-			try {
-				c.setDealerName(dealerService.findByDealerIdAndArchive(c.getDealerId(), false).getDealerName());
-				long remainingDays = c.getExpireDate().getTime() - new Date().getTime();
-				c.setRemainingDay(String.valueOf(remainingDays / (24* 1000 * 60 * 60)));
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			}
-		});
-		map.put("clients", !clients.isEmpty() ? clients : null);
+		/*
+		 * Set dealer name for each client and set remaining day
+		 */
+		for(Client c : clients) {
+			Dealer dealer = dealers.stream().filter(d -> d.getDealerId() == c.getDealerId()).collect(Collectors.toList()).stream().findFirst().orElse(null);
+			c.setDealerName(dealer == null ? "" : dealer.getDealerName());
+			c.setRemainingDay(String.valueOf((c.getExpireDate().getTime() - new Date().getTime()) / (24* 1000 * 60 * 60)));
+		}
+		map.put("clients", clients);
 
+		/*
+		 * Get admin software related info
+		 */
 		Admin admin = new Admin();
-		admin.setActiveClient(clientService.findByStatusAndArchive(true, false).size());
-		admin.setInactiveClients(clientService.findByStatusAndArchive(false, false).size());
-		admin.setTotalDealerOfSoftware(dealerService.findAllByArchive(false).size());
-		admin.setTotalSellOfSoftware(dealerService.findAllByArchive(false).size() + clientService.findAllByArchive(false).size());
+		int totalDealers = dealers.stream().filter(d -> Boolean.FALSE == d.isArchive()).collect(Collectors.toList()).size();
+		int totalClients = clients.stream().filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size();
+		admin.setTotalSellOfSoftware(totalDealers + totalClients);
+		admin.setActiveClient(clients.stream().filter(c -> Boolean.TRUE == c.isStatus()).filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
+		admin.setInactiveClients(clients.stream().filter(c -> Boolean.FALSE == c.isStatus()).filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
+		admin.setTotalDealerOfSoftware(dealers.stream().filter(d -> Boolean.FALSE == d.isArchive()).collect(Collectors.toList()).size());
+
 		List<Client> renewalClients = new ArrayList<>();
 		Calendar cal1 = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
-		for(Client c : clientService.findAllByArchive(false)) {
+		for(Client c : clients.stream().filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList())) {
 			cal1.setTime(c.getExpireDate());
 			cal2.setTime(new Date());
 			if(cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)) {
@@ -191,69 +170,66 @@ public class DashboardController {
 		return map;
 	}
 
-	public Map<String, Object> getAllDealersInfo(String username){
+	/*
+	 * Dealer Dashboard Info
+	 */
+	public Map<String, Object> getDealerDashboardInfo(String username) {
 		Map<String, Object> map = new HashMap<>();
-		try {
-			List<Client> clients = clientService.findByDealerIdAndArchive(dealerService.findByUsernameAndArchive(username, false).getDealerId(), false);
-			map.put("clients", clients);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return map;
-	}
-
-	public DealerDashboard getDealerDashboardInfo(String username) throws SilException {
-		Dealer dealer = null;
+		Dealer dealer = new Dealer();
+		List<Client> clients = new ArrayList<>();
 		try {
 			dealer = dealerService.findByUsernameAndArchive(username, false);
-		} catch (Exception e) {
+			clients = clientService.findAllByDealerId(dealer.getDealerId());
+		} catch (SilException e) {
 			logger.error(e.getMessage(), e);
 		}
-		if(dealer == null) {
-			return new DealerDashboard();
-		}
 
-		DealerDashboard dealerDashboard = new DealerDashboard();
-		dealerDashboard.setActiveClient(clientService.findByDealerIdAndStatusAndArchive(dealer.getDealerId(), true, false).size());
-		dealerDashboard.setInactiveClient(clientService.findByDealerIdAndStatusAndArchive(dealer.getDealerId(), false, false).size());
-		dealerDashboard.setTotalSellOfSoftware(clientService.findByDealerIdAndArchive(dealer.getDealerId(), false).size());
+		dealer.setClients(clients.stream().filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()));
+		dealer.setActiveClients(clients.stream().filter(c -> Boolean.TRUE == c.isStatus()).filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
+		dealer.setInactiveClients(clients.stream().filter(c -> Boolean.FALSE == c.isStatus()).filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
+		dealer.setTotalSellOfSoftware(clients.stream().filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
 		List<Client> renewalClients = new ArrayList<>();
 		Calendar cal1 = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
-		for(Client c : clientService.findByDealerIdAndArchive(dealer.getDealerId(), false)) {
+		for(Client c : clients.stream().filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList())) {
 			cal1.setTime(c.getExpireDate());
 			cal2.setTime(new Date());
 			if(cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)) {
 				renewalClients.add(c);
 			}
 		}
-		dealerDashboard.setServiceRenewOnThisMonth(renewalClients.size());
-
-		return dealerDashboard;
-	}
-
-	public ClientDashboard getClientDashboardInfo(String username) throws SilException {
-		ClientDashboard clientDashboard = new ClientDashboard();
-		List<Donar> donars = donarService.findAllByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false);
-		clientDashboard.setTotalDonar(donars.size());
-		clientDashboard.setActiveDonar(donars.stream().filter(d -> Boolean.TRUE == d.isStatus()).collect(Collectors.toList()).size());
-		clientDashboard.setInactiveDonar(donars.stream().filter(d -> Boolean.FALSE == d.isStatus()).collect(Collectors.toList()).size());
-		clientDashboard.setNumberOfPayeeDonarInThisMonth(0);
-		return clientDashboard;
-	}
-
-	public Map<String, Object> getAllDonarsInfo(String username) throws SilException{
-		Map<String, Object> map = new HashMap<>();
-		List<Donar> donars = donarService.findAllByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false);
-		donars.stream().forEach(d -> {
-			try {
-				d.setCategoryName(categoryService.findByCategoryIdAndArchive(d.getCategoryId(), false).getName());
-			} catch (SilException e) {
-				logger.error(e.getMessage(), e);
-			}
-		});
-		map.put("donars", donars);
+		dealer.setServiceRenewOnThisMonth(renewalClients.size());
+		map.put("dealer", dealer);
 		return map;
+	}
+
+	/*
+	 * Client Dashboard Info
+	 */
+	public Client getClientDashboardInfo(String username) {
+		Client client = new Client();
+		List<Donar> donars = new ArrayList<>();
+		try {
+			client = clientService.findByUsernameAndArchive(username, false);
+			donars = donarService.findAllByClientIdAndArchive(client.getClientId(), false);
+		} catch (SilException e) {
+			logger.error(e.getMessage(), e);
+		}
+		if(!donars.isEmpty()) {
+			for(Donar d : donars) {
+				try {
+					d.setCategoryName(categoryService.findByCategoryIdAndArchive(d.getCategoryId(), false).getName());
+				} catch (SilException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
+		}
+		client.setDonars(donars);
+		client.setTotalDonar(donars.size());
+		client.setActiveDonar(donars.stream().filter(d -> Boolean.TRUE == d.isStatus()).collect(Collectors.toList()).size());
+		client.setInactiveDonar(donars.stream().filter(d -> Boolean.FALSE == d.isStatus()).collect(Collectors.toList()).size());
+		client.setNumberOfPayeeDonarInThisMonth(0);
+		return client;
 	}
 
 	public SMSNotifier getSMSNotification(String username){

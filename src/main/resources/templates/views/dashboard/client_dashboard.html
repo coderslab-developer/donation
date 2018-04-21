@@ -99,7 +99,7 @@
 											</tr>
 										</thead>
 										<tbody>
-											<tr th:each="row,num : ${donars}">
+											<tr th:each="row,num : ${client.donars}">
 												<td th:text="${num.count}"></td>
 												<td th:text="${row.donarName}"></td>
 												<td th:text="${row.categoryName}"></td>

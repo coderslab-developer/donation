@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -41,7 +42,6 @@ import com.sil.donation.entity.Dealer;
 import com.sil.donation.entity.Donar;
 import com.sil.donation.entity.Users;
 import com.sil.donation.exception.SilException;
-import com.sil.donation.model.DealerDashboard;
 import com.sil.donation.service.AdminService;
 import com.sil.donation.service.AuthoritiesService;
 import com.sil.donation.service.ClientService;
@@ -263,12 +263,9 @@ public class DealerController {
 
 	@RequestMapping(value = "/view/{dealerId}", method = RequestMethod.GET)
 	public String viewDealerInfo(@PathVariable("dealerId") int dealerId, Model model) {
-		model.addAttribute("dealer", getDealerFullInfo(dealerId));
-		try {
-			model.addAttribute("dealerDashboard", getDealerDashboardInfo(dealerId));
-		} catch (SilException e) {
-			logger.error(e.getMessage());
-		}
+		Dealer dealer = getDealerDashboardInfo(dealerId);
+		model.addAttribute("dealer", dealer);
+		model.addAttribute("dealerDashboard", dealer);
 		return LOCATION + "view_dealer_profile";
 	}
 
@@ -370,40 +367,31 @@ public class DealerController {
 		return REDIRECT + REDIRECT_TO + "/view/" + dealerId;
 	}
 
-	public Dealer getDealerFullInfo(int dealerId) {
-		Dealer dealer = null;
+	public Dealer getDealerDashboardInfo(int dealerId) {
+		Dealer dealer =new Dealer();
+		List<Client> clients = new ArrayList<>();
 		try {
 			dealer = dealerService.findByDealerIdAndArchive(dealerId, false);
-			dealer.setClients(clientService.findByDealerIdAndArchive(dealerId, false));
+			clients = clientService.findAllByDealerId(dealer.getDealerId());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
-		return dealer;
-	}
-
-	public DealerDashboard getDealerDashboardInfo(int dealerId) throws SilException {
-		Dealer dealer = null;
-		try {
-			dealer = dealerService.findByDealerIdAndArchive(dealerId, false);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
-		DealerDashboard dealerDashboard = new DealerDashboard();
-		dealerDashboard.setActiveClient(clientService.findByDealerIdAndStatusAndArchive(dealer.getDealerId(), true, false).size());
-		dealerDashboard.setInactiveClient(clientService.findByDealerIdAndStatusAndArchive(dealer.getDealerId(), false, false).size());
-		dealerDashboard.setTotalSellOfSoftware(clientService.findByDealerIdAndArchive(dealer.getDealerId(), false).size());
+		dealer.setClients(clients.stream().filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()));
+		dealer.setActiveClients(clients.stream().filter(c -> Boolean.TRUE == c.isStatus()).filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
+		dealer.setInactiveClients(clients.stream().filter(c -> Boolean.FALSE == c.isStatus()).filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
+		dealer.setTotalSellOfSoftware(clients.stream().filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList()).size());
 		List<Client> renewalClients = new ArrayList<>();
 		Calendar cal1 = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
-		for(Client c : clientService.findByDealerIdAndArchive(dealer.getDealerId(), false)) {
+		for(Client c : clients.stream().filter(c -> Boolean.FALSE == c.isArchive()).collect(Collectors.toList())) {
 			cal1.setTime(c.getExpireDate());
 			cal2.setTime(new Date());
 			if((cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)) && (cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH))) {
 				renewalClients.add(c);
 			}
 		}
-		dealerDashboard.setServiceRenewOnThisMonth(renewalClients.size());
-		return dealerDashboard;
+		dealer.setServiceRenewOnThisMonth(renewalClients.size());
+		return dealer;
 	}
 
 }

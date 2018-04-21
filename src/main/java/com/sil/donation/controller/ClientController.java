@@ -42,7 +42,6 @@ import com.sil.donation.entity.ClientServiceUpdateInfo;
 import com.sil.donation.entity.Donar;
 import com.sil.donation.entity.Users;
 import com.sil.donation.exception.SilException;
-import com.sil.donation.model.ClientDashboard;
 import com.sil.donation.service.AuthoritiesService;
 import com.sil.donation.service.CategoryService;
 import com.sil.donation.service.ClientService;
@@ -344,15 +343,15 @@ public class ClientController {
 		return REDIRECT;
 	}
 
-	public ClientDashboard getClientDashboardInfo(int clientId) throws SilException {
+	public Client getClientDashboardInfo(int clientId) throws SilException {
 		String username = clientService.findByClientIdAndArchive(clientId, false).getUsername();
-		ClientDashboard clientDashboard = new ClientDashboard();
+		Client client = new Client();
 		List<Donar> donars = donarService.findAllByClientIdAndArchive(clientService.findByUsernameAndArchive(username, false).getClientId(), false);
-		clientDashboard.setTotalDonar(donars.size());
-		clientDashboard.setActiveDonar(donars.stream().filter(d -> d.isStatus() == Boolean.TRUE).collect(Collectors.toList()).size());
-		clientDashboard.setInactiveDonar(donars.stream().filter(d -> d.isStatus() == Boolean.FALSE).collect(Collectors.toList()).size());
-		clientDashboard.setNumberOfPayeeDonarInThisMonth(0);
-		return clientDashboard;
+		client.setTotalDonar(donars.size());
+		client.setActiveDonar(donars.stream().filter(d -> d.isStatus() == Boolean.TRUE).collect(Collectors.toList()).size());
+		client.setInactiveDonar(donars.stream().filter(d -> d.isStatus() == Boolean.FALSE).collect(Collectors.toList()).size());
+		client.setNumberOfPayeeDonarInThisMonth(0);
+		return client;
 	}
 
 	@RequestMapping(value = "/updateService/{clientId}", method = RequestMethod.GET)
