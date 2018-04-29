@@ -21,15 +21,34 @@ public class SMSNotifierService {
 
 	@Autowired private SMSNotifierRepository smsNotifierRepository;
 
+	/**
+	 * Save {@link SMSNotifier}
+	 * @param smsNotifier
+	 * @return boolean
+	 */
 	public boolean save(SMSNotifier smsNotifier) {
 		SMSNotifier sn = smsNotifierRepository.save(smsNotifier);
 		return sn != null ? true : false;
 	}
 
+	/**
+	 * Find all {@link SMSNotifier} by username, status and ORDER BY id DESC
+	 * @param username
+	 * @param status
+	 * @return List<{@link SMSNotifier}>
+	 * @throws SilException
+	 */
 	public List<SMSNotifier> findByUsernameAndStatusOrderByIdDesc(String username, boolean status) throws SilException {
 		return smsNotifierRepository.findByUsernameAndStatusOrderByIdDesc(username, status);
 	}
 
+	/**
+	 * Find all {@link SMSNotifier} by username and status
+	 * @param username
+	 * @param status
+	 * @return List<{@link SMSNotifier}>
+	 * @throws SilException
+	 */
 	public List<SMSNotifier> findAllByUsernameAndStatus(String username, boolean status) throws SilException{
 		return smsNotifierRepository.findAllByUsernameAndStatus(username, status);
 	}

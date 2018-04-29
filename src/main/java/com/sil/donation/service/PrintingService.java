@@ -28,7 +28,7 @@ public interface PrintingService {
 	 * @param doc
 	 * @param template
 	 * @param request
-	 * @return Document
+	 * @return {@link Document}
 	 * @throws TransformerFactoryConfigurationError
 	 * @throws TransformerException
 	 * @throws FOPException
@@ -39,7 +39,7 @@ public interface PrintingService {
 	 * Transform Document Object and XSL file to ByteArrayOutputStream for print
 	 * @param document
 	 * @param template
-	 * @return ByteArrayOutputStream
+	 * @return {@link ByteArrayOutputStream}
 	 * @throws TransformerException
 	 */
 	public ByteArrayOutputStream transfromToThermalBytes(Document document, String template) throws TransformerException;
@@ -47,7 +47,7 @@ public interface PrintingService {
 	/**
 	 * Generate Document Object from XML
 	 * @param xml
-	 * @return Document
+	 * @return {@link Document}
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException

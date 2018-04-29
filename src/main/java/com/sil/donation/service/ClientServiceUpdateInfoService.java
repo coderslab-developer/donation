@@ -18,6 +18,11 @@ public class ClientServiceUpdateInfoService {
 
 	@Autowired private ClientServiceUpdateInfoRepository clientServiceUpdateInfoRepository;
 
+	/**
+	 * Save {@link ClientServiceUpdateInfo}
+	 * @param clientServiceUpdateInfo
+	 * @return boolean
+	 */
 	public boolean save(ClientServiceUpdateInfo clientServiceUpdateInfo) {
 		ClientServiceUpdateInfo csui = clientServiceUpdateInfoRepository.save(clientServiceUpdateInfo);
 		return csui == null ? false : true;

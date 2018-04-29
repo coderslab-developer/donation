@@ -23,11 +23,24 @@ public class DonationService {
 	@Autowired EntityManager em;
 	private static final String DONATION_SEARCH_QUERY = "SELECT d FROM Donation d WHERE d.clientId=:clientId AND d.payDate BETWEEN :startDate AND :endDate";
 
+	/**
+	 * Save {@link Donation}
+	 * @param donation
+	 * @return boolean
+	 */
 	public boolean save(Donation donation) {
 		Donation d = donationRepository.save(donation);
 		return d == null ? false : true;
 	}
 
+	/**
+	 * Find all {@link Donation} by clientId, payDate between startDate to endDate
+	 * @param clientId
+	 * @param donarId
+	 * @param startDate
+	 * @param endDate
+	 * @return List<{@link Donation}>
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Donation> findAllDonationByClientIdAndPayDateBetweenStartDateToEndDate(Integer clientId, Integer donarId, Date startDate, Date endDate){
 		String sql = DONATION_SEARCH_QUERY;

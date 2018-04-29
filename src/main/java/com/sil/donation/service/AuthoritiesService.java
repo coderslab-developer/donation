@@ -20,14 +20,23 @@ public class AuthoritiesService {
 	@Autowired
 	private AuthoritiesRepository authoritiesRepository;
 
+	/**
+	 * Save {@link Authorities}
+	 * @param authorities
+	 * @return boolean
+	 * @throws Exception
+	 */
 	public boolean save(Authorities authorities) throws Exception {
 		Authorities a = authoritiesRepository.save(authorities);
-		if (a != null) {
-			return true;
-		}
-		return false;
+		return a != null ? true : false;
 	}
 
+	/**
+	 * Save {@link Authorities} for {@link Dealer}
+	 * @param dealer
+	 * @return boolean
+	 * @throws Exception
+	 */
 	public boolean createAuthorityForDealer(Dealer dealer) throws Exception {
 		Authorities authorities = new Authorities();
 		authorities.setUsername(dealer.getUsername());
@@ -35,6 +44,12 @@ public class AuthoritiesService {
 		return save(authorities);
 	}
 
+	/**
+	 * Save {@link Authorities} for {@link Client}
+	 * @param client
+	 * @return boolean
+	 * @throws Exception
+	 */
 	public boolean createAuthorityForClient(Client client) throws Exception {
 		Authorities authorities = new Authorities();
 		authorities.setUsername(client.getUsername());
@@ -42,6 +57,13 @@ public class AuthoritiesService {
 		return save(authorities);
 	}
 
+	/**
+	 * Find {@link Authorities} by Username and Archive
+	 * @param username
+	 * @param archive
+	 * @return {@link Authorities}
+	 * @throws SilException
+	 */
 	public Authorities findByUsernameAndArchive(String username, boolean archive) throws SilException {
 		return authoritiesRepository.findByUsernameAndArchive(username, archive);
 	}

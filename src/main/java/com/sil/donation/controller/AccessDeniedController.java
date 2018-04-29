@@ -20,7 +20,7 @@ public class AccessDeniedController {
 	private static final String PAGE_TITLE = "Access Denied";
 	private static final String REDIRECT_TO = "access-denied";
 	private static final String LOCATION = "views/access-denied/";
-	
+
 	@RequestMapping
 	public String accesDenide(Model model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

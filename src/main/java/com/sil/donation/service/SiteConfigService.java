@@ -19,11 +19,22 @@ public class SiteConfigService {
 
 	@Autowired SiteConfigRepository siteConfigRepository;
 
+	/**
+	 * Save {@link SiteConfig}
+	 * @param siteConfig
+	 * @return boolean
+	 */
 	public boolean save(SiteConfig siteConfig) {
 		SiteConfig sc = siteConfigRepository.save(siteConfig);
 		return sc != null ? true : false;
 	}
 
+	/**
+	 * Find {@link SiteConfig} by username
+	 * @param username
+	 * @return {@link SiteConfig}
+	 * @throws SilException
+	 */
 	public SiteConfig findByUsername(String username) throws SilException{
 		return siteConfigRepository.findByUsername(username);
 	}

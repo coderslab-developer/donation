@@ -22,11 +22,23 @@ public class UsersService {
 	@Autowired
 	private UsersRepository usersRepository;
 
+	/**
+	 * Save {@link Users}
+	 * @param users
+	 * @return boolean
+	 * @throws SilException
+	 */
 	public boolean save(Users users) throws SilException {
 		Users u = usersRepository.save(users);
 		return u != null ? true : false;
 	}
 
+	/**
+	 * Save {@link Users} from {@link Dealer}
+	 * @param dealer
+	 * @return boolean
+	 * @throws SilException
+	 */
 	public boolean createUsersFromDealer(Dealer dealer) throws SilException {
 		Users users = new Users();
 		users.setAuthority(UserAuthorities.ROLE_DEALER.name());
@@ -37,6 +49,12 @@ public class UsersService {
 		return save(users);
 	}
 
+	/**
+	 * Save {@link Users} from {@link Client}k
+	 * @param client
+	 * @return boolean
+	 * @throws SilException
+	 */
 	public boolean createUsersFromClient(Client client) throws SilException {
 		Users users = new Users();
 		users.setAuthority(UserAuthorities.ROLE_CLIENT.name());
@@ -47,14 +65,31 @@ public class UsersService {
 		return save(users);
 	}
 
+	/**
+	 * Find {@link Users} by username and archive
+	 * @param username
+	 * @param archive
+	 * @return {@link Users}
+	 * @throws SilException
+	 */
 	public Users findByUsernameAndArchive(String username, boolean archive) throws SilException {
 		return usersRepository.findByUsernameAndArchive(username, archive);
 	}
 
+	/**
+	 * Find all {@link Users}
+	 * @return List<{@link Users}>
+	 */
 	public List<Users> findAll() {
 		return usersRepository.findAll();
 	}
 
+	/**
+	 * Find all {@link Users} by archive
+	 * @param archive
+	 * @return List<{@link Users}>
+	 * @throws SilException
+	 */
 	public List<Users> findAllByArchive(boolean archive) throws SilException {
 		return usersRepository.findAllByArchive(archive);
 	}
