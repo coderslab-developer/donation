@@ -151,6 +151,44 @@
 							</div>
 						</div>
 
+						<div sec:authorize="${hasRole('ROLE_ADMIN')}" class="col-md-12 super-admin-dashboard">
+							<div class="panel panel-success">
+								<div class="panel-heading custom-success">
+									<h4 style="margin: 0;">Transaction History</h4>
+								</div>
+								<div class="panel-body" style="padding-bottom: 40px;">
+									<table class="table table-bordered table-responsive table-hover" id="example" width="100%">
+										<thead>
+											<tr>
+												<th>SN</th>
+												<th>Action</th>
+												<th>Available SMS</th>
+												<th>Used SMS</th>
+												<th>Buy From</th>
+												<th>Sell To</th>
+												<th>Buy Qty</th>
+												<th>Sell Qty</th>
+												<th>Date</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="row,num : ${transactions}">
+												<td th:text="${num.count}"></td>
+												<td th:text="${row.actionPerform}"></td>
+												<td th:text="${row.availableSMS}"></td>
+												<td th:text="${row.usedSMS}"></td>
+												<td th:text="${row.buyFrom}"></td>
+												<td th:text="${row.sellTo}"></td>
+												<td th:text="${row.buyQty}"></td>
+												<td th:text="${row.sellQty}"></td>
+												<td th:text="${row.actionDate}"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
 					</div>
 				</div><!-- / end content section -->
 

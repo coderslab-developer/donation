@@ -52,4 +52,21 @@ public class SMSTransaction implements Serializable {
 	@Column(name = "smsKey", length = 65535, nullable = false)
 	private String smsKey; 
 
+	@Column(name = "sellQty")
+	private Integer sellQty;
+
+	@Column(name = "buyQty")
+	private Integer buyQty;
+
+	@Column(name = "sellTo", length = 100)
+	private String sellTo;
+
+	@Column(name = "buyFrom", length = 100)
+	private String buyFrom;
+
+	@Column(name = "sellerUsername", length = 100)
+	private String sellerUsername;
+
+	@Column(name = "buyerUsername", length = 100)
+	private String buyerUsername;
 }

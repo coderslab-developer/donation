@@ -6,6 +6,8 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,10 +29,16 @@ public class LoginController {
 
 	@RequestMapping
 	public String loadLoginPage(Model model, HttpSession session) {
-		model.addAttribute("pageTitle", PAGE_TITLE);
-		session.setAttribute("lastLogin", String.valueOf(new Date()));
-		logger.info("Login page called at {}", new Date());
-		return LOCATION + REDIRECT_TO;
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String username = authentication.getName();
+		if("anonymousUser".equalsIgnoreCase(username)) {
+			model.addAttribute("pageTitle", PAGE_TITLE);
+			session.setAttribute("lastLogin", String.valueOf(new Date()));
+			logger.info("Login page called at {}", new Date());
+			return LOCATION + REDIRECT_TO;
+		} else {
+			return "redirect:/";
+		}
 	}
 
 }

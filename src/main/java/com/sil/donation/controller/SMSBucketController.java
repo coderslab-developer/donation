@@ -78,6 +78,7 @@ public class SMSBucketController {
 
 		model.addAttribute("username", username);
 		model.addAttribute("smsBucket", list.isEmpty() ? new SMSTransaction() : list.get(0));
+		model.addAttribute("transactions", list);
 		return LOCATION + LOCATION_TO;
 	}
 

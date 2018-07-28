@@ -14,12 +14,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sil.donation.entity.Admin;
+import com.sil.donation.entity.Client;
+import com.sil.donation.entity.Dealer;
 import com.sil.donation.entity.SMSKeyGenerator;
 import com.sil.donation.entity.SMSTransaction;
+import com.sil.donation.entity.Users;
 import com.sil.donation.exception.SilException;
 import com.sil.donation.model.SMSActionPerform;
+import com.sil.donation.model.UserAuthorities;
+import com.sil.donation.service.AdminService;
+import com.sil.donation.service.ClientService;
+import com.sil.donation.service.DealerService;
 import com.sil.donation.service.SMSKeyGeneratorService;
 import com.sil.donation.service.SMSTransactionService;
+import com.sil.donation.service.UsersService;
 import com.sil.donation.util.RandomNumberGenerator;
 
 /**
@@ -34,6 +43,10 @@ public class SMSTransactionController {
 
 	@Autowired private SMSTransactionService smsTransactionService;
 	@Autowired private SMSKeyGeneratorService smsKeyGeneratorService;
+	@Autowired private UsersService usersService;
+	@Autowired private AdminService adminService;
+	@Autowired private DealerService dealerService;
+	@Autowired private ClientService clientService;
 
 	@RequestMapping(value = "/updateSMS", method = RequestMethod.POST)
 	public String updateAdminSMS(String username, int smsAmount, RedirectAttributes redirect) {
@@ -52,6 +65,12 @@ public class SMSTransactionController {
 		smsKeyGenerator.setStatus(true);
 		smsKeyGeneratorService.save(smsKeyGenerator);
 		smsTransaction.setSmsKey(smsKeyGenerator.getSmsKey());
+		smsTransaction.setBuyFrom("THIRDPARTY");
+		smsTransaction.setBuyQty(smsAmount);
+		smsTransaction.setSellQty(0);
+		//smsTransaction.setSellTo(findUserFullName(username));
+		smsTransaction.setBuyerUsername(username);
+		//smsTransaction.setSellerUsername("");
 
 		SMSTransaction st = null;
 		try {
@@ -138,10 +157,19 @@ public class SMSTransactionController {
 			smsTransaction.setAvailableSMS(Integer.valueOf(smsAmount));
 			smsTransaction.setUsedSMS(0);
 		}
-		smsTransaction.setUsername(username);
-		smsTransaction.setActionPerform(SMSActionPerform.BUY.name());
-		smsTransaction.setActionDate(new Date());
-		smsTransaction.setSmsKey(smsKey);
+		SMSTransaction st = new SMSTransaction();
+		st.setAvailableSMS(smsTransaction.getAvailableSMS());
+		st.setUsedSMS(smsTransaction.getUsedSMS());
+		st.setUsername(username);
+		st.setActionPerform(SMSActionPerform.BUY.name());
+		st.setActionDate(new Date());
+		st.setSmsKey(smsKey);
+		st.setBuyFrom(findUserFullName(sellerUsername)); //todo
+		st.setBuyQty(Integer.parseInt(smsAmount));
+		st.setSellQty(0);
+		//st.setSellTo(findUserFullName(username));
+		st.setBuyerUsername(username);
+		st.setSellerUsername(sellerUsername);
 
 		try {
 			SMSKeyGenerator smsKeyGenerator = smsKeyGeneratorService.findBySmsKeyAndStatus(smsKey, true);
@@ -151,7 +179,7 @@ public class SMSTransactionController {
 			logger.error(e.getMessage());
 		}
 
-		SMSTransaction returnedSmsTransaction = smsTransactionService.save(smsTransaction);
+		SMSTransaction returnedSmsTransaction = smsTransactionService.save(st);
 		if(returnedSmsTransaction == null) {
 			redirect.addFlashAttribute("em", "Transaction not successfull");
 			return "redirect:/smsBucket/" + sellerUsername;
@@ -166,11 +194,38 @@ public class SMSTransactionController {
 			s.setActionPerform(SMSActionPerform.SELL.name());
 			s.setActionDate(new Date());
 			s.setUsername(sellerUsername);
+			//s.setBuyFrom(findUserFullName(sellerUsername)); //todo
+			s.setBuyQty(0);
+			s.setSellQty(Integer.parseInt(smsAmount));
+			s.setSellTo(findUserFullName(username)); //todo
+			s.setBuyerUsername(username);
+			s.setSellerUsername(sellerUsername);
 			smsTransactionService.save(s);
 		}
 
 		redirect.addFlashAttribute("sm", "Transaction successfull");
 		return "redirect:/smsBucket/" + sellerUsername;
 	}
-	
+
+	private String findUserFullName(String username) {
+		String fullName = "";
+		Users users;
+		try {
+			users = usersService.findByUsernameAndArchive(username, false);
+			String role = users.getAuthority();
+			if(role.equals(UserAuthorities.ROLE_ADMIN.name())) {
+				Admin admin = adminService.findByUsername(username);
+				return admin.getAdminName();
+			} else if (role.equals(UserAuthorities.ROLE_DEALER.name())) {
+				Dealer dealer = dealerService.findByUsername(username);
+				return dealer.getDealerName();
+			} else if (role.equals(UserAuthorities.ROLE_CLIENT.name())) {
+				Client client = clientService.findByUsername(username);
+				return client.getClientName();
+			}
+		} catch (SilException e) {
+			logger.error("Error is - Message : {}, Full error : {}", e.getMessage(), e);
+		}
+		return fullName;
+	}
 }
