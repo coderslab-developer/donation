@@ -32,7 +32,7 @@ public class UpdateSMSDateSchedular {
 	private CategoryService categoryService;
 
 	//everyday 10 o'clock
-	@Scheduled(cron = "0 0 23 * * *") 
+	@Scheduled(cron = "0 0 22 * * *") 
 	private void updateDonarsSMSDate() {
 		List<Donar> donars = new ArrayList<>();
 		try {

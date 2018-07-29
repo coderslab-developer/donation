@@ -99,5 +99,13 @@ public class Donar implements Serializable {
 
 	@Transient
 	private String categoryName;
+	
+	@Column(name = "autoMessage", length = 65535)
+	private String autoMessage;
 
+	@Column(name = "maskName", length = 50)
+	private String maskName;
+
+	@Column(name = "campaignName", length = 50)
+	private String campaignName;
 }

@@ -44,9 +44,9 @@ $(document).ready(function(){
 		var value = $('input[type="email"][required="required"]').val();
 		var valid = validateEmail(value);
 		if (!valid) {
-			removeClass($('input[type="email"][required="required"]'));
-			$('input[type="email"][required="required"]').after($("<div/>").addClass('text-danger').html("Invalid"));
-			emailStatus = "invalid"
+//			removeClass($('input[type="email"][required="required"]'));
+//			$('input[type="email"][required="required"]').after($("<div/>").addClass('text-danger').html("Invalid"));
+//			emailStatus = "invalid"
 		}else {
 			removeClass($('input[type="email"][required="required"]'));
 			$('input[type="email"][required="required"]').after($("<div/>").addClass('text-success').html("Valid"));

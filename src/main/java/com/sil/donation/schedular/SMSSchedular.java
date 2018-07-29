@@ -12,15 +12,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.onnorokom.sms.v1.ArrayOfWsSms;
+import com.onnorokom.sms.v1.SendSmsSoap;
+import com.onnorokom.sms.v1.WsSms;
 import com.sil.donation.entity.Client;
 import com.sil.donation.entity.Donar;
+import com.sil.donation.entity.SMSAccount;
+import com.sil.donation.entity.SMSInfoTracker;
 import com.sil.donation.entity.SMSNotifier;
 import com.sil.donation.entity.SMSTransaction;
 import com.sil.donation.exception.SilException;
 import com.sil.donation.service.ClientService;
 import com.sil.donation.service.DonarService;
+import com.sil.donation.service.SMSAccountService;
+import com.sil.donation.service.SMSInfoTrackerService;
 import com.sil.donation.service.SMSNotifierService;
 import com.sil.donation.service.SMSTransactionService;
+import com.sil.onnorokomsms.service.OnnorkomObjectBuilder;
 
 /**
  * @author Zubayer Ahamed
@@ -30,42 +38,106 @@ import com.sil.donation.service.SMSTransactionService;
 public class SMSSchedular {
 
 	private static final Logger logger = LoggerFactory.getLogger(SMSSchedular.class);
+	private static final String SMS_ACCOUNT_SECRET_NAME = "ZUBAYER";
+	String endPoint = "https://api2.onnorokomsms.com/sendsms.asmx";
+	String apiKey = null;
 
 	@Autowired private SMSTransactionService smsTransactionService;
 	@Autowired private ClientService clientService;
 	@Autowired private DonarService donarService;
 	@Autowired private SMSNotifierService smsNotifierService;
+	@Autowired private SMSInfoTrackerService smsInfoTrackerService;
+	@Autowired private SMSAccountService smsAccountService;
 
 	// 8 o'clock of every day
 	@Scheduled(cron = "0 0 20 * * *")
-	//@Scheduled(fixedDelay = 30000)
-	private void sendSMSSchedular()  {
+	//@Scheduled(fixedDelay = 3000)
+	private void sendSMSSchedular() {
+		getSMSApiKeyAndBaseUrl();
+		if(endPoint == null || apiKey == null) return;
+		if(endPoint.isEmpty() || apiKey.isEmpty()) return;
+
+		//GET CLIENTS WHOSE HAS SMS CREDIT AND HAS SMS ACTIVE SERVICE
 		List<Client> clients = new ArrayList<>();
 		List<Donar> donars = new ArrayList<>();
-
 		try {
 			clients = getAllClient().stream().filter(c -> Boolean.TRUE == checkClientHasAvailableSMS(c)).collect(Collectors.toList());
+			for(Client c : clients) logger.info("SMS available Client : {}", c.getClientName());
 		} catch (SilException e) {
-			if(logger.isErrorEnabled()) logger.error(e.getMessage(), e);
-		}
-
-		for(Client c : clients) {
-			logger.info("{}", c);
+			if (logger.isErrorEnabled()) logger.error(e.getMessage(), e);
 		}
 
 		if(!clients.isEmpty()) {
 			for(Client client : clients) {
 				List<Donar> list = getAllDonarWhichHaveSMSScheduleToday(client);
 				for(Donar d : list) {
-					donars.add(d);
+					if(client.getAutoMessage() != null && !client.getAutoMessage().isEmpty()) {
+						d.setAutoMessage(client.getAutoMessage());
+						d.setMaskName(client.getMaskName());
+						d.setCampaignName(client.getCampaignName());
+						donars.add(d);
+					}
 				}
 			}
 		}
 
 		if(!donars.isEmpty()) {
+			List<String> numbers = new ArrayList<>();
+			String maskName = donars.stream().findFirst().orElseGet(null).getMaskName();
+			String campaignName = donars.stream().findFirst().orElseGet(null).getCampaignName();
 			for(Donar donar : donars) {
-				logger.info("Send SMS to  {}", donar);
+				logger.info("Scheduled donar for Send SMS : {}", donar);
+				if(donar.getMobile() != null || !donar.getMobile().isEmpty()) {
+					numbers.add(donar.getMobile());
+				}
 			}
+
+			//donar limitation 500 per day
+			if(numbers.size() > 500) {
+				numbers = numbers.stream().limit(500).collect(Collectors.toList());
+			}
+
+			SendSmsSoap port = OnnorkomObjectBuilder.getSMSPort(endPoint);
+			List<WsSms> wsSmses = new ArrayList<>();
+			for(Donar donar : donars) {
+				WsSms wsSms = new WsSms();
+				wsSms.setMobileNumber(donar.getMobile());
+				wsSms.setSmsText(donar.getAutoMessage());
+				wsSms.setType("TEXT");
+				wsSmses.add(wsSms);
+			}
+			ArrayOfWsSms arrayOfWsSms = new ArrayOfWsSms();
+			arrayOfWsSms.setWsSms(wsSmses);
+			String value = port.listSms(apiKey, arrayOfWsSms, maskName == null ? "" : maskName, campaignName == null ? "" : campaignName);
+			String[] fullSMS = value.split("/");
+			for(int i = 0; i < fullSMS.length; i++) {
+				logger.info(fullSMS[i]);
+				String[] values = fullSMS[i].split("\\|\\|");
+				String code = "";
+				String number = "";
+				String reference = "";
+				for(int j = 0; j < values.length; j++) {
+					switch (j) {
+					case 0 :
+						code = values[0];
+						break;
+					case 1 :
+						number = values[1];
+						break;
+					case 2 :
+						reference = values[2];
+						break;
+					}
+				}
+
+				SMSInfoTracker smsInfoTracker = new SMSInfoTracker();
+				smsInfoTracker.setCode(code);
+				smsInfoTracker.setMobileNumber(number);
+				smsInfoTracker.setReferenceCode(reference);
+				smsInfoTracker.setSmsDateTime(new Date());
+				smsInfoTrackerService.saveSMSInforTrack(smsInfoTracker);
+			}
+
 		}else {
 			logger.info("No Donar found for sms today");
 		}
@@ -78,7 +150,7 @@ public class SMSSchedular {
 		return donarService.findAllByClientIdAndSmsServiceAndStatusAndArchive(client.getClientId(), true, true, false);
 	} 
 
-	//get all current date sms donar
+	//get all one day before scheduled date sms donar
 	private List<Donar> getAllDonarWhichHaveSMSScheduleToday(Client client){
 		List<Donar> filteredDonars = new ArrayList<>();
 		try {
@@ -90,6 +162,7 @@ public class SMSSchedular {
 				Calendar cal1 = Calendar.getInstance();
 				Calendar cal2 = Calendar.getInstance();
 				cal1.setTime(donar.getSmsDate());
+				cal1.add(Calendar.DATE, -1);
 				cal2.setTime(new Date());
 				if(cal1.get(Calendar.DATE) == cal2.get(Calendar.DATE)) {
 					filteredDonars.add(donar);
@@ -166,5 +239,15 @@ public class SMSSchedular {
 			return true;
 		}
 	}
-	
+
+	//GET SMS API KEY AND ACCESS URL
+	public void getSMSApiKeyAndBaseUrl() {
+		SMSAccount smsAccount = smsAccountService.findSMSAccount(SMS_ACCOUNT_SECRET_NAME, true, false);
+		logger.info("SMS Account : {}", smsAccount);
+		if(smsAccount != null) {
+			if(smsAccount.getBaseUrl() != null && !smsAccount.getBaseUrl().isEmpty()) this.endPoint = smsAccount.getBaseUrl();
+			if(smsAccount.getApiKey() != null && !smsAccount.getApiKey().isEmpty()) this.apiKey = smsAccount.getApiKey();
+		}
+		logger.info("SMS Credentials == Apikey : {} ; Access Url : {}", apiKey, endPoint);
+	}
 }

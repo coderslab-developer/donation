@@ -143,4 +143,13 @@ public class Client implements Serializable {
 
 	@Transient
 	private double totalDue;
+
+	@Column(name = "autoMessage", length = 65535)
+	private String autoMessage;
+
+	@Column(name = "maskName", length = 50)
+	private String maskName;
+
+	@Column(name = "campaignName", length = 50)
+	private String campaignName;
 }

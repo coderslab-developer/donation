@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -67,10 +68,13 @@ public class SMSBucketController {
 			if(user.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_ADMIN.name())) {
 				dealers = dealerService.findAllByStatusAndArchive(true, false);
 				model.addAttribute("dealers", dealers);
-			}else if(user.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_DEALER.name())) {
+			} else if (user.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_DEALER.name())) {
 				Dealer dealer = dealerService.findByUsernameAndArchive(username, false);
 				clients = clientService.findAllByDealerIdAndStatusAndSmsServiceAndArchive(dealer.getDealerId(), true, true, false);
 				model.addAttribute("clients", clients);
+			} else if (user.getAuthority().equalsIgnoreCase(UserAuthorities.ROLE_CLIENT.name())) {
+				Client client = clientService.findByUsername(username);
+				model.addAttribute("client", client);
 			}
 		} catch (SilException e) {
 			if(logger.isErrorEnabled()) logger.error("{}", e);
@@ -79,7 +83,27 @@ public class SMSBucketController {
 		model.addAttribute("username", username);
 		model.addAttribute("smsBucket", list.isEmpty() ? new SMSTransaction() : list.get(0));
 		model.addAttribute("transactions", list);
+		
 		return LOCATION + LOCATION_TO;
 	}
 
+	@PostMapping("/automessage")
+	public String setAutoMessage(Client client, RedirectAttributes redirect) {
+		logger.info("Auto message save for Client : {}", client.getAutoMessage());
+		try {
+			Client cl = clientService.findByUsername(client.getUsername());
+			cl.setAutoMessage(client.getAutoMessage());
+			cl.setCampaignName(client.getCampaignName());
+			cl.setMaskName(client.getMaskName());
+			boolean stat = clientService.save(cl);
+			if(Boolean.TRUE.equals(stat)) {
+				redirect.addFlashAttribute("sm", "Auto message saved successfully");
+			} else {
+				redirect.addFlashAttribute("em", "Auto message not saved");
+			}
+		} catch (SilException e) {
+			logger.error(e.getMessage());
+		}
+		return "redirect:/smsBucket/" + client.getUsername(); 
+	}
 }

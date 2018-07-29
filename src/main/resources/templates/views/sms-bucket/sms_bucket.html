@@ -43,6 +43,33 @@
 							</div>
 						</div>
 
+						<!-- AUTO MESSAGE -->
+						<div sec:authorize="${hasRole('ROLE_CLIENT')}" class="col-md-12 super-admin-dashboard">
+							<div class="panel panel-primary">
+								<div class="panel-heading custom-primary">
+									<h4 style="margin: 0;">Set Auto Message</h4>
+								</div>
+								<div class="panel-body" style="padding-bottom: 40px;">
+									<form th:action="@{/smsBucket/automessage}" th:object="${client}" method="post">
+										<input type="hidden" name="username" id="username" class="form-control"  th:value="${username}"/>
+										<div class="form-group">
+											<label>Mask Name</label>
+											<input type="text" th:field="*{maskName}" maxlength="50" class="form-control"/>
+										</div>
+										<div class="form-group">
+											<label>Campaign Name</label>
+											<input type="text" th:field="*{campaignName}" maxlength="50" class="form-control"/>
+										</div>
+										<div class="form-group">
+											<label>Set Auto Message</label>
+											<textarea th:field="*{autoMessage}" maxlength="160" class="form-control"></textarea>
+										</div>
+										<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
+									</form>
+								</div>
+							</div>
+						</div>
+						
 						<!-- SMS Bucket -->
 						<div class="col-md-12 super-admin-dashboard">
 							<div class="panel panel-primary">
@@ -151,7 +178,7 @@
 							</div>
 						</div>
 
-						<div sec:authorize="${hasRole('ROLE_ADMIN')}" class="col-md-12 super-admin-dashboard">
+						<div class="col-md-12 super-admin-dashboard">
 							<div class="panel panel-success">
 								<div class="panel-heading custom-success">
 									<h4 style="margin: 0;">Transaction History</h4>

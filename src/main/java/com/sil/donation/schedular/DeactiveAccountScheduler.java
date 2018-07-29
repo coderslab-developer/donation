@@ -33,7 +33,7 @@ public class DeactiveAccountScheduler {
 	@Autowired private UsersService usersService;
 
 	//deactive expired client account
-	@Scheduled(cron = "0 0 5 * * *") 
+	@Scheduled(cron = "0 0 5 * * *")
 	private void deactiveExpiredClientAccout() {
 		List<Client> clients = new ArrayList<>();
 		try {
