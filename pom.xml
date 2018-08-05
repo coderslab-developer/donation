@@ -148,11 +148,11 @@
 		</dependency>
 		
 		<!-- SMS STUB -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.sil</groupId>
 			<artifactId>oss</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 
 	<build>

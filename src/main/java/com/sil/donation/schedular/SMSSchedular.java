@@ -28,7 +28,7 @@ import com.sil.donation.service.SMSAccountService;
 import com.sil.donation.service.SMSInfoTrackerService;
 import com.sil.donation.service.SMSNotifierService;
 import com.sil.donation.service.SMSTransactionService;
-import com.sil.onnorokomsms.service.OnnorkomObjectBuilder;
+import com.sil.donation.service.OnnorkomObjectBuilder;
 
 /**
  * @author Zubayer Ahamed

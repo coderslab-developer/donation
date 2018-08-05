@@ -3,6 +3,7 @@
  */
 package com.sil.donation;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class PasswordEncriptionTest {
 
 	@Autowired BCryptPasswordEncoder bCryptPasswordEncoder;
 
+	@Ignore
 	@Test
 	public void encodePassword() {
 		String pass1 = bCryptPasswordEncoder.encode(PASSWORD);
